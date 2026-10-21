@@ -1,10 +1,36 @@
--- Petugas workspace authorization and atomic status updates.
+-- Petugas/admin workspace authorization and atomic status updates.
 -- Run this in the Supabase SQL Editor after confirming the existing tables:
 -- public.profiles(id, role), public.reports(id, status),
 -- public.report_comments(report_id, user_id, message, photo_url).
 
 alter table public.reports enable row level security;
 alter table public.report_comments enable row level security;
+alter table public.categories enable row level security;
+
+drop policy if exists "authenticated users read categories" on public.categories;
+create policy "authenticated users read categories"
+on public.categories
+for select
+to authenticated
+using (true);
+
+drop policy if exists "admins manage categories" on public.categories;
+create policy "admins manage categories"
+on public.categories
+for all
+to authenticated
+using (
+  exists (
+    select 1 from public.profiles p
+    where p.id = (select auth.uid()) and p.role::text = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1 from public.profiles p
+    where p.id = (select auth.uid()) and p.role::text = 'admin'
+  )
+);
 
 drop policy if exists "authenticated users read reports" on public.reports;
 create policy "authenticated users read reports"
@@ -90,6 +116,7 @@ as $$
 declare
   actor_role text;
   status_type text;
+  affected_rows integer;
 begin
   if (select auth.uid()) is null then
     raise exception 'Authentication required';
@@ -106,8 +133,11 @@ begin
   if p_status not in ('belum_diproses', 'diproses', 'selesai') then
     raise exception 'Invalid report status';
   end if;
-  if nullif(trim(p_message), '') is null or nullif(trim(p_photo_url), '') is null then
-    raise exception 'A follow-up note and evidence photo are required';
+  if nullif(trim(p_message), '') is null then
+    raise exception 'A follow-up note is required';
+  end if;
+  if actor_role = 'petugas' and nullif(trim(p_photo_url), '') is null then
+    raise exception 'Petugas must provide an evidence photo';
   end if;
 
   select format_type(a.atttypid, a.atttypmod) into status_type
@@ -121,12 +151,13 @@ begin
 
   execute format('update public.reports set status = $1::%s where id = $2', status_type)
   using p_status, p_report_id;
-  if not found then
+  get diagnostics affected_rows = row_count;
+  if affected_rows = 0 then
     raise exception 'Report not found or access denied';
   end if;
 
   insert into public.report_comments (report_id, user_id, message, photo_url)
-  values (p_report_id, (select auth.uid()), trim(p_message), trim(p_photo_url));
+  values (p_report_id, (select auth.uid()), trim(p_message), nullif(trim(p_photo_url), ''));
 end;
 $$;
 

@@ -49,6 +49,21 @@ export async function getCategories(): Promise<Category[]> {
   return (data ?? []) as Category[]
 }
 
+export async function createCategory(name: string): Promise<void> {
+  const { error } = await supabase.from('categories').insert({ name })
+  throwIfError(error)
+}
+
+export async function renameCategory(categoryId: string, name: string): Promise<void> {
+  const { error } = await supabase.from('categories').update({ name }).eq('id', categoryId)
+  throwIfError(error)
+}
+
+export async function deleteCategory(categoryId: string): Promise<void> {
+  const { error } = await supabase.from('categories').delete().eq('id', categoryId)
+  throwIfError(error)
+}
+
 export async function createReport(input: ReportInput, userId: string): Promise<string> {
   const { data, error } = await supabase.from('reports').insert({ ...input, user_id: userId }).select('id').single()
   throwIfError(error)
@@ -109,7 +124,7 @@ export async function updateReportStatusWithEvidence(
   reportId: string,
   status: Report['status'],
   message: string,
-  photoUrl: string,
+  photoUrl: string | null,
 ): Promise<void> {
   const { error } = await supabase.rpc('petugas_update_report_status', {
     p_report_id: reportId,

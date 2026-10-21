@@ -11,6 +11,7 @@ const ReportFormPage = lazy(() => import('../pages/student/ReportFormPage').then
 const ReportsPage = lazy(() => import('../pages/student/ReportsPage').then((module) => ({ default: module.ReportsPage })))
 const StudentDashboardPage = lazy(() => import('../pages/student/StudentDashboardPage').then((module) => ({ default: module.StudentDashboardPage })))
 const OfficerDashboardPage = lazy(() => import('../pages/officer/OfficerDashboardPage').then((module) => ({ default: module.OfficerDashboardPage })))
+const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then((module) => ({ default: module.AdminDashboardPage })))
 
 function LandingRoute() {
   const navigate = useNavigate()
@@ -42,6 +43,27 @@ function OfficerLayoutRoute() {
     }
   }
   return <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />
+}
+
+function AdminLayoutRoute() {
+  const { profile, loading, signOut } = useAuth()
+  const location = useLocation()
+  const navigate = useNavigate()
+  if (loading) return <main className="access-page"><div className="access-card">Memeriksa sesi akun...</div></main>
+  if (!profile || profile.role !== 'admin') {
+    const destination = profile?.role === 'petugas' ? '/petugas/dashboard' : profile?.role === 'mahasiswa' ? '/mahasiswa' : '/auth'
+    return <Navigate to={destination} replace />
+  }
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      navigate('/auth', { replace: true })
+    } catch {
+      // Keep the admin dashboard open if Supabase cannot complete sign-out.
+    }
+  }
+  const section = location.pathname.replace(/^\/admin\/?/, '').split('/')[0] || 'dashboard'
+  return <AdminDashboardPage profile={profile} section={section} onNavigate={navigate} onSignOut={() => void handleSignOut()} />
 }
 
 function StudentLayoutRoute() {
@@ -122,6 +144,7 @@ export function AppRoutes() {
         {/* Public authentication entry for officers; only work pages are guarded. */}
         <Route path="/petugas" element={<AuthRoute kind="officer" />} />
         <Route path="/petugas/dashboard" element={<OfficerLayoutRoute />} />
+        <Route path="/admin/*" element={<AdminLayoutRoute />} />
         <Route path="/mahasiswa" element={<StudentLayoutRoute />}>
           <Route index element={<StudentDashboardRoute />} />
           <Route path="laporan" element={<AllReportsRoute />} />
