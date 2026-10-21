@@ -1,8 +1,5 @@
-import { supabase } from '../lib/supabaseClient';
-import { isSupabaseConfigured } from '../lib/supabaseClient';
-
-export type UserRole = 'mahasiswa' | 'petugas' | 'admin'
-export type UserProfile = { full_name: string; role: UserRole }
+import { isSupabaseConfigured, supabase } from '../lib/supabaseClient'
+import type { UserProfile, UserRole } from '../types/auth'
 
 function ensureConfigured() {
   if (!isSupabaseConfigured) {
@@ -14,7 +11,7 @@ export async function registerUser(
   email: string,
   password: string,
   fullName: string,
-  role: 'mahasiswa' | 'petugas',
+  role: Exclude<UserRole, 'admin'>,
   nimNip = '',
 ) {
   ensureConfigured()
