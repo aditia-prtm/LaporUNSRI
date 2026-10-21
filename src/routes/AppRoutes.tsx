@@ -10,6 +10,7 @@ const ReportDetailPage = lazy(() => import('../pages/student/ReportDetailPage').
 const ReportFormPage = lazy(() => import('../pages/student/ReportFormPage').then((module) => ({ default: module.ReportFormPage })))
 const ReportsPage = lazy(() => import('../pages/student/ReportsPage').then((module) => ({ default: module.ReportsPage })))
 const StudentDashboardPage = lazy(() => import('../pages/student/StudentDashboardPage').then((module) => ({ default: module.StudentDashboardPage })))
+const OfficerDashboardPage = lazy(() => import('../pages/officer/OfficerDashboardPage').then((module) => ({ default: module.OfficerDashboardPage })))
 
 function LandingRoute() {
   const navigate = useNavigate()
@@ -25,6 +26,22 @@ function AuthRoute({ kind }: { kind: 'user' | 'officer' }) {
     : '/mahasiswa'
 
   return <AuthPage kind={kind} onNavigate={(path) => navigate(path === '/mahasiswa' ? afterLogin : path)} />
+}
+
+function OfficerLayoutRoute() {
+  const { profile, loading, signOut } = useAuth()
+  const navigate = useNavigate()
+  if (loading) return <main className="access-page"><div className="access-card">Memeriksa sesi akun...</div></main>
+  if (!profile || profile.role !== 'petugas') return <Navigate to="/petugas" replace />
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      navigate('/petugas', { replace: true })
+    } catch {
+      // Keep the workspace open if Supabase cannot complete sign-out.
+    }
+  }
+  return <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />
 }
 
 function StudentLayoutRoute() {
@@ -104,6 +121,7 @@ export function AppRoutes() {
         <Route path="/auth" element={<AuthRoute kind="user" />} />
         {/* Public authentication entry for officers; only work pages are guarded. */}
         <Route path="/petugas" element={<AuthRoute kind="officer" />} />
+        <Route path="/petugas/dashboard" element={<OfficerLayoutRoute />} />
         <Route path="/mahasiswa" element={<StudentLayoutRoute />}>
           <Route index element={<StudentDashboardRoute />} />
           <Route path="laporan" element={<AllReportsRoute />} />

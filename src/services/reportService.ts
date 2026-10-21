@@ -100,7 +100,22 @@ export async function getReportComments(reportId: string): Promise<ReportComment
   })) as unknown as ReportComment[]
 }
 
-export async function addReportComment(reportId: string, userId: string, message: string): Promise<void> {
-  const { error } = await supabase.from('report_comments').insert({ report_id: reportId, user_id: userId, message })
+export async function addReportComment(reportId: string, userId: string, message: string, photoUrl: string | null = null): Promise<void> {
+  const { error } = await supabase.from('report_comments').insert({ report_id: reportId, user_id: userId, message, photo_url: photoUrl })
+  throwIfError(error)
+}
+
+export async function updateReportStatusWithEvidence(
+  reportId: string,
+  status: Report['status'],
+  message: string,
+  photoUrl: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('petugas_update_report_status', {
+    p_report_id: reportId,
+    p_status: status,
+    p_message: message,
+    p_photo_url: photoUrl,
+  })
   throwIfError(error)
 }

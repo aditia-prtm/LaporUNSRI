@@ -69,7 +69,8 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
       }
 
       setNotice(`Berhasil masuk sebagai ${roleLabel(nextProfile.role)}.`)
-      if (nextProfile.role === 'mahasiswa') onNavigate('/mahasiswa')
+      if (officerPage && nextProfile.role === 'petugas') onNavigate('/petugas/dashboard')
+      else if (nextProfile.role === 'mahasiswa') onNavigate('/mahasiswa')
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Terjadi kesalahan. Silakan coba lagi.')
     } finally {
@@ -106,6 +107,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
             <div className="signed-avatar">{profile.full_name.slice(0, 1).toUpperCase()}</div>
             <div><strong>{profile.full_name}</strong><span>{roleLabel(profile.role)}</span></div>
             {profile.role === 'mahasiswa' && <button className="button button-primary" onClick={() => onNavigate('/mahasiswa')}>Buka dashboard</button>}
+            {officerPage && profile.role === 'petugas' && <button className="button button-primary" onClick={() => onNavigate('/petugas/dashboard')}>Buka ruang kerja</button>}
             <button className="button button-outline" onClick={() => void handleSignOut()}>Keluar</button>
           </div>
         ) : <>
