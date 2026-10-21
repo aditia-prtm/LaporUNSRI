@@ -49,7 +49,7 @@ export async function getProfile(userId: string): Promise<UserProfile> {
   ensureConfigured()
   const { data, error } = await supabase
     .from('profiles')
-    .select('full_name, role')
+    .select('id, full_name, role')
     .eq('id', userId)
     .single()
   if (error) throw error
