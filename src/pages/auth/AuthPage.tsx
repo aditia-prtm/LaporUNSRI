@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
@@ -33,11 +33,26 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+  const [roleRejected, setRoleRejected] = useState(false)
+
+  useEffect(() => {
+    // A newly authenticated session can arrive before submit() checks its role.
+    // Wait until login validation finishes so a wrong-role account is rejected
+    // on the page where it attempted to sign in.
+    if (loading || busy || roleRejected || !profile) return
+    const destination = profile.role === 'admin'
+      ? '/admin/dashboard'
+      : profile.role === 'petugas'
+        ? '/petugas/dashboard'
+        : '/mahasiswa'
+    onNavigate(destination)
+  }, [loading, busy, roleRejected, profile, onNavigate])
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError('')
     setNotice('')
+    setRoleRejected(false)
 
     if (!isSupabaseConfigured) {
       setError('Supabase belum dikonfigurasi. Periksa VITE_SUPABASE_URL dan VITE_SUPABASE_PUBLISHABLE_KEY di file .env.')
@@ -60,10 +75,12 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
       const nextProfile = await getProfile(user.id)
       if (officerPage && nextProfile.role !== 'petugas') {
+        setRoleRejected(true)
         await signOut()
         throw new Error('Halaman ini hanya untuk akun petugas. Gunakan halaman login pengguna untuk akun mahasiswa atau admin.')
       }
       if (!officerPage && nextProfile.role === 'petugas') {
+        setRoleRejected(true)
         await signOut()
         throw new Error('Akun petugas harus masuk melalui URL /petugas.')
       }
@@ -79,16 +96,6 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
     }
   }
 
-  const handleSignOut = async () => {
-    setError('')
-    try {
-      await signOut()
-      setNotice('Anda sudah keluar dari akun.')
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Tidak dapat keluar dari akun.')
-    }
-  }
-
   const title = officerPage ? 'Portal petugas' : 'Selamat datang kembali'
 
   return (
@@ -96,22 +103,15 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
       <div className="auth-card">
         <div className="auth-heading">
           <span className="eyebrow">{officerPage ? 'Akses petugas' : 'Akun LaporUnsri'}</span>
-          <h2>{loading ? 'Memeriksa sesi…' : profile ? 'Akun Anda' : mode === 'login' ? title : 'Buat akun baru'}</h2>
-          <p>{profile ? 'Anda sudah terhubung ke LaporUnsri.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
+          <h2>{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
+          <p>{profile ? 'Anda akan diarahkan ke halaman sesuai role akun.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
         </div>
 
         {notice && <FeedbackMessage tone="success">{notice}</FeedbackMessage>}
         {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
         {loading ? <div className="message message-warning" role="status">Sedang memeriksa sesi akun…</div> : profile ? (
-          <div className="signed-in-card">
-            <div className="signed-avatar">{profile.full_name.slice(0, 1).toUpperCase()}</div>
-            <div><strong>{profile.full_name}</strong><span>{roleLabel(profile.role)}</span></div>
-            {profile.role === 'mahasiswa' && <button className="button button-primary" onClick={() => onNavigate('/mahasiswa')}>Buka dashboard</button>}
-            {officerPage && profile.role === 'petugas' && <button className="button button-primary" onClick={() => onNavigate('/petugas/dashboard')}>Buka ruang kerja</button>}
-            {!officerPage && profile.role === 'admin' && <button className="button button-primary" onClick={() => onNavigate('/admin/dashboard')}>Buka dashboard admin</button>}
-            <button className="button button-outline" onClick={() => void handleSignOut()}>Keluar</button>
-          </div>
+          <div className="message message-warning" role="status">Mengarahkan ke dashboard {roleLabel(profile.role)}…</div>
         ) : <>
           {!isSupabaseConfigured && <FeedbackMessage tone="warning">Supabase belum dikonfigurasi. Lengkapi URL dan publishable key di file .env untuk mengaktifkan autentikasi.</FeedbackMessage>}
           <form className="auth-form" onSubmit={(event) => void submit(event)}>
