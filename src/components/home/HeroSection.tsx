@@ -54,10 +54,10 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 flex h-[48vh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[60vh] max-lg:min-h-[400px] max-lg:pt-[68px] max-sm:h-[62vh] max-sm:min-h-[350px] max-sm:pt-[60px]">
+      <div className="relative z-50 pointer-events-none flex h-[48vh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[60vh] max-lg:min-h-[400px] max-lg:pt-[68px] max-sm:h-[62vh] max-sm:min-h-[350px] max-sm:pt-[60px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
-          className="flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
+          className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
@@ -108,11 +108,11 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       </div>
 
       {/* Kampus Unsri Foreground Stage */}
-      <motion.div className="absolute inset-x-0 bottom-0 z-30 flex w-full items-end justify-center overflow-hidden pointer-events-none max-lg:max-h-[48vh] max-sm:max-h-[46vh]" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
+      <motion.div className="absolute inset-x-0 bottom-0 z-30 flex w-full items-end justify-center pointer-events-none" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
         <picture className="flex w-full items-end justify-center leading-none">
           <source media="(max-width: 640px)" srcSet={kampusUnsriMobile} />
           <source media="(max-width: 1024px)" srcSet={kampusUnsriTab} />
-          <img src={kampusUnsriDesktop} alt="Gedung Rektorat Kampus Universitas Sriwijaya" className="block h-auto w-full min-w-full max-w-none object-cover object-bottom brightness-125 will-change-transform drop-shadow-[0_-6px_35px_rgba(2,18,38,0.45)]" />
+          <img src={kampusUnsriDesktop} alt="Gedung Rektorat Kampus Universitas Sriwijaya" className="block h-auto w-full min-w-full max-w-none object-cover object-bottom will-change-transform" />
         </picture>
       </motion.div>
 

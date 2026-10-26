@@ -26,7 +26,7 @@ export function LandingNavbar({ onNavigate, onScrollDown }: LandingNavbarProps) 
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 w-full bg-transparent">
+    <header className="fixed inset-x-0 top-0 z-[100] w-full bg-transparent">
       <div className="relative mx-auto flex min-h-[76px] w-full max-w-[1440px] items-center justify-between px-11 py-3 max-lg:min-h-[68px] max-lg:px-7 max-lg:py-2.5 max-sm:min-h-[60px] max-sm:px-4.5">
         <span className="flex-1 max-lg:hidden" aria-hidden="true" />
         <a className="flex flex-col items-center text-white no-underline transition duration-200 hover:-translate-y-px hover:opacity-95 max-lg:mr-auto max-lg:items-start" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }} aria-label="LaporUnsri beranda">
