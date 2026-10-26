@@ -5,5 +5,11 @@ type FeedbackMessageProps = {
 
 export function FeedbackMessage({ tone, children }: FeedbackMessageProps) {
   const role = tone === 'error' ? 'alert' : 'status'
-  return <div className={`message message-${tone}`} role={role}>{children}</div>
+  const toneClass = tone === 'success'
+    ? 'border-[#d3eddd] bg-[#f0faf3] text-[#26734f]'
+    : tone === 'error'
+      ? 'border-[#f2d9d3] bg-[#fff5f2] text-[#a34836]'
+      : 'border-[#f1e4c7] bg-[#fffaf0] text-[#83682f]'
+
+  return <div className={`mb-[14px] rounded-lg border px-3 py-[11px] text-[11px] leading-[1.6] ${toneClass}`} role={role}>{children}</div>
 }

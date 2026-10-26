@@ -1,75 +1,28 @@
-# React + TypeScript + Vite
+# LaporUnsri
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Platform pelaporan fasilitas kampus Universitas Sriwijaya. Mahasiswa dapat membuat dan mendukung laporan, lalu memantau tindak lanjut petugas.
 
-Currently, two official plugins are available:
+## Menjalankan aplikasi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Pasang dependensi dengan `npm install`.
+2. Salin `.env.example` menjadi `.env` dan isi kredensial proyek Supabase.
+3. Jalankan `npm run dev`.
 
-## React Compiler
+Perintah yang tersedia:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- `npm run dev` menjalankan server pengembangan Vite.
+- `npm run build` menjalankan pemeriksaan TypeScript lalu membuat build produksi.
+- `npm run lint` menjalankan ESLint.
+- `npm run preview` menyajikan build produksi secara lokal.
 
-## Expanding the ESLint configuration
+## Konfigurasi Supabase
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Isi `VITE_SUPABASE_URL` dan `VITE_SUPABASE_PUBLISHABLE_KEY` dengan URL proyek dan publishable/anon key dari Supabase. Variabel berawalan `VITE_` disertakan dalam aplikasi browser; jangan menaruh service role key atau rahasia server di dalamnya.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Aplikasi memerlukan autentikasi Supabase dan tabel `profiles`, `reports`, `categories`, `report_votes`, serta `report_comments`. Foto laporan memakai storage bucket `report-photos`. Pastikan RLS, relasi, dan fungsi database untuk mutasi status sudah dikonfigurasi pada proyek Supabase.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Struktur dan kontribusi
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Susunan folder, batas antar lapisan, serta aturan refactor dijelaskan di [ARCHITECTURE.md](./ARCHITECTURE.md). Ringkasan tujuan dan fitur produk ada di [PROJECT.md](./PROJECT.md).
 
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+Sebelum mengubah struktur, ikuti panduan arsitektur dan perbarui dokumentasi yang terdampak. Jangan menambahkan rahasia atau data pengguna ke repository.

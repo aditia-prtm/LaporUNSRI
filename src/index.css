@@ -2,25 +2,20 @@
 @import "tailwindcss";
 
 :root {
-  font-family: 'DM Sans', sans-serif;
-  color: #1e302c;
-  background: #fbfcfa;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-optical-sizing: auto;
-  font-weight: 400;
   --green: #14835d;
   --green-dark: #0d6749;
   --ink: #1e302c;
   --muted: #73817d;
   --line: #e8eeeb;
+  @apply [font-family:'DM_Sans',_sans-serif] [color:#1e302c] [background:#fbfcfa] [font-synthesis:none] [text-rendering:optimizeLegibility] [-webkit-font-smoothing:antialiased] [-moz-osx-font-smoothing:grayscale] [font-optical-sizing:auto] [font-weight:400];
 }
 
-* { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
-button, input { font: inherit; }
-button { cursor: pointer; }
-button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #93d5ba; outline-offset: 3px; }
-::selection { background: #c9ecdd; color: #14543f; }
+@layer base {
+  body { @apply [margin:0] [min-width:320px] [min-height:100vh]; }
+  button { @apply [cursor:pointer] [font:inherit]; }
+  input { @apply [font:inherit]; }
+  button:focus-visible, a:focus-visible, input:focus-visible { @apply [outline:3px_solid_#93d5ba] [outline-offset:3px]; }
+  ::selection { @apply [background:#c9ecdd] [color:#14543f]; }
+  #root { @apply [min-height:100vh]; }
+}
+

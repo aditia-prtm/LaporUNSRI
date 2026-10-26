@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, ReportInput } from '../../types/report'
 import { createReport, getCategories, getReport, updateReport, uploadReportPhoto } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { REPORT_PHOTO_MAX_BYTES, validateImageFile, validateReportInput } from '../../schemas/report'
 
 type ReportFormPageProps = {
   profile: UserProfile
@@ -60,12 +61,9 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setError('')
-    if (file && !file.type.startsWith('image/')) {
-      setError('File bukti harus berupa gambar.')
-      return
-    }
-    if (file && file.size > 5 * 1024 * 1024) {
-      setError('Ukuran foto maksimal 5 MB.')
+    const validationError = validateReportInput(form) ?? (file ? validateImageFile(file, REPORT_PHOTO_MAX_BYTES) : null)
+    if (validationError) {
+      setError(validationError)
       return
     }
     setBusy(true)

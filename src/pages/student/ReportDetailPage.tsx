@@ -4,6 +4,9 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportComment } from '../../types/report'
 import { addReportComment, deleteReport, getReport, getReportComments, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportStatusBadge } from '../../components/report/ReportStatusBadge'
+import { formatDateTime } from '../../utils/date'
+import { FiArrowLeft, FiHeart } from 'react-icons/fi'
 
 type ReportDetailPageProps = {
   profile: UserProfile
@@ -11,7 +14,9 @@ type ReportDetailPageProps = {
   onNavigate: (path: string) => void
 }
 
-const statusLabels = { belum_diproses: 'Belum diproses', diproses: 'Diproses', selesai: 'Selesai' }
+function loadReportDetail(reportId: string, userId: string) {
+  return Promise.all([getReport(reportId, userId), getReportComments(reportId)])
+}
 
 export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetailPageProps) {
   const [report, setReport] = useState<Report | null>(null)
@@ -25,10 +30,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
     setLoading(true)
     setError('')
     try {
-      const [nextReport, nextComments] = await Promise.all([
-        getReport(reportId, profile.id),
-        getReportComments(reportId),
-      ])
+      const [nextReport, nextComments] = await loadReportDetail(reportId, profile.id)
       setReport(nextReport)
       setComments(nextComments)
     } catch (cause) {
@@ -38,7 +40,19 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
     }
   }
 
-  useEffect(() => { void load() }, [reportId, profile.id])
+  useEffect(() => {
+    let active = true
+    void loadReportDetail(reportId, profile.id).then(([nextReport, nextComments]) => {
+      if (!active) return
+      setReport(nextReport)
+      setComments(nextComments)
+    }).catch((cause: unknown) => {
+      if (active) setError(cause instanceof Error ? cause.message : 'Laporan gagal dimuat.')
+    }).finally(() => {
+      if (active) setLoading(false)
+    })
+    return () => { active = false }
+  }, [reportId, profile.id])
 
   const submitComment = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -92,17 +106,17 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
 
   return (
     <section className="student-page detail-page">
-      <button className="text-link form-back" onClick={() => onNavigate('/mahasiswa/laporan')}><span aria-hidden="true">&#8592;</span> Semua laporan</button>
+      <button className="text-link form-back" onClick={() => onNavigate('/mahasiswa/laporan')}><FiArrowLeft aria-hidden="true" /> Semua laporan</button>
       {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
       <article className="report-detail-card">
-        <div className="detail-topline"><span className={`status-pill status-${report.status}`}>{statusLabels[report.status]}</span><span>{report.categories?.name ?? 'Lainnya'}</span><time>{new Date(report.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</time></div>
+        <div className="detail-topline"><ReportStatusBadge status={report.status} /><span>{report.categories?.name ?? 'Lainnya'}</span><time>{formatDateTime(report.created_at)}</time></div>
         <h1>{report.title}</h1>
         <p className="detail-location">{report.faculty} <span>·</span> {report.building}{report.room ? ` · ${report.room}` : ''}</p>
         <p className="detail-author">Dilaporkan oleh <strong>{report.profiles?.full_name ?? 'Mahasiswa'}</strong></p>
         {report.photo_url && <img className="detail-photo" src={report.photo_url} alt={`Bukti foto untuk ${report.title}`} />}
         <div className="detail-description">{report.description}</div>
         <div className="detail-actions">
-          {!isOwner && <button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={busy} onClick={() => void handleVote()}><span aria-hidden="true">{report.voted_by_me ? '♥' : '♡'}</span> Saya juga mengalami <b>{report.vote_count}</b></button>}
+          {!isOwner && <button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={busy} onClick={() => void handleVote()}><FiHeart aria-hidden="true" /> Saya juga mengalami <b>{report.vote_count}</b></button>}
           {isOwner && <><button className="button button-outline" onClick={() => onNavigate(`/mahasiswa/laporan/${report.id}/edit`)}>Ubah laporan</button><button className="button button-danger" disabled={busy} onClick={() => void handleDelete()}>Hapus</button></>}
         </div>
       </article>
@@ -110,7 +124,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
       <section className="comments-section">
         <div className="student-section-heading"><div><h2>Diskusi dan tindak lanjut</h2><p>Gunakan komentar untuk memberi informasi tambahan pada laporan.</p></div></div>
         <form className="comment-form" onSubmit={(event) => void submitComment(event)}><textarea required rows={3} maxLength={1000} value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Tulis komentar atau informasi tambahan..." /><button className="button button-primary" disabled={busy || !message.trim()}>{busy ? 'Mengirim...' : 'Kirim komentar'}</button></form>
-        <div className="comment-list">{comments.length ? comments.map((comment) => <article className="comment-card" key={comment.id}><div className="comment-avatar">{(comment.profiles?.full_name ?? '?').slice(0, 1).toUpperCase()}</div><div><div className="comment-meta"><strong>{comment.profiles?.full_name ?? 'Pengguna'}</strong><time>{new Date(comment.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</time></div><p>{comment.message}</p>{comment.photo_url && <a className="comment-evidence-link" href={comment.photo_url} target="_blank" rel="noreferrer"><img src={comment.photo_url} alt="Foto bukti tindak lanjut" />Lihat foto bukti</a>}</div></article>) : <p className="comments-empty">Belum ada komentar. Tambahkan informasi jika diperlukan.</p>}</div>
+        <div className="comment-list">{comments.length ? comments.map((comment) => <article className="comment-card" key={comment.id}><div className="comment-avatar">{(comment.profiles?.full_name ?? '?').slice(0, 1).toUpperCase()}</div><div><div className="comment-meta"><strong>{comment.profiles?.full_name ?? 'Pengguna'}</strong><time>{formatDateTime(comment.created_at)}</time></div><p>{comment.message}</p>{comment.photo_url && <a className="comment-evidence-link" href={comment.photo_url} target="_blank" rel="noreferrer"><img src={comment.photo_url} alt="Foto bukti tindak lanjut" />Lihat foto bukti</a>}</div></article>) : <p className="comments-empty">Belum ada komentar. Tambahkan informasi jika diperlukan.</p>}</div>
       </section>
     </section>
   )
