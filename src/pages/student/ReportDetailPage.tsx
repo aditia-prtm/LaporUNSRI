@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportComment } from '../../types/report'
 import { addReportComment, deleteReport, getReport, getReportComments, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { FiArrowLeft, FiHeart } from 'react-icons/fi'
 
 type ReportDetailPageProps = {
   profile: UserProfile
@@ -92,7 +93,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
 
   return (
     <section className="student-page detail-page">
-      <button className="text-link form-back" onClick={() => onNavigate('/mahasiswa/laporan')}><span aria-hidden="true">&#8592;</span> Semua laporan</button>
+      <button className="text-link form-back" onClick={() => onNavigate('/mahasiswa/laporan')}><FiArrowLeft aria-hidden="true" /> Semua laporan</button>
       {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
       <article className="report-detail-card">
         <div className="detail-topline"><span className={`status-pill status-${report.status}`}>{statusLabels[report.status]}</span><span>{report.categories?.name ?? 'Lainnya'}</span><time>{new Date(report.created_at).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' })}</time></div>
@@ -102,7 +103,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
         {report.photo_url && <img className="detail-photo" src={report.photo_url} alt={`Bukti foto untuk ${report.title}`} />}
         <div className="detail-description">{report.description}</div>
         <div className="detail-actions">
-          {!isOwner && <button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={busy} onClick={() => void handleVote()}><span aria-hidden="true">{report.voted_by_me ? '♥' : '♡'}</span> Saya juga mengalami <b>{report.vote_count}</b></button>}
+          {!isOwner && <button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={busy} onClick={() => void handleVote()}><FiHeart aria-hidden="true" /> Saya juga mengalami <b>{report.vote_count}</b></button>}
           {isOwner && <><button className="button button-outline" onClick={() => onNavigate(`/mahasiswa/laporan/${report.id}/edit`)}>Ubah laporan</button><button className="button button-danger" disabled={busy} onClick={() => void handleDelete()}>Hapus</button></>}
         </div>
       </article>

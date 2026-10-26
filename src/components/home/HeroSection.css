@@ -1,35 +1,14 @@
 /* Hero Section Styles - Inspired by Reference Design */
 
 .hero-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 680px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+  @apply [position:relative] [width:100%] [height:100vh] [min-height:680px] [overflow:hidden] [display:flex] [flex-direction:column] [justify-content:flex-start] [background:linear-gradient(180deg,_#031830_0%,_#052345_20%,_#08315c_40%,_#0c4278_62%,_#105292_82%,_#135da3_100%_)] [color:#ffffff] [font-family:'Plus_Jakarta_Sans',_'DM_Sans',_system-ui,_-apple-system,_sans-serif] [user-select:none];
   /* Deep cinematic sky gradient matching reference image */
-  background: linear-gradient(180deg, 
-    #031830 0%, 
-    #052345 20%, 
-    #08315c 40%, 
-    #0c4278 62%, 
-    #105292 82%, 
-    #135da3 100%
-  );
-  color: #ffffff;
-  font-family: 'Plus Jakarta Sans', 'DM Sans', system-ui, -apple-system, sans-serif;
-  user-select: none;
 }
 
 /* Atmospheric Horizon Radial Glow behind clouds */
 .hero-sky-glow {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse 95% 55% at 50% 55%, rgba(55, 155, 245, 0.32) 0%, rgba(5, 32, 62, 0) 75%);
-  z-index: 1;
+
+  @apply [position:absolute] [inset:0] [pointer-events:none] [background:radial-gradient(ellipse_95%_55%_at_50%_55%,_rgba(55,_155,_245,_0.32)_0%,_rgba(5,_32,_62,_0)_75%)] [z-index:1];
 }
 
 /* ========================================================
@@ -37,190 +16,398 @@
    Eliminates empty middle gap on tablet and mobile!
    ======================================================== */
 .hero-sky-zone {
-  position: relative;
-  z-index: 35;
-  width: 100%;
-  height: 48vh;
-  min-height: 280px;
-  display: flex;
-  flex-direction: column;
+
+  @apply [position:relative] [z-index:35] [width:100%] [height:48vh] [min-height:280px] [display:flex] [flex-direction:column];
 }
 
 @media (max-width: 1024px) {
   .hero-sky-zone {
-    height: 52vh;
-    min-height: 360px;
+
+    @apply [height:52vh] [min-height:360px];
   }
 }
 
 @media (max-width: 768px) {
   .hero-sky-zone {
-    height: 54vh;
-    min-height: 340px;
+
+    @apply [height:54vh] [min-height:340px];
   }
 }
 
 @media (max-width: 480px) {
   .hero-sky-zone {
-    height: 56vh;
-    min-height: 310px;
+
+    @apply [height:56vh] [min-height:310px];
   }
 }
 
 /* Header Navigation */
 .hero-header {
-  position: relative;
-  z-index: 40;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 24px 44px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+
+  @apply [position:relative] [z-index:40] [width:100%] [max-width:1440px] [margin:0_auto] [padding:24px_44px_0] [display:flex] [align-items:center] [justify-content:space-between];
 }
 
 @media (max-width: 768px) {
   .hero-header {
-    padding: 18px 20px 0;
+
+    @apply [padding:18px_20px_0];
   }
 }
 
 .hero-header-left {
-  flex: 1;
+
+  @apply [flex:1];
 }
 
 /* Centered Brand Logo matching reference */
 .hero-brand-logo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  @apply [display:flex] [flex-direction:column] [align-items:center] [text-decoration:none] [cursor:pointer] [transition:opacity_0.2s_ease,_transform_0.2s_ease];
 }
 
 .hero-brand-logo:hover {
-  opacity: 0.94;
-  transform: translateY(-1px);
+
+  @apply [opacity:0.94] [transform:translateY(-1px)];
 }
 
 .hero-brand-name {
-  display: flex;
-  align-items: baseline;
-  gap: 1px;
-  font-size: 25px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
-  color: #ffffff;
-  line-height: 1;
+
+  @apply [display:flex] [align-items:baseline] [gap:1px] [font-size:25px] [font-weight:700] [letter-spacing:-0.6px] [color:#ffffff] [line-height:1];
 }
 
 .hero-brand-light {
-  font-weight: 400;
-  color: #e6f1fb;
+
+  @apply [font-weight:400] [color:#e6f1fb];
 }
 
 .hero-brand-bold {
-  font-weight: 800;
-  color: #ffffff;
-  margin-left: 2px;
+
+  @apply [font-weight:800] [color:#ffffff] [margin-left:2px];
 }
 
 .hero-brand-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #60b6ff;
-  box-shadow: 0 0 10px #60b6ff;
-  margin-left: 3px;
-  transform: translateY(-5px);
+
+  @apply [display:inline-block] [width:6px] [height:6px] [border-radius:50%] [background:#60b6ff] [box-shadow:0_0_10px_#60b6ff] [margin-left:3px] [transform:translateY(-5px)];
 }
 
 .hero-brand-subtitle {
-  font-size: 8px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(220, 238, 255, 0.72);
-  margin-top: 5px;
+
+  @apply [font-size:8px] [font-weight:600] [letter-spacing:0.28em] [text-transform:uppercase] [color:rgba(220,_238,_255,_0.72)] [margin-top:5px];
 }
 
 /* Header Right Actions */
 .hero-header-right {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 16px;
+
+  @apply [flex:1] [display:flex] [align-items:center] [justify-content:flex-end] [gap:16px];
 }
 
 .hero-contact-button {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: 9999px;
-  padding: 8px 24px;
-  font-size: 13.5px;
-  font-weight: 600;
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  cursor: pointer;
-  transition: all 0.25s ease;
+
+  @apply [background:rgba(255,_255,_255,_0.12)] [color:#ffffff] [border:1px_solid_rgba(255,_255,_255,_0.28)] [border-radius:9999px] [padding:8px_24px] [font-size:13.5px] [font-weight:600] [backdrop-filter:blur(14px)] [-webkit-backdrop-filter:blur(14px)] [cursor:pointer] [transition:all_0.25s_ease];
 }
 
 .hero-contact-button:hover {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.48);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+
+  @apply [background:rgba(255,_255,_255,_0.24)] [border-color:rgba(255,_255,_255,_0.48)] [transform:translateY(-1px)] [box-shadow:0_6px_20px_rgba(0,_0,_0,_0.18)];
 }
 
 .hero-menu-toggle {
-  background: transparent;
-  border: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  padding: 0;
-  color: #ffffff;
-  transition: background 0.2s ease;
+
+  @apply [background:transparent] [border:0] [width:40px] [height:40px] [border-radius:50%] [display:flex] [flex-direction:column] [justify-content:center] [align-items:center] [gap:5px] [cursor:pointer] [padding:0] [color:#ffffff] [transition:background_0.2s_ease];
 }
 
 .hero-menu-toggle:hover {
-  background: rgba(255, 255, 255, 0.12);
+
+  @apply [background:rgba(255,_255,_255,_0.12)];
 }
 
 .hero-menu-toggle span {
-  display: block;
-  width: 22px;
-  height: 2px;
-  background: #ffffff;
-  border-radius: 2px;
+
+  @apply [display:block] [width:22px] [height:2px] [background:#ffffff] [border-radius:2px];
 }
 
 /* Minimal Dropdown Nav preview when hamburger is clicked */
 .hero-nav-dropdown {
-  position: absolute;
-  top: 72px;
-  right: 44px;
-  background: rgba(6, 30, 58, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 14px;
-  padding: 10px 8px;
-  min-width: 200px;
-  box-shadow: 0 16px 36px rgba(2, 16, 32, 0.45);
-  z-index: 50;
-  animation: fadeInDown 0.2s ease-out;
+
+  @apply [position:absolute] [top:72px] [right:44px] [background:rgba(6,_30,_58,_0.94)] [border:1px_solid_rgba(255,_255,_255,_0.18)] [backdrop-filter:blur(20px)] [-webkit-backdrop-filter:blur(20px)] [border-radius:14px] [padding:10px_8px] [min-width:200px] [box-shadow:0_16px_36px_rgba(2,_16,_32,_0.45)] [z-index:50] [animation:fadeInDown_0.2s_ease-out];
+}
+
+.hero-nav-dropdown a, 
+.hero-nav-dropdown button {
+
+  @apply [display:block] [width:100%] [text-align:left] [padding:10px_16px] [border:0] [background:transparent] [color:#e2effa] [font-size:13px] [font-weight:500] [border-radius:8px] [cursor:pointer] [text-decoration:none] [transition:background_0.15s_ease,_color_0.15s_ease];
+}
+
+.hero-nav-dropdown a:hover,
+.hero-nav-dropdown button:hover {
+
+  @apply [background:rgba(255,_255,_255,_0.12)] [color:#ffffff];
+}
+
+/* ========================================================
+   HERO CENTER CONTENT
+   - Uses flex: 1 to center vertically in the available sky zone
+   - Perfectly fills the middle space without empty gaps
+   ======================================================== */
+.hero-center-content {
+
+  @apply [flex:1] [display:flex] [flex-direction:column] [justify-content:center] [align-items:center] [width:100%] [max-width:880px] [margin:0_auto] [padding:10px_24px] [text-align:center];
+}
+
+@media (max-width: 768px) {
+  .hero-center-content {
+
+    @apply [padding:10px_18px];
+  }
+}
+
+.hero-title {
+
+  @apply [margin:0] [font-size:clamp(28px,_3.8vw,_48px)] [font-weight:700] [line-height:1.15] [letter-spacing:-0.025em] [color:#ffffff] [white-space:nowrap] [text-shadow:0_2px_24px_rgba(2,_16,_32,_0.5)];
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+
+    @apply [white-space:normal] [font-size:clamp(25px,_6.5vw,_32px)] [line-height:1.2];
+  }
+}
+
+/* The elegant italic serif accent word matching "journey" */
+.hero-serif-accent {
+
+  @apply [font-family:'Instrument_Serif',_'Playfair_Display',_Georgia,_serif] [font-style:italic] [font-weight:400] [color:#7fc3f8] [letter-spacing:0.015em] [padding-left:5px] [text-shadow:0_0_28px_rgba(127,_195,_248,_0.45)];
+}
+
+.hero-subtitle {
+
+  @apply [max-width:580px] [margin:14px_auto_0] [font-size:clamp(12.5px,_1.1vw,_14.5px)] [font-weight:400] [line-height:1.6] [color:rgba(226,_241,_255,_0.88)] [text-shadow:0_2px_14px_rgba(2,_14,_28,_0.6)];
+}
+
+@media (max-width: 640px) {
+  .hero-subtitle {
+
+    @apply [font-size:clamp(11.5px,_3.2vw,_13px)] [margin-top:10px] [line-height:1.52] [max-width:380px];
+  }
+}
+
+/* ========================================================
+   INFINITE SEAMLESS CLOUDS (BEHIND KAMPUS UNSRI)
+   - Inset: 0 with ultra-soft gradient mask to eliminate any straight edge / pembatas!
+   - DENSELY PACKED (RAPAT): Zero gaps, heavy horizontal overlap
+   - Seamless continuous loop drifting to the RIGHT
+   ======================================================== */
+
+.hero-clouds-container {
+  @apply [position:absolute] [inset:0] [width:100%] [height:100%] [pointer-events:none] [overflow:hidden] [z-index:10] [-webkit-mask-image:linear-gradient(180deg,_rgba(0,_0,_0,_0)_0%,_rgba(0,_0,_0,_0)_20%,_rgba(0,_0,_0,_0.25)_34%,_rgba(0,_0,_0,_0.7)_46%,_rgba(0,_0,_0,_1)_58%,_rgba(0,_0,_0,_1)_100%_)] [mask-image:linear-gradient(180deg,_rgba(0,_0,_0,_0)_0%,_rgba(0,_0,_0,_0)_20%,_rgba(0,_0,_0,_0.25)_34%,_rgba(0,_0,_0,_0.7)_46%,_rgba(0,_0,_0,_1)_58%,_rgba(0,_0,_0,_1)_100%_)];
+  /* Soft organic gradient mask so clouds dissolve smoothly into the sky with NO hard edge */
+}
+
+/* Cloud Band 1: Upper / Atmospheric Clouds behind roofline */
+.cloud-band-upper {
+
+  @apply [position:absolute] [bottom:80px] [left:0] [width:100%] [height:100%] [z-index:11] [opacity:0.85];
+}
+
+/* Cloud Band 2: Mid / Horizon Volume (Dense unbroken cloud blanket) */
+.cloud-band-lower {
+
+  @apply [position:absolute] [bottom:0px] [left:0] [width:100%] [height:100%] [z-index:15] [opacity:0.95];
+}
+
+/* Continuous infinite track moving to the RIGHT */
+.cloud-track-slow {
+
+  @apply [display:flex] [height:100%] [width:max-content] [will-change:transform] [animation:driftRightSeamless_95s_linear_infinite];
+}
+
+.cloud-track-fast {
+
+  @apply [display:flex] [height:100%] [width:max-content] [will-change:transform] [animation:driftRightSeamless_65s_linear_infinite];
+}
+
+.cloud-set {
+  @apply [display:flex] [align-items:flex-end] [position:relative] [width:3600px] [height:100%] [flex-shrink:0];
+  /* Width of 3600px with clouds packed tightly every 380-450px */
+}
+
+/* Cloud elements with controlled natural scaling */
+.cloud-img {
+
+  @apply [position:absolute] [user-select:none] [pointer-events:none] [object-fit:contain];
+}
+
+/* ========================================================
+   UPPER BAND: Densely packed overlapping billows
+   ======================================================== */
+.c-up-1 {
+
+  @apply [left:-100px] [bottom:110px] [height:310px] [width:auto] [opacity:0.82];
+}
+
+.c-up-2 {
+
+  @apply [left:360px] [bottom:130px] [height:330px] [width:auto] [opacity:0.80];
+}
+
+.c-up-3 {
+
+  @apply [left:820px] [bottom:105px] [height:320px] [width:auto] [opacity:0.84];
+}
+
+.c-up-4 {
+
+  @apply [left:1280px] [bottom:125px] [height:310px] [width:auto] [opacity:0.78];
+}
+
+.c-up-5 {
+
+  @apply [left:1740px] [bottom:110px] [height:330px] [width:auto] [opacity:0.82];
+}
+
+.c-up-6 {
+
+  @apply [left:2200px] [bottom:135px] [height:340px] [width:auto] [opacity:0.80];
+}
+
+.c-up-7 {
+
+  @apply [left:2660px] [bottom:105px] [height:310px] [width:auto] [opacity:0.78];
+}
+
+.c-up-8 {
+
+  @apply [left:3120px] [bottom:120px] [height:320px] [width:auto] [opacity:0.84];
+}
+
+/* ========================================================
+   LOWER BAND: Ultra-dense horizon blanket (Zero gaps)
+   ======================================================== */
+.c-low-1 {
+
+  @apply [left:-120px] [bottom:35px] [height:330px] [width:auto] [opacity:0.92];
+}
+
+.c-low-2 {
+
+  @apply [left:320px] [bottom:45px] [height:320px] [width:auto] [opacity:0.88];
+}
+
+.c-low-3 {
+
+  @apply [left:760px] [bottom:30px] [height:340px] [width:auto] [opacity:0.94];
+}
+
+.c-low-4 {
+
+  @apply [left:1200px] [bottom:50px] [height:330px] [width:auto] [opacity:0.90];
+}
+
+.c-low-5 {
+
+  @apply [left:1640px] [bottom:35px] [height:310px] [width:auto] [opacity:0.88];
+}
+
+.c-low-6 {
+
+  @apply [left:2060px] [bottom:45px] [height:340px] [width:auto] [opacity:0.92];
+}
+
+.c-low-7 {
+
+  @apply [left:2500px] [bottom:30px] [height:350px] [width:auto] [opacity:0.94];
+}
+
+.c-low-8 {
+
+  @apply [left:2940px] [bottom:45px] [height:330px] [width:auto] [opacity:0.90];
+}
+
+.c-low-9 {
+
+  @apply [left:3360px] [bottom:35px] [height:320px] [width:auto] [opacity:0.92];
+}
+
+/* ========================================================
+   KAMPUS UNSRI TRANSPARENT FOREGROUND
+   - Full width edge-to-edge as requested: "lebar kampus di full kan aja"
+   - Height auto menyesuaikan
+   - Responsive across Desktop, Tablet, and Mobile
+   - Z-index 30: Strictly in front of all clouds
+   - No objects in front of Kampus Unsri
+   ======================================================== */
+
+.hero-campus-stage {
+
+  @apply [position:absolute] [bottom:0] [left:0] [right:0] [width:100%] [z-index:30] [display:flex] [justify-content:center] [align-items:flex-end] [pointer-events:none] [overflow:hidden];
+}
+
+.hero-campus-img {
+
+  @apply [display:block] [width:100%] [min-width:100%] [max-width:none] [height:auto] [object-fit:cover] [object-position:bottom_center] [filter:drop-shadow(0_-6px_35px_rgba(2,_18,_38,_0.45))] [will-change:transform];
+}
+
+/* Responsive adjustment for Tablets & Mobile */
+@media (max-width: 1024px) {
+  .hero-campus-stage {
+
+    @apply [max-height:50vh];
+  }
+  .hero-campus-img {
+
+    @apply [width:110%] [min-width:900px];
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+
+    @apply [min-height:600px];
+  }
+  .hero-campus-stage {
+
+    @apply [max-height:46vh];
+  }
+  .hero-campus-img {
+
+    @apply [width:auto] [min-width:820px] [height:44vh] [object-position:48%_bottom];
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-campus-stage {
+
+    @apply [max-height:42vh];
+  }
+  .hero-campus-img {
+
+    @apply [width:auto] [min-width:680px] [height:40vh] [object-position:47%_bottom];
+  }
+}
+
+/* ========================================================
+   BOTTOM SCROLL DOWN INDICATOR
+   - Matches the subtle circular arrow in reference image
+   ======================================================== */
+
+.hero-bottom-bar {
+
+  @apply [position:absolute] [bottom:12px] [left:0] [right:0] [z-index:35] [width:100%] [display:flex] [justify-content:center] [align-items:center] [pointer-events:none];
+}
+
+.hero-scroll-indicator {
+
+  @apply [pointer-events:auto] [width:32px] [height:32px] [border-radius:50%] [background:rgba(255,_255,_255,_0.16)] [border:1px_solid_rgba(255,_255,_255,_0.35)] [backdrop-filter:blur(12px)] [-webkit-backdrop-filter:blur(12px)] [display:flex] [align-items:center] [justify-content:center] [color:#ffffff] [cursor:pointer] [transition:all_0.25s_ease] [box-shadow:0_4px_14px_rgba(0,_0,_0,_0.25)];
+}
+
+.hero-scroll-indicator:hover {
+
+  @apply [background:rgba(255,_255,_255,_0.32)] [transform:translateY(2px)] [box-shadow:0_6px_18px_rgba(0,_0,_0,_0.3)];
+}
+
+.hero-scroll-arrow {
+
+  @apply [width:14px] [height:14px] [stroke-width:2.2] [animation:bounceSubtle_2.2s_infinite_ease-in-out];
 }
 
 @keyframes fadeInDown {
@@ -234,175 +421,6 @@
   }
 }
 
-.hero-nav-dropdown a, 
-.hero-nav-dropdown button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px 16px;
-  border: 0;
-  background: transparent;
-  color: #e2effa;
-  font-size: 13px;
-  font-weight: 500;
-  border-radius: 8px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-.hero-nav-dropdown a:hover,
-.hero-nav-dropdown button:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-/* ========================================================
-   HERO CENTER CONTENT
-   - Uses flex: 1 to center vertically in the available sky zone
-   - Perfectly fills the middle space without empty gaps
-   ======================================================== */
-.hero-center-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  max-width: 880px;
-  margin: 0 auto;
-  padding: 10px 24px;
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .hero-center-content {
-    padding: 10px 18px;
-  }
-}
-
-.hero-title {
-  margin: 0;
-  font-size: clamp(28px, 3.8vw, 48px);
-  font-weight: 700;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  color: #ffffff;
-  white-space: nowrap;
-  text-shadow: 0 2px 24px rgba(2, 16, 32, 0.5);
-}
-
-@media (max-width: 640px) {
-  .hero-title {
-    white-space: normal;
-    font-size: clamp(25px, 6.5vw, 32px);
-    line-height: 1.2;
-  }
-}
-
-/* The elegant italic serif accent word matching "journey" */
-.hero-serif-accent {
-  font-family: 'Instrument Serif', 'Playfair Display', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  color: #7fc3f8;
-  letter-spacing: 0.015em;
-  padding-left: 5px;
-  text-shadow: 0 0 28px rgba(127, 195, 248, 0.45);
-}
-
-.hero-subtitle {
-  max-width: 580px;
-  margin: 14px auto 0;
-  font-size: clamp(12.5px, 1.1vw, 14.5px);
-  font-weight: 400;
-  line-height: 1.6;
-  color: rgba(226, 241, 255, 0.88);
-  text-shadow: 0 2px 14px rgba(2, 14, 28, 0.6);
-}
-
-@media (max-width: 640px) {
-  .hero-subtitle {
-    font-size: clamp(11.5px, 3.2vw, 13px);
-    margin-top: 10px;
-    line-height: 1.52;
-    max-width: 380px;
-  }
-}
-
-/* ========================================================
-   INFINITE SEAMLESS CLOUDS (BEHIND KAMPUS UNSRI)
-   - Inset: 0 with ultra-soft gradient mask to eliminate any straight edge / pembatas!
-   - DENSELY PACKED (RAPAT): Zero gaps, heavy horizontal overlap
-   - Seamless continuous loop drifting to the RIGHT
-   ======================================================== */
-
-.hero-clouds-container {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 10;
-  /* Soft organic gradient mask so clouds dissolve smoothly into the sky with NO hard edge */
-  -webkit-mask-image: linear-gradient(180deg, 
-    rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0) 20%, 
-    rgba(0, 0, 0, 0.25) 34%, 
-    rgba(0, 0, 0, 0.7) 46%, 
-    rgba(0, 0, 0, 1) 58%, 
-    rgba(0, 0, 0, 1) 100%
-  );
-  mask-image: linear-gradient(180deg, 
-    rgba(0, 0, 0, 0) 0%, 
-    rgba(0, 0, 0, 0) 20%, 
-    rgba(0, 0, 0, 0.25) 34%, 
-    rgba(0, 0, 0, 0.7) 46%, 
-    rgba(0, 0, 0, 1) 58%, 
-    rgba(0, 0, 0, 1) 100%
-  );
-}
-
-/* Cloud Band 1: Upper / Atmospheric Clouds behind roofline */
-.cloud-band-upper {
-  position: absolute;
-  bottom: 80px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 11;
-  opacity: 0.85;
-}
-
-/* Cloud Band 2: Mid / Horizon Volume (Dense unbroken cloud blanket) */
-.cloud-band-lower {
-  position: absolute;
-  bottom: 0px;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 15;
-  opacity: 0.95;
-}
-
-/* Continuous infinite track moving to the RIGHT */
-.cloud-track-slow {
-  display: flex;
-  height: 100%;
-  width: max-content;
-  will-change: transform;
-  animation: driftRightSeamless 95s linear infinite;
-}
-
-.cloud-track-fast {
-  display: flex;
-  height: 100%;
-  width: max-content;
-  will-change: transform;
-  animation: driftRightSeamless 65s linear infinite;
-}
-
 @keyframes driftRightSeamless {
   0% {
     transform: translate3d(-50%, 0, 0);
@@ -410,288 +428,6 @@
   100% {
     transform: translate3d(0%, 0, 0);
   }
-}
-
-.cloud-set {
-  display: flex;
-  align-items: flex-end;
-  position: relative;
-  /* Width of 3600px with clouds packed tightly every 380-450px */
-  width: 3600px;
-  height: 100%;
-  flex-shrink: 0;
-}
-
-/* Cloud elements with controlled natural scaling */
-.cloud-img {
-  position: absolute;
-  user-select: none;
-  pointer-events: none;
-  object-fit: contain;
-}
-
-/* ========================================================
-   UPPER BAND: Densely packed overlapping billows
-   ======================================================== */
-.c-up-1 {
-  left: -100px;
-  bottom: 110px;
-  height: 310px;
-  width: auto;
-  opacity: 0.82;
-}
-
-.c-up-2 {
-  left: 360px;
-  bottom: 130px;
-  height: 330px;
-  width: auto;
-  opacity: 0.80;
-}
-
-.c-up-3 {
-  left: 820px;
-  bottom: 105px;
-  height: 320px;
-  width: auto;
-  opacity: 0.84;
-}
-
-.c-up-4 {
-  left: 1280px;
-  bottom: 125px;
-  height: 310px;
-  width: auto;
-  opacity: 0.78;
-}
-
-.c-up-5 {
-  left: 1740px;
-  bottom: 110px;
-  height: 330px;
-  width: auto;
-  opacity: 0.82;
-}
-
-.c-up-6 {
-  left: 2200px;
-  bottom: 135px;
-  height: 340px;
-  width: auto;
-  opacity: 0.80;
-}
-
-.c-up-7 {
-  left: 2660px;
-  bottom: 105px;
-  height: 310px;
-  width: auto;
-  opacity: 0.78;
-}
-
-.c-up-8 {
-  left: 3120px;
-  bottom: 120px;
-  height: 320px;
-  width: auto;
-  opacity: 0.84;
-}
-
-/* ========================================================
-   LOWER BAND: Ultra-dense horizon blanket (Zero gaps)
-   ======================================================== */
-.c-low-1 {
-  left: -120px;
-  bottom: 35px;
-  height: 330px;
-  width: auto;
-  opacity: 0.92;
-}
-
-.c-low-2 {
-  left: 320px;
-  bottom: 45px;
-  height: 320px;
-  width: auto;
-  opacity: 0.88;
-}
-
-.c-low-3 {
-  left: 760px;
-  bottom: 30px;
-  height: 340px;
-  width: auto;
-  opacity: 0.94;
-}
-
-.c-low-4 {
-  left: 1200px;
-  bottom: 50px;
-  height: 330px;
-  width: auto;
-  opacity: 0.90;
-}
-
-.c-low-5 {
-  left: 1640px;
-  bottom: 35px;
-  height: 310px;
-  width: auto;
-  opacity: 0.88;
-}
-
-.c-low-6 {
-  left: 2060px;
-  bottom: 45px;
-  height: 340px;
-  width: auto;
-  opacity: 0.92;
-}
-
-.c-low-7 {
-  left: 2500px;
-  bottom: 30px;
-  height: 350px;
-  width: auto;
-  opacity: 0.94;
-}
-
-.c-low-8 {
-  left: 2940px;
-  bottom: 45px;
-  height: 330px;
-  width: auto;
-  opacity: 0.90;
-}
-
-.c-low-9 {
-  left: 3360px;
-  bottom: 35px;
-  height: 320px;
-  width: auto;
-  opacity: 0.92;
-}
-
-/* ========================================================
-   KAMPUS UNSRI TRANSPARENT FOREGROUND
-   - Full width edge-to-edge as requested: "lebar kampus di full kan aja"
-   - Height auto menyesuaikan
-   - Responsive across Desktop, Tablet, and Mobile
-   - Z-index 30: Strictly in front of all clouds
-   - No objects in front of Kampus Unsri
-   ======================================================== */
-
-.hero-campus-stage {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  z-index: 30;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.hero-campus-img {
-  display: block;
-  width: 100%;
-  min-width: 100%;
-  max-width: none;
-  height: auto;
-  object-fit: cover;
-  object-position: bottom center;
-  filter: drop-shadow(0 -6px 35px rgba(2, 18, 38, 0.45));
-  will-change: transform;
-}
-
-/* Responsive adjustment for Tablets & Mobile */
-@media (max-width: 1024px) {
-  .hero-campus-stage {
-    max-height: 50vh;
-  }
-  .hero-campus-img {
-    width: 110%;
-    min-width: 900px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero-container {
-    min-height: 600px;
-  }
-  .hero-campus-stage {
-    max-height: 46vh;
-  }
-  .hero-campus-img {
-    width: auto;
-    min-width: 820px;
-    height: 44vh;
-    object-position: 48% bottom;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-campus-stage {
-    max-height: 42vh;
-  }
-  .hero-campus-img {
-    width: auto;
-    min-width: 680px;
-    height: 40vh;
-    object-position: 47% bottom;
-  }
-}
-
-/* ========================================================
-   BOTTOM SCROLL DOWN INDICATOR
-   - Matches the subtle circular arrow in reference image
-   ======================================================== */
-
-.hero-bottom-bar {
-  position: absolute;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  z-index: 35;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-
-.hero-scroll-indicator {
-  pointer-events: auto;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-}
-
-.hero-scroll-indicator:hover {
-  background: rgba(255, 255, 255, 0.32);
-  transform: translateY(2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-}
-
-.hero-scroll-arrow {
-  width: 14px;
-  height: 14px;
-  stroke-width: 2.2;
-  animation: bounceSubtle 2.2s infinite ease-in-out;
 }
 
 @keyframes bounceSubtle {

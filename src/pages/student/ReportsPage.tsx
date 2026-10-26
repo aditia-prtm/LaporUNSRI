@@ -3,6 +3,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { getCategories, getReports, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { FiHeart, FiSearch } from 'react-icons/fi'
 
 type ReportsPageProps = {
   profile: UserProfile
@@ -90,7 +91,7 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
       </div>
 
       {loading ? <div className="student-empty">Memuat laporan...</div> : visibleReports.length === 0 ? (
-        <div className="student-empty"><div className="empty-symbol">⌕</div><h2>{reports.length ? 'Tidak ada laporan yang cocok' : 'Belum ada laporan'}</h2><p>{reports.length ? 'Coba ubah pencarian atau filter Anda.' : mineOnly ? 'Laporan yang Anda buat akan tampil di sini.' : 'Jadilah yang pertama melaporkan fasilitas yang perlu diperbaiki.'}</p>{!mineOnly && !reports.length && <button className="button button-primary" onClick={() => onNavigate('/mahasiswa/laporan/baru')}>Buat laporan pertama</button>}</div>
+        <div className="student-empty"><div className="empty-symbol"><FiSearch aria-hidden="true" /></div><h2>{reports.length ? 'Tidak ada laporan yang cocok' : 'Belum ada laporan'}</h2><p>{reports.length ? 'Coba ubah pencarian atau filter Anda.' : mineOnly ? 'Laporan yang Anda buat akan tampil di sini.' : 'Jadilah yang pertama melaporkan fasilitas yang perlu diperbaiki.'}</p>{!mineOnly && !reports.length && <button className="button button-primary" onClick={() => onNavigate('/mahasiswa/laporan/baru')}>Buat laporan pertama</button>}</div>
       ) : <div className="reports-list">
         {visibleReports.map((report) => <article className="report-list-card" key={report.id}>
           <div className="report-card-main">
@@ -98,7 +99,7 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
             <h2><button className="report-title-link" onClick={() => onNavigate(`/mahasiswa/laporan/${report.id}`)}>{report.title}</button></h2>
             <p>{report.description}</p>
             <div className="report-location">{report.faculty} <span>·</span> {report.building}{report.room ? ` · ${report.room}` : ''}</div>
-            <div className="report-card-footer"><span>Oleh {report.profiles?.full_name ?? 'Mahasiswa'}</span><button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={mineOnly || report.user_id === profile.id || votingId === report.id} onClick={() => void handleVote(report)} title={report.user_id === profile.id ? 'Tidak dapat mendukung laporan sendiri' : 'Saya juga mengalami'}><span aria-hidden="true">{report.voted_by_me ? '♥' : '♡'}</span> Saya juga mengalami <b>{report.vote_count}</b></button></div>
+            <div className="report-card-footer"><span>Oleh {report.profiles?.full_name ?? 'Mahasiswa'}</span><button className={report.voted_by_me ? 'vote-button is-voted' : 'vote-button'} disabled={mineOnly || report.user_id === profile.id || votingId === report.id} onClick={() => void handleVote(report)} title={report.user_id === profile.id ? 'Tidak dapat mendukung laporan sendiri' : 'Saya juga mengalami'}><FiHeart aria-hidden="true" /> Saya juga mengalami <b>{report.vote_count}</b></button></div>
           </div>
           {report.photo_url && <img className="report-thumbnail" src={report.photo_url} alt={`Foto laporan: ${report.title}`} />}
         </article>)}

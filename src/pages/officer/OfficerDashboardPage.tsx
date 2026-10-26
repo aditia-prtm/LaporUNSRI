@@ -5,7 +5,6 @@ import type { Report, ReportStatus } from '../../types/report'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
 import '../../components/layout/officer.css'
-
 type Props = { profile: UserProfile; onSignOut: () => void }
 
 const labels: Record<ReportStatus, string> = {
@@ -81,7 +80,7 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
   const doneCount = reports.filter((report) => report.status === 'selesai').length
 
   return (
-    <main className="officer-shell">
+    <main className="admin-shell">
       <header className="officer-topbar"><a className="brand" href="/"><span className="brand-mark">L</span><span>Lapor<span className="brand-accent">Unsri</span></span></a><div className="officer-account"><span>{profile.full_name}<small>Petugas fasilitas</small></span><button className="button button-outline" onClick={onSignOut}>Keluar</button></div></header>
       <section className="officer-content">
         <div className="student-welcome"><div><span className="eyebrow">RUANG KERJA PETUGAS</span><h1>Halo, {profile.full_name}</h1><p>Tinjau laporan dan catat tindak lanjut dengan bukti foto.</p></div></div>
@@ -92,7 +91,7 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
           <article className="summary-card"><span className="summary-label">Selesai</span><strong>{loading ? '—' : doneCount}</strong><small>Laporan sudah ditangani</small></article>
         </div>
         <div className="officer-list-heading"><div><h2>Daftar laporan</h2><p>{visibleReports.length} laporan ditampilkan</p></div><div className="officer-filters"><input aria-label="Cari laporan" placeholder="Cari laporan atau lokasi..." value={search} onChange={(event) => setSearch(event.target.value)} /><select aria-label="Filter status" value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Semua status</option>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div></div>
-        {loading ? <div className="student-empty">Memuat laporan...</div> : visibleReports.length === 0 ? <div className="student-empty"><h2>Tidak ada laporan</h2><p>Coba ubah pencarian atau filter status.</p></div> : <div className="officer-report-list">
+        {loading ? <div className="student-empty">Memuat laporan...</div> : visibleReports.length === 0 ? <div className="student-empty"><h2>Tidak ada laporan</h2><p>Coba ubah pencarian atau filter status.</p></div> : <div className="admin-dashboard-list">
           {visibleReports.map((report) => {
             const draft = drafts[report.id] ?? { status: report.status, message: '', file: null }
             return <article className="officer-report-card" key={report.id}>

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import type { UserProfile } from '../../types/auth'
 import { Brand } from '../common/Brand'
 import '../../pages/student/student.css'
-
+import { FiClock, FiFileText, FiHome } from 'react-icons/fi'
 type StudentLayoutProps = {
   profile: UserProfile
   active: 'dashboard' | 'reports' | 'mine'
@@ -26,7 +26,7 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
         <nav className="student-nav" aria-label="Navigasi mahasiswa">
           {navItems.map((item) => (
             <button key={item.id} className={active === item.id ? 'student-nav-link is-active' : 'student-nav-link'} onClick={() => onNavigate(item.path)}>
-              <span className="nav-marker" aria-hidden="true">{item.id === 'dashboard' ? '⌂' : item.id === 'reports' ? '▤' : '◷'}</span>
+              <span className="nav-marker" aria-hidden="true">{item.id === 'dashboard' ? <FiHome /> : item.id === 'reports' ? <FiFileText /> : <FiClock />}</span>
               {item.label}
             </button>
           ))}

@@ -3,6 +3,9 @@ import type { FormEvent } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import '../../components/layout/admin.css'
+import '../../components/layout/officer.css'
+import '../../pages/student/student.css'
 import {
   createCategory,
   deleteCategory,
@@ -12,10 +15,6 @@ import {
   updateReportStatusWithEvidence,
   uploadReportPhoto,
 } from '../../services/reportService'
-import '../../components/layout/admin.css'
-import '../../components/layout/officer.css'
-import '../../pages/student/student.css'
-
 type Props = { profile: UserProfile; onSignOut: () => void; onNavigate: (path: string) => void; section: string }
 type Draft = { status: ReportStatus; message: string; file: File | null }
 
@@ -182,7 +181,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
             {activeSection === 'dashboard' && <div className="summary-grid"><article className="summary-card"><span className="summary-label">Total laporan</span><strong>{loading ? '—' : reports.length}</strong><small>Seluruh laporan masuk</small></article><article className="summary-card"><span className="summary-label">Belum diproses</span><strong>{loading ? '—' : openCount}</strong><small>Menunggu tindak lanjut</small></article><article className="summary-card"><span className="summary-label">Sedang diproses</span><strong>{loading ? '—' : progressCount}</strong><small>Dalam penanganan</small></article><article className="summary-card"><span className="summary-label">Selesai</span><strong>{loading ? '—' : doneCount}</strong><small>Sudah ditangani</small></article><article className="summary-card admin-escalation-card"><span className="summary-label">Perlu eskalasi</span><strong>{loading ? '—' : overdueReports.length}</strong><small>Belum diproses ≥ {overdueAfterDays} hari</small></article></div>}
             {activeSection !== 'dashboard' && <div className="officer-list-heading"><div><h2>{activeSection === 'terlambat' ? 'Daftar laporan terlambat' : 'Daftar seluruh laporan'}</h2><p>{visibleReports.length} laporan ditampilkan</p></div><div className="officer-filters"><input aria-label="Cari laporan" placeholder="Cari laporan atau lokasi..." value={search} onChange={(event) => setSearch(event.target.value)} /><select aria-label="Filter status" value={status} onChange={(event) => setStatus(event.target.value)}><option value="">Semua status</option>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div></div>}
             {activeSection === 'dashboard' && <div className="admin-dashboard-list"><div className="student-section-heading"><div><h2>Laporan terbaru</h2><p>Periksa laporan yang baru masuk.</p></div><button className="text-link" onClick={() => onNavigate('/admin/laporan')}>Lihat semua →</button></div></div>}
-            {loading ? <div className="student-empty">Memuat laporan...</div> : visibleReports.length === 0 ? <div className="student-empty"><h2>{activeSection === 'terlambat' ? 'Tidak ada laporan yang perlu dieskalasi' : 'Belum ada laporan'}</h2><p>Laporan yang cocok akan muncul di sini.</p></div> : <div className="officer-report-list">{(activeSection === 'dashboard' ? visibleReports.slice(0, 5) : visibleReports).map((report) => {
+            {loading ? <div className="student-empty">Memuat laporan...</div> : visibleReports.length === 0 ? <div className="student-empty"><h2>{activeSection === 'terlambat' ? 'Tidak ada laporan yang perlu dieskalasi' : 'Belum ada laporan'}</h2><p>Laporan yang cocok akan muncul di sini.</p></div> : <div className="admin-dashboard-list">{(activeSection === 'dashboard' ? visibleReports.slice(0, 5) : visibleReports).map((report) => {
               const draft = drafts[report.id] ?? { status: report.status, message: '', file: null }
               const ageInDays = Math.floor((Date.now() - Date.parse(report.created_at)) / (24 * 60 * 60 * 1000))
               return <article className="officer-report-card" key={report.id}><div className="officer-report-overview"><div className="report-card-meta"><span className={`status-pill status-${report.status}`}>{statusLabels[report.status]}</span><span>{report.categories?.name ?? 'Lainnya'}</span><time>{new Date(report.created_at).toLocaleDateString('id-ID', { dateStyle: 'medium' })}</time>{isOverdue(report) && <b className="admin-overdue-tag">Terlambat {ageInDays} hari</b>}</div><h3>{report.title}</h3><p>{report.description}</p><div className="report-location">{report.faculty} · {report.building}{report.room ? ` · ${report.room}` : ''}</div><small className="officer-reporter">Pelapor: {report.profiles?.full_name ?? 'Mahasiswa'} · Dukungan {report.vote_count}</small>{report.photo_url && <a className="officer-evidence-link" href={report.photo_url} target="_blank" rel="noreferrer">Lihat foto laporan</a>}</div><form className="officer-update-form" onSubmit={(event) => void saveFollowUp(event, report)}><strong>Catatan dan status</strong><select aria-label={`Status baru untuk ${report.title}`} value={draft.status} onChange={(event) => setDraft(report, { status: event.target.value as ReportStatus })}>{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><textarea required maxLength={1000} rows={3} placeholder="Tulis tindak lanjut untuk pelapor..." value={draft.message} onChange={(event) => setDraft(report, { message: event.target.value })} /><label className="officer-file-label">Foto bukti (opsional)<input type="file" accept="image/*" onChange={(event) => setDraft(report, { file: event.target.files?.[0] ?? null })} /></label><button className="button button-primary" disabled={busyId === report.id}>{busyId === report.id ? 'Menyimpan...' : 'Simpan tindak lanjut'}</button></form></article>
