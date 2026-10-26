@@ -46,7 +46,7 @@ const steps = [
 
 export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProps) {
   return (
-    <section className="relative px-6 py-20 sm:px-10 lg:px-16" aria-label="Alur Pelaporan LaporUNSRI">
+    <section id="steps-section" className="relative px-6 py-20 sm:px-10 lg:px-16" aria-label="Alur Pelaporan LaporUNSRI">
       <div className="mx-auto max-w-[1280px]">
         {/* Section Header */}
         <div className="mx-auto max-w-[760px] text-center">
@@ -66,7 +66,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.65, delay: 0.08 }}
-            className="mt-4 font-['Plus_Jakarta_Sans',sans-serif] text-[clamp(26px,3.2vw,42px)] font-bold leading-[1.2] tracking-tight text-white"
+            className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(26px,3.2vw,42px)] font-bold leading-[1.2] tracking-tight text-white"
           >
             Bagaimana aspirasi Anda{' '}
             <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
@@ -105,7 +105,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                 <div>
                   {/* Top Bar with Number and Tag */}
                   <div className="flex items-center justify-between">
-                    <span className="font-['Manrope',sans-serif] text-xs font-extrabold tracking-widest text-[#60b6ff]/80">
+                    <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs font-extrabold tracking-widest text-[#60b6ff]/80">
                       {item.number}
                     </span>
                     <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold text-[#8fc3ee]">
@@ -119,7 +119,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                   </div>
 
                   {/* Title & Description */}
-                  <h3 className="mt-4 font-['Plus_Jakarta_Sans',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
+                  <h3 className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
                     {item.title}
                   </h3>
                   <p className="mt-2 text-xs leading-[1.65] text-[#97b8d4]">
@@ -146,7 +146,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
           className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-5 rounded-2xl border border-white/15 bg-gradient-to-r from-[#0a3560]/70 via-[#072545]/60 to-[#0c4278]/50 p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-black/25"
         >
           <div className="text-center sm:text-left">
-            <h4 className="font-['Plus_Jakarta_Sans',sans-serif] text-base sm:text-lg font-bold text-white">
+            <h4 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-base sm:text-lg font-bold text-white">
               Menemukan fasilitas kampus yang perlu diperbaiki?
             </h4>
             <p className="mt-1 text-xs text-[#a4c1db]">

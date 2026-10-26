@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useLenis } from 'lenis/react'
 import { HeroSection } from '../../components/home/HeroSection'
+import { AboutSection } from '../../components/home/AboutSection'
 import { ReportingFlowSection } from '../../components/home/ReportingFlowSection'
 import { FaqSection } from '../../components/home/FaqSection'
 import { LandingFooter } from '../../components/home/LandingFooter'
@@ -17,19 +18,25 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
   const heroScale = useTransform(scrollY, [0, 650], [1, 0.94])
   const heroY = useTransform(scrollY, [0, 650], [0, 90])
 
-  const scrollToSteps = () => {
-    const target = document.getElementById('steps-section') ?? window.innerHeight
+  const scrollToAbout = () => {
+    const target = document.getElementById('about-section')
     const activeLenis = lenis || (typeof window !== 'undefined' ? (window as unknown as { lenis?: typeof lenis }).lenis : undefined)
 
-    if (activeLenis) {
-      activeLenis.scrollTo(target, { offset: 0, duration: 1.2 })
-    } else {
-      const el = document.getElementById('steps-section')
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
-      } else {
-        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
-      }
+    if (activeLenis && target) {
+      activeLenis.scrollTo(target, { offset: -40, duration: 1.2 })
+    } else if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const scrollToSteps = () => {
+    const target = document.getElementById('steps-section')
+    const activeLenis = lenis || (typeof window !== 'undefined' ? (window as unknown as { lenis?: typeof lenis }).lenis : undefined)
+
+    if (activeLenis && target) {
+      activeLenis.scrollTo(target, { offset: -60, duration: 1.2 })
+    } else if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -54,11 +61,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#020b17] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,sans-serif] text-white">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#020b17] font-['Outfit','Montserrat','Poppins',system-ui,sans-serif] text-white">
       {/* Top Floating Glassmorphic Navbar */}
       <LandingNavbar
         onNavigate={onNavigate}
-        onScrollDown={scrollToSteps}
+        onScrollDown={scrollToAbout}
+        onScrollToAbout={scrollToAbout}
         onScrollToFaq={scrollToFaq}
       />
 
@@ -67,12 +75,12 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
         className="sticky top-0 h-screen h-[100dvh] min-h-[680px] w-full z-10 overflow-hidden origin-center will-change-transform"
       >
-        <HeroSection onScrollDown={scrollToSteps} />
+        <HeroSection onScrollDown={scrollToAbout} />
       </motion.div>
 
       {/* Rising Parallax Content Container (Overlaps the Hero with dramatic top shadow) */}
       <div
-        id="steps-section"
+        id="content-container"
         className="relative z-20 w-full rounded-t-[36px] sm:rounded-t-[48px] md:rounded-t-[56px] bg-gradient-to-b from-[#051d38] via-[#04162a] to-[#020b17] shadow-[0_-30px_90px_rgba(0,0,0,0.95),0_-10px_35px_rgba(2,16,32,0.85)] border-t border-white/15"
       >
         {/* Ambient Top Glow Accent Line */}
@@ -81,16 +89,23 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
           aria-hidden="true"
         />
 
-        {/* Section 1: Alur Pelaporan */}
+        {/* Section 1: Tentang LaporUNSRI */}
+        <AboutSection
+          onLearnMore={scrollToSteps}
+          onStartReport={() => onNavigate('/auth')}
+        />
+
+        {/* Section 2: Alur Pelaporan */}
         <ReportingFlowSection onStartReport={() => onNavigate('/auth')} />
 
-        {/* Section 2: FAQ (Pertanyaan yang Sering Diajukan) */}
+        {/* Section 3: FAQ (Pertanyaan yang Sering Diajukan) */}
         <FaqSection />
 
         {/* Simple & Matching Footer */}
         <LandingFooter
           onNavigate={onNavigate}
           onScrollToTop={scrollToTop}
+          onScrollToAbout={scrollToAbout}
           onScrollToSteps={scrollToSteps}
           onScrollToFaq={scrollToFaq}
         />

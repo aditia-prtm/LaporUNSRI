@@ -30,7 +30,7 @@
  @apply [width:min(100%,_1180px)] [margin:0_auto] [padding:38px_5.3%_60px]; }.student-page {
  @apply [display:grid] [gap:22px]; }.page-title-row, .student-welcome {
  @apply [display:flex] [align-items:center] [justify-content:space-between] [gap:20px]; }.student-page h1, .student-welcome h1 {
- @apply [margin:7px_0_7px] [font-family:Manrope,_sans-serif] [font-size:29px] [letter-spacing:-1.1px]; }.page-title-row p, .student-welcome p {
+ @apply [margin:7px_0_7px] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:29px] [letter-spacing:-1.1px]; }.page-title-row p, .student-welcome p {
  @apply [margin:0] [color:#84918a] [font-size:12px] [line-height:1.6]; }.page-title-row > .button, .student-welcome > .button {
  @apply [flex:0_0_auto]; }
 .summary-grid {
@@ -40,11 +40,11 @@
  @apply [background:#fff4df] [color:#c78931]; }.summary-icon-blue {
  @apply [background:#eaf3fb] [color:#528bb5]; }.summary-label {
  @apply [color:#7e8b84] [font-size:10px]; }.summary-card strong {
- @apply [font-family:Manrope,_sans-serif] [font-size:23px] [line-height:1]; }.summary-card small {
+ @apply [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:23px] [line-height:1]; }.summary-card small {
  @apply [color:#a0aaa4] [font-size:9px]; }
 .student-section-heading {
  @apply [display:flex] [align-items:center] [justify-content:space-between] [gap:15px]; }.student-section-heading h2 {
- @apply [margin:0_0_5px] [font-family:Manrope,_sans-serif] [font-size:17px] [letter-spacing:-.4px]; }.student-section-heading p {
+ @apply [margin:0_0_5px] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:17px] [letter-spacing:-.4px]; }.student-section-heading p {
  @apply [margin:0] [color:#8a9690] [font-size:10px]; }.text-link {
  @apply [padding:5px_0] [border:0] [background:transparent] [color:var(--green)] [font-size:11px] [font-weight:700]; }.text-link:hover {
  @apply [color:var(--green-dark)]; }.recent-reports {
@@ -59,7 +59,7 @@
  @apply [color:#9b8585] [font-size:10px]; }
 .student-empty {
  @apply [display:grid] [justify-items:center] [gap:9px] [min-height:210px] [align-content:center] [padding:25px] [border:1px_dashed_#dfe8e2] [border-radius:11px] [background:#fff] [color:#86938c] [text-align:center] [font-size:11px]; }.student-empty h2 {
- @apply [margin:0] [color:#394941] [font-family:Manrope,_sans-serif] [font-size:16px]; }.student-empty p {
+ @apply [margin:0] [color:#394941] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:16px]; }.student-empty p {
  @apply [margin:0_0_5px]; }.student-empty.compact {
  @apply [min-height:155px]; }.empty-symbol {
  @apply [color:#8dbba0] [font-size:30px]; }
@@ -76,7 +76,7 @@
  @apply [display:inline-flex] [align-items:center] [min-height:21px] [padding:0_8px] [border-radius:99px] [background:#f8f1df] [color:#9b782e] [font-size:9px] [font-weight:700] [white-space:nowrap]; }.status-diproses {
  @apply [background:#eaf2fb] [color:#477ca6]; }.status-selesai {
  @apply [background:#e9f5ed] [color:#39805a]; }.report-card-main h2 {
- @apply [margin:9px_0_5px] [font-family:Manrope,_sans-serif] [font-size:15px]; }.report-title-link {
+ @apply [margin:9px_0_5px] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:15px]; }.report-title-link {
  @apply [padding:0] [border:0] [background:transparent] [color:#293b33] [text-align:left] [font:inherit] [font-weight:700]; }.report-title-link:hover {
  @apply [color:var(--green)]; }.report-card-main > p {
  @apply [display:-webkit-box] [overflow:hidden] [margin:0] [color:#79867f] [font-size:10px] [line-height:1.65] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]; }.report-location {
@@ -105,7 +105,7 @@
  @apply [gap:15px]; }.report-detail-card {
  @apply [padding:23px] [border:1px_solid_#e7eeea] [border-radius:11px] [background:#fff]; }.detail-topline time {
  @apply [margin-left:auto]; }.report-detail-card h1 {
- @apply [margin:14px_0_7px] [font-family:Manrope,_sans-serif] [font-size:25px] [letter-spacing:-.8px]; }.detail-location, .detail-author {
+ @apply [margin:14px_0_7px] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:25px] [letter-spacing:-.8px]; }.detail-location, .detail-author {
  @apply [margin:0_0_7px] [color:#849189] [font-size:10px]; }.detail-author strong {
  @apply [color:#57665e]; }.detail-photo {
  @apply [display:block] [max-width:min(100%,_620px)] [max-height:380px] [margin:17px_0] [border-radius:9px] [object-fit:contain] [object-position:left_center]; }.detail-description {
@@ -128,7 +128,7 @@
  @apply [display:grid] [min-height:100vh] [place-items:center] [padding:24px] [background:#f7f9f7]; }.access-card {
  @apply [display:grid] [justify-items:center] [gap:12px] [width:min(100%,_400px)] [padding:34px] [border:1px_solid_#e5ece7] [border-radius:14px] [background:#fff] [text-align:center] [box-shadow:0_12px_40px_#26382e0a]; }.access-lock {
  @apply [display:grid] [place-items:center] [width:43px] [height:43px] [border-radius:13px] [background:#eaf5ee] [color:var(--green)] [font-size:22px]; }.access-card h1 {
- @apply [margin:0] [font-family:Manrope,_sans-serif] [font-size:21px]; }.access-card p {
+ @apply [margin:0] [font-family:'Outfit','Montserrat','Poppins',sans-serif] [font-size:21px]; }.access-card p {
  @apply [margin:0_0_4px] [color:#87938c] [font-size:11px] [line-height:1.7]; }.access-card .button {
  @apply [margin-top:4px]; }
 @media (max-width: 780px) { .student-sidebar {

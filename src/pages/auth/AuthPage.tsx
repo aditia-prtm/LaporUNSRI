@@ -103,7 +103,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
       <div className="w-full max-w-md">
         <div className="mb-6">
           <span className="eyebrow">{officerPage ? 'Akses petugas' : 'Akun LaporUnsri'}</span>
-          <h2 className="mb-2 mt-2 font-['Manrope',sans-serif] text-2xl tracking-tight max-sm:text-xl">{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
+          <h2 className="mb-2 mt-2 font-['Outfit','Montserrat','Poppins',sans-serif] text-2xl tracking-tight max-sm:text-xl">{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
           <p className="m-0 text-xs leading-relaxed text-[#84908b]">{profile ? 'Anda akan diarahkan ke halaman sesuai role akun.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
         </div>
 
