@@ -1,6 +1,7 @@
 type LandingFooterProps = {
   onNavigate: (path: string) => void
   onScrollToTop: () => void
+  onScrollToAbout?: () => void
   onScrollToSteps: () => void
   onScrollToFaq: () => void
 }
@@ -8,6 +9,7 @@ type LandingFooterProps = {
 export function LandingFooter({
   onNavigate,
   onScrollToTop,
+  onScrollToAbout,
   onScrollToSteps,
   onScrollToFaq,
 }: LandingFooterProps) {
@@ -50,6 +52,15 @@ export function LandingFooter({
             >
               Beranda
             </button>
+            {onScrollToAbout && (
+              <button
+                type="button"
+                onClick={onScrollToAbout}
+                className="transition duration-150 hover:text-white"
+              >
+                Tentang
+              </button>
+            )}
             <button
               type="button"
               onClick={onScrollToSteps}

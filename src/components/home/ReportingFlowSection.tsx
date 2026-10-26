@@ -46,7 +46,7 @@ const steps = [
 
 export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProps) {
   return (
-    <section className="relative px-6 py-20 sm:px-10 lg:px-16" aria-label="Alur Pelaporan LaporUNSRI">
+    <section id="steps-section" className="relative px-6 py-20 sm:px-10 lg:px-16" aria-label="Alur Pelaporan LaporUNSRI">
       <div className="mx-auto max-w-[1280px]">
         {/* Section Header */}
         <div className="mx-auto max-w-[760px] text-center">
