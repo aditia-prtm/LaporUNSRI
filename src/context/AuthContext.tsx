@@ -1,16 +1,9 @@
-import { createContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { getProfile, logoutUser } from '../services/authService'
 import type { UserProfile } from '../types/auth'
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient'
-
-export type AuthContextValue = {
-  profile: UserProfile | null
-  loading: boolean
-  signOut: () => Promise<void>
-}
-
-export const AuthContext = createContext<AuthContextValue | null>(null)
+import { AuthContext } from './auth-context'
 
 type AuthProviderProps = { children: ReactNode }
 
