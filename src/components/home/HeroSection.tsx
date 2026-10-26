@@ -49,12 +49,12 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative flex h-screen min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,-apple-system,sans-serif] text-white select-none max-sm:min-h-[580px]" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex h-screen h-[100dvh] min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,-apple-system,sans-serif] text-white select-none max-lg:min-h-0 max-sm:min-h-0" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[48vh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[60vh] max-lg:min-h-[400px] max-lg:pt-[68px] max-sm:h-[62vh] max-sm:min-h-[350px] max-sm:pt-[60px]">
+      <div className="relative z-50 pointer-events-none flex h-[48vh] h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[60vh] max-lg:h-[60dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[58vh] max-sm:h-[58dvh] max-sm:min-h-0 max-sm:pt-[60px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
           className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
