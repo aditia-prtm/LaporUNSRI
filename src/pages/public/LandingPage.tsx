@@ -54,7 +54,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#020b17] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,sans-serif] text-white">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#020b17] font-['Outfit','Montserrat','Poppins',system-ui,sans-serif] text-white">
       {/* Top Floating Glassmorphic Navbar */}
       <LandingNavbar
         onNavigate={onNavigate}

@@ -14,7 +14,7 @@ export function AuthLayout({ officerPage, onNavigate, children }: AuthLayoutProp
         <Brand variant="light" onClick={() => onNavigate('/')} />
         <div className="relative z-10 mx-auto max-w-[420px] py-10 max-sm:my-auto max-sm:mx-0 max-sm:pb-1 max-sm:pt-6">
           <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#c2ead2] max-sm:text-[10px]"><span className="size-2 rounded-full bg-[#c5f0d6] shadow-[0_0_0_4px_#ffffff20]" /> Layanan aspirasi kampus UNSRI</span>
-          <h1 className="my-4 mb-3.5 font-['Manrope',sans-serif] text-[clamp(30px,3.4vw,44px)] leading-tight tracking-tight max-sm:my-0 max-sm:mb-1.5 max-sm:mt-3 max-sm:max-w-[410px] max-sm:text-2xl">{officerPage ? 'Bersama, kita jaga kampus tetap nyaman.' : 'Satu laporan bisa membawa perubahan.'}</h1>
+          <h1 className="my-4 mb-3.5 font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(30px,3.4vw,44px)] leading-tight tracking-tight max-sm:my-0 max-sm:mb-1.5 max-sm:mt-3 max-sm:max-w-[410px] max-sm:text-2xl">{officerPage ? 'Bersama, kita jaga kampus tetap nyaman.' : 'Satu laporan bisa membawa perubahan.'}</h1>
           <p className="m-0 max-w-[350px] text-sm leading-relaxed text-[#d3e8dc] max-sm:text-xs">{officerPage ? 'Masuk untuk melihat laporan dan membantu proses penanganan fasilitas kampus.' : 'Sampaikan kendala fasilitas kampus dan ikuti perkembangannya dengan mudah.'}</p>
         </div>
         <div className="relative z-10 flex items-center gap-2.5 text-xs text-[#d1e8dc] max-sm:hidden"><span className="grid size-5.5 place-items-center rounded-full bg-white/15 text-[#d6f2df]">&#10003;</span> Layanan pelaporan fasilitas kampus</div>

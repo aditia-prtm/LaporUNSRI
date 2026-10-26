@@ -56,7 +56,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative flex h-screen h-[100dvh] min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,-apple-system,sans-serif] text-white select-none max-lg:min-h-0 max-sm:min-h-0" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex h-screen h-[100dvh] min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none max-lg:min-h-0 max-sm:min-h-0" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
@@ -73,7 +73,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
             The value is in the{' '}
             <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-[620px] text-[clamp(13px,1.15vw,15.5px)] font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:text-[clamp(13px,1.8vw,15px)] max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:text-[clamp(12px,3.4vw,13.5px)] max-sm:leading-[1.54]">
+          <p className="mx-auto mt-4 max-w-[620px] text-lg font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:leading-[1.54]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
           </p>
         </motion.div>
