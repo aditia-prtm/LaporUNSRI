@@ -1,53 +1,100 @@
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { useLenis } from 'lenis/react'
 import { HeroSection } from '../../components/home/HeroSection'
-import { Brand } from '../../components/common/Brand'
+import { ReportingFlowSection } from '../../components/home/ReportingFlowSection'
+import { FaqSection } from '../../components/home/FaqSection'
+import { LandingFooter } from '../../components/home/LandingFooter'
 import { LandingNavbar } from '../../components/layout/LandingNavbar'
 
 type LandingPageProps = { onNavigate: (path: string) => void }
 
-const steps = [
-  { icon: '✎', title: 'Ceritakan masalahnya', description: 'Jelaskan kendala fasilitas di lingkungan kampus dengan singkat dan jelas.' },
-  { icon: '⌂', title: 'Tentukan lokasinya', description: 'Sertakan gedung dan lokasi agar laporan mudah ditemukan petugas.' },
-  { icon: '↗', title: 'Pantau tindak lanjut', description: 'Lihat perkembangan laporan dan informasi penanganannya.' },
-]
-
 export function LandingPage({ onNavigate }: LandingPageProps) {
+  const lenis = useLenis()
+
+  // Track scroll position to add parallax 3D depth to the pinned Hero
+  const { scrollY } = useScroll()
+  const heroOpacity = useTransform(scrollY, [0, 650], [1, 0.45])
+  const heroScale = useTransform(scrollY, [0, 650], [1, 0.94])
+  const heroY = useTransform(scrollY, [0, 650], [0, 90])
+
   const scrollToSteps = () => {
-    document.getElementById('steps-section')?.scrollIntoView({ behavior: 'smooth' })
+    const target = document.getElementById('steps-section') ?? window.innerHeight
+    const activeLenis = lenis || (typeof window !== 'undefined' ? (window as unknown as { lenis?: typeof lenis }).lenis : undefined)
+
+    if (activeLenis) {
+      activeLenis.scrollTo(target, { offset: 0, duration: 1.2 })
+    } else {
+      const el = document.getElementById('steps-section')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })
+      }
+    }
+  }
+
+  const scrollToFaq = () => {
+    const target = document.getElementById('faq-section')
+    const activeLenis = lenis || (typeof window !== 'undefined' ? (window as unknown as { lenis?: typeof lenis }).lenis : undefined)
+
+    if (activeLenis && target) {
+      activeLenis.scrollTo(target, { offset: -70, duration: 1.2 })
+    } else if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const scrollToTop = () => {
+    const activeLenis = lenis || (typeof window !== 'undefined' ? (window as unknown as { lenis?: typeof lenis }).lenis : undefined)
+    if (activeLenis) {
+      activeLenis.scrollTo(0, { duration: 1.2 })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-[#fbfcfa]">
-      <LandingNavbar onNavigate={onNavigate} onScrollDown={scrollToSteps} />
-      {/* Full-bleed Cinematic Hero Section */}
-      <HeroSection onScrollDown={scrollToSteps} />
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#020b17] font-['Plus_Jakarta_Sans','DM_Sans',system-ui,sans-serif] text-white">
+      {/* Top Floating Glassmorphic Navbar */}
+      <LandingNavbar
+        onNavigate={onNavigate}
+        onScrollDown={scrollToSteps}
+        onScrollToFaq={scrollToFaq}
+      />
 
-      {/* Structured Content Below Hero */}
-      <div className="mx-auto max-w-[1320px] px-4 sm:px-8">
-        <section id="steps-section" className="border-t border-[#edf1ef] py-12 pb-16 max-sm:py-10" aria-label="Cara kerja">
-          <div className="text-center">
-            <span className="inline-flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--green)]">Mulai dalam beberapa langkah</span>
-            <h2 className="mb-7 mt-3 font-['Manrope',sans-serif] text-[clamp(22px,2.5vw,30px)] tracking-tight max-sm:mb-5 max-sm:text-2xl">Suara Anda membantu kampus bergerak.</h2>
-          </div>
-          <div className="grid grid-cols-3 gap-4 max-md:gap-3 max-sm:grid-cols-1 max-sm:gap-2.5">
-            {steps.map((step, index) => (
-              <article key={step.title} className="relative min-h-[175px] rounded-xl border border-[#e9efeb] bg-white p-5 max-sm:min-h-0 max-sm:py-4 max-sm:pr-4 max-sm:pl-16">
-                <span className="absolute right-5 top-5 font-['Manrope',sans-serif] text-xs font-extrabold text-[#c3d5cb] max-sm:right-4 max-sm:top-3.5">{String(index + 1).padStart(2, '0')}</span>
-                <div className="mb-3.5 grid size-9 place-items-center rounded-xl bg-[#edf7f0] text-lg text-[var(--green)] max-sm:absolute max-sm:left-4 max-sm:top-4">{step.icon}</div>
-                <h3 className="mb-1.5 font-['Manrope',sans-serif] text-sm max-sm:text-xs">{step.title}</h3>
-                <p className="m-0 text-xs leading-relaxed text-[var(--muted)] max-sm:text-[10px]">{step.description}</p>
-              </article>
-            ))}
-          </div>
-        </section>
+      {/* Pinned Sticky Hero Section (Stays anchored while content scrolls over it) */}
+      <motion.div
+        style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
+        className="sticky top-0 h-screen h-[100dvh] min-h-[680px] w-full z-10 overflow-hidden origin-center will-change-transform"
+      >
+        <HeroSection onScrollDown={scrollToSteps} />
+      </motion.div>
 
-        <footer className="flex min-h-[71px] items-center gap-4 border-t border-[#edf1ef] text-xs text-[#8b9692] max-sm:flex-wrap max-sm:gap-x-3.5 max-sm:gap-y-2 max-sm:py-4">
-          <Brand className="text-sm" onClick={() => onNavigate('/')} />
-          <span className="max-sm:order-2 max-sm:w-full">Untuk kampus yang lebih nyaman, bersama.</span>
-          <button className="ml-auto border-0 bg-transparent py-2 text-xs font-bold text-[var(--green)]" onClick={() => onNavigate('/auth')}>
-            Mulai melapor <span aria-hidden="true">&#8594;</span>
-          </button>
-        </footer>
+      {/* Rising Parallax Content Container (Overlaps the Hero with dramatic top shadow) */}
+      <div
+        id="steps-section"
+        className="relative z-20 w-full rounded-t-[36px] sm:rounded-t-[48px] md:rounded-t-[56px] bg-gradient-to-b from-[#051d38] via-[#04162a] to-[#020b17] shadow-[0_-30px_90px_rgba(0,0,0,0.95),0_-10px_35px_rgba(2,16,32,0.85)] border-t border-white/15"
+      >
+        {/* Ambient Top Glow Accent Line */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#4899e8]/15 via-transparent to-transparent rounded-t-[36px] sm:rounded-t-[48px] md:rounded-t-[56px]"
+          aria-hidden="true"
+        />
+
+        {/* Section 1: Alur Pelaporan */}
+        <ReportingFlowSection onStartReport={() => onNavigate('/auth')} />
+
+        {/* Section 2: FAQ (Pertanyaan yang Sering Diajukan) */}
+        <FaqSection />
+
+        {/* Simple & Matching Footer */}
+        <LandingFooter
+          onNavigate={onNavigate}
+          onScrollToTop={scrollToTop}
+          onScrollToSteps={scrollToSteps}
+          onScrollToFaq={scrollToFaq}
+        />
       </div>
-    </main>
+    </div>
   )
 }

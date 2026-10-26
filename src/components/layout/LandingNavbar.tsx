@@ -1,20 +1,32 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { BiMenu } from 'react-icons/bi'
 
 type LandingNavbarProps = {
   onNavigate: (path: string) => void
   onScrollDown: () => void
+  onScrollToFaq?: () => void
 }
 
 const menuItems = [
   { label: 'Beranda', action: 'home' },
   { label: 'Alur Pelaporan', action: 'steps' },
+  { label: 'FAQ', action: 'faq' },
   { label: 'Layanan Aspirasi', action: 'auth' },
   { label: 'Portal Petugas', action: 'officer' },
 ] as const
 
-export function LandingNavbar({ onNavigate, onScrollDown }: LandingNavbarProps) {
+export function LandingNavbar({ onNavigate, onScrollDown, onScrollToFaq }: LandingNavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 30)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const handleMenuAction = (action: (typeof menuItems)[number]['action']) => {
     setMenuOpen(false)
@@ -22,11 +34,23 @@ export function LandingNavbar({ onNavigate, onScrollDown }: LandingNavbarProps) 
       onScrollDown()
       return
     }
+    if (action === 'faq') {
+      if (onScrollToFaq) {
+        onScrollToFaq()
+      } else {
+        document.getElementById('faq-section')?.scrollIntoView({ behavior: 'smooth' })
+      }
+      return
+    }
     onNavigate(action === 'home' ? '/' : action === 'auth' ? '/auth' : '/petugas')
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-[100] w-full bg-transparent">
+    <header className={`fixed inset-x-0 top-0 z-[100] w-full transition-all duration-300 ${
+      isScrolled
+        ? 'bg-[#031830]/85 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20'
+        : 'bg-transparent border-b border-transparent'
+    }`}>
       <div className="relative mx-auto flex min-h-[76px] w-full max-w-[1440px] items-center justify-between px-11 py-3 max-lg:min-h-[68px] max-lg:px-7 max-lg:py-2.5 max-sm:min-h-[60px] max-sm:px-4.5">
         <span className="flex-1 max-lg:hidden" aria-hidden="true" />
         <a className="flex flex-col items-center text-white no-underline transition duration-200 hover:-translate-y-px hover:opacity-95 max-lg:mr-auto max-lg:items-start" href="/" onClick={(event) => { event.preventDefault(); onNavigate('/') }} aria-label="LaporUnsri beranda">
@@ -34,7 +58,7 @@ export function LandingNavbar({ onNavigate, onScrollDown }: LandingNavbarProps) 
           <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.28em] text-[rgba(220,238,255,0.72)] max-lg:tracking-[0.22em] max-sm:text-[7.5px] max-sm:tracking-[0.18em]">Layanan Aspirasi Kampus</span>
         </a>
         <div className="flex flex-1 items-center justify-end gap-4 max-lg:flex-initial max-lg:gap-3">
-          <button type="button" className="rounded-full border border-white/30 bg-white/10 px-6 py-2 text-[13.5px] font-semibold text-white backdrop-blur transition hover:-translate-y-px hover:bg-white/25 max-sm:px-4 max-sm:py-1.5 max-sm:text-xs" onClick={() => onNavigate('/auth')}>Masuk</button>
+          <button type="button" className="rounded-full border border-white/30 bg-white/10 backdrop-blur-xs px-6 py-2 text-[13.5px] font-semibold text-white backdrop-blur transition hover:-translate-y-px hover:bg-white/25 max-sm:px-4 max-sm:py-1.5 max-sm:text-xs" onClick={() => onNavigate('/auth')}>Masuk</button>
           <button
             type="button"
             className="flex h-10 w-10 flex-col items-center justify-center gap-1 rounded-full bg-transparent p-0 transition hover:bg-white/15 max-sm:h-9 max-sm:w-9"

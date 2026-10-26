@@ -1,3 +1,4 @@
+import { useLenis } from 'lenis/react'
 import { motion } from 'framer-motion'
 import { FiChevronDown } from 'react-icons/fi'
 import awan1 from '../../assets/home/awan-1.png'
@@ -37,14 +38,20 @@ const lowerClouds = [
 ]
 
 export function HeroSection({ onScrollDown }: HeroSectionProps) {
+  const lenis = useLenis()
+
   const handleScrollClick = () => {
     if (onScrollDown) {
       onScrollDown()
       return
     }
-    const nextSection = document.getElementById('steps-section')
-    if (nextSection) {
-      nextSection.scrollIntoView({ behavior: 'smooth' })
+    if (lenis) {
+      lenis.scrollTo('#steps-section', { offset: -24, duration: 1.2 })
+    } else {
+      const nextSection = document.getElementById('steps-section')
+      if (nextSection) {
+        nextSection.scrollIntoView({ behavior: 'smooth' })
+      }
     }
   }
 
@@ -64,7 +71,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
         >
           <h1 className="m-0 text-[clamp(32px,3.8vw,50px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(28px,4.4vw,42px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,32px)] max-sm:leading-[1.22]">
             The value is in the{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#7fc3f8] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
           </h1>
           <p className="mx-auto mt-4 max-w-[620px] text-[clamp(13px,1.15vw,15.5px)] font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:text-[clamp(13px,1.8vw,15px)] max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:text-[clamp(12px,3.4vw,13.5px)] max-sm:leading-[1.54]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
