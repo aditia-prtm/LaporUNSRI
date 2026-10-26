@@ -100,11 +100,11 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
   return (
     <AuthLayout officerPage={officerPage} onNavigate={onNavigate}>
-      <div className="auth-card">
-        <div className="auth-heading">
+      <div className="w-full max-w-[416px] max-[620px]:max-w-[440px]">
+        <div className="mb-6">
           <span className="eyebrow">{officerPage ? 'Akses petugas' : 'Akun LaporUnsri'}</span>
-          <h2>{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
-          <p>{profile ? 'Anda akan diarahkan ke halaman sesuai role akun.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
+          <h2 className="mb-[7px] mt-2 font-[Manrope,sans-serif] text-[27px] tracking-[-1.1px] max-[620px]:text-2xl">{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
+          <p className="m-0 text-xs leading-[1.6] text-[#84908b]">{profile ? 'Anda akan diarahkan ke halaman sesuai role akun.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
         </div>
 
         {notice && <FeedbackMessage tone="success">{notice}</FeedbackMessage>}
@@ -114,10 +114,10 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
           <div className="message message-warning" role="status">Mengarahkan ke dashboard {roleLabel(profile.role)}…</div>
         ) : <>
           {!isSupabaseConfigured && <FeedbackMessage tone="warning">Supabase belum dikonfigurasi. Lengkapi URL dan publishable key di file .env untuk mengaktifkan autentikasi.</FeedbackMessage>}
-          <form className="auth-form" onSubmit={(event) => void submit(event)}>
+          <form className="grid gap-[15px] [&_label]:flex [&_label]:flex-wrap [&_label]:items-baseline [&_label]:gap-[5px] [&_label]:text-[11px] [&_label]:font-bold [&_label]:text-[#394741] [&_label_input]:h-11 [&_label_input]:w-full [&_label_input]:rounded-lg [&_label_input]:border [&_label_input]:border-[#dfe7e2] [&_label_input]:bg-white [&_label_input]:px-[13px] [&_label_input]:text-xs [&_label_input]:font-normal [&_label_input]:text-[var(--ink)] [&_label_input]:focus:border-[#70b693] [&_label_input]:focus:outline [&_label_input]:focus:outline-[3px] [&_label_input]:focus:outline-[#e4f4eb] [&_label_input::placeholder]:text-[#a9b3ae]" onSubmit={(event) => void submit(event)}>
             {mode === 'register' && <>
               <label>Nama lengkap<input required autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nama Anda" /></label>
-              <label>{officerPage ? 'NIP' : 'NIM'}<span className="optional-label">Opsional</span><input autoComplete="off" value={nimNip} onChange={(event) => setNimNip(event.target.value)} placeholder={officerPage ? 'Nomor induk pegawai' : 'Nomor induk mahasiswa'} /></label>
+              <label>{officerPage ? 'NIP' : 'NIM'}<span className="text-[10px] font-normal text-[#9aa59f]">Opsional</span><input autoComplete="off" value={nimNip} onChange={(event) => setNimNip(event.target.value)} placeholder={officerPage ? 'Nomor induk pegawai' : 'Nomor induk mahasiswa'} /></label>
             </>}
             <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nama@email.com" /></label>
             <PasswordField
@@ -127,20 +127,20 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
               visible={showPassword}
               onToggleVisibility={() => setShowPassword((visible) => !visible)}
             />
-            <button className="button button-primary submit-button" disabled={busy || !isSupabaseConfigured}>
+            <button className="mt-[3px] flex min-h-[46px] w-full items-center justify-center gap-[17px] rounded-[9px] bg-[var(--green)] px-[19px] text-sm font-bold text-white shadow-[0_7px_17px_#14835d25] transition hover:-translate-y-px hover:bg-[var(--green-dark)] disabled:cursor-not-allowed disabled:opacity-55" disabled={busy || !isSupabaseConfigured}>
               {busy ? 'Mohon tunggu…' : mode === 'login' ? 'Masuk' : 'Daftar'}
             </button>
           </form>
-          <p className="auth-switch">
+          <p className="mt-[18px] text-center text-[11px] text-[#87928d]">
             {mode === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'}{' '}
-            <button onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setNotice(''); setError('') }}>
+            <button className="bg-transparent p-[3px] text-[11px] font-bold text-[var(--green)]" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setNotice(''); setError('') }}>
               {mode === 'login' ? 'Daftar sekarang' : 'Masuk'}
             </button>
           </p>
-          {!officerPage && <p className="admin-hint">Akun admin masuk melalui halaman ini menggunakan akun admin yang sudah dibuat.</p>}
+          {!officerPage && <p className="mt-[15px] rounded-[7px] bg-[#f3f8f4] px-3 py-2.5 text-[10px] leading-[1.55] text-[#718079]">Akun admin masuk melalui halaman ini menggunakan akun admin yang sudah dibuat.</p>}
         </>}
 
-        <div className="auth-footnote"><span className="lock-icon">&#9633;</span> Data akun tersimpan dengan aman.</div>
+        <div className="mt-[26px] flex items-center justify-center gap-[7px] border-t border-[#eef1ef] pt-[17px] text-[10px] text-[#a0aaa5] max-[620px]:mt-[21px]"><span className="text-xs text-[#79a991]">&#9633;</span> Data akun tersimpan dengan aman.</div>
       </div>
     </AuthLayout>
   )

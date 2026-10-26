@@ -1,3 +1,5 @@
+# !! DILARANG KERAS MENGGUNAKAN CSS BIASA!! PAKAI TAILWIND!!!!!!!
+
 # Arsitektur LaporUnsri
 
 Dokumen ini menjadi acuan untuk perubahan dan refactor seluruh proyek: kode aplikasi, aset, konfigurasi, dokumentasi, dan berkas pendukung. Perubahan struktur harus menjaga tanggung jawab tiap lapisan tetap jelas dan memperbarui dokumen ini bila struktur berubah.
@@ -42,6 +44,7 @@ CSS yang hanya dipakai satu komponen atau halaman diletakkan bersama pemiliknya.
 - `constants` menyimpan label status, batas ukuran, dan nilai domain yang digunakan lebih dari satu tempat.
 - `utils` berisi fungsi murni tanpa state React, akses DOM, atau jaringan.
 - `context` hanya untuk state lintas rute. State formulir dan filter tetap lokal atau berada dalam hook fitur.
+- Navbar landing berada di `components/layout/LandingNavbar`; navigasi setelah login tetap dimiliki layout masing-masing role, seperti `StudentLayout`.
 - Penjagaan role di rute adalah perlindungan UI. Hak akses data tetap wajib dijamin oleh Supabase RLS dan fungsi database.
 
 ## Aturan refactor
