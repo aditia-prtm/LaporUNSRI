@@ -7,7 +7,7 @@ type BrandProps = {
 export function Brand({ className = '', onClick, variant = 'default' }: BrandProps) {
   const light = variant === 'light'
   const brandClassName = [
-    'inline-flex items-center gap-2.5 text-[19px] font-extrabold tracking-[-0.7px] no-underline',
+    'inline-flex items-center gap-2.5 text-lg font-extrabold tracking-tight no-underline',
     light ? 'text-white' : 'text-[var(--ink)]',
     className,
   ].filter(Boolean).join(' ')
@@ -23,7 +23,7 @@ export function Brand({ className = '', onClick, variant = 'default' }: BrandPro
         onClick()
       }}
     >
-      <span className={`inline-grid h-[34px] w-[34px] place-items-center rounded-[11px] text-[19px] font-extrabold ${light ? 'bg-white/15 shadow-none' : 'bg-[var(--green)] shadow-[0_5px_12px_#14835d2c]'} text-white`} aria-hidden="true">L</span>
+      <span className={`inline-grid size-8.5 place-items-center rounded-xl text-lg font-extrabold ${light ? 'bg-white/15 shadow-none' : 'bg-[var(--green)] shadow-md shadow-emerald-900/15'} text-white`} aria-hidden="true">L</span>
       <span>Lapor<span className={light ? 'text-[#a8e2c0]' : 'text-[var(--green)]'}>Unsri</span></span>
     </a>
   )

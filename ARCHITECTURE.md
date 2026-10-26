@@ -1,5 +1,3 @@
-# !! DILARANG KERAS MENGGUNAKAN CSS BIASA!! PAKAI TAILWIND!!!!!!!
-
 # Arsitektur LaporUnsri
 
 Dokumen ini menjadi acuan untuk perubahan dan refactor seluruh proyek: kode aplikasi, aset, konfigurasi, dokumentasi, dan berkas pendukung. Perubahan struktur harus menjaga tanggung jawab tiap lapisan tetap jelas dan memperbarui dokumen ini bila struktur berubah.

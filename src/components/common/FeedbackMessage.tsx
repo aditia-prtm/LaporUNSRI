@@ -11,5 +11,5 @@ export function FeedbackMessage({ tone, children }: FeedbackMessageProps) {
       ? 'border-[#f2d9d3] bg-[#fff5f2] text-[#a34836]'
       : 'border-[#f1e4c7] bg-[#fffaf0] text-[#83682f]'
 
-  return <div className={`mb-[14px] rounded-lg border px-3 py-[11px] text-[11px] leading-[1.6] ${toneClass}`} role={role}>{children}</div>
+  return <div className={`mb-3.5 rounded-lg border px-3 py-2.5 text-xs leading-relaxed ${toneClass}`} role={role}>{children}</div>
 }
