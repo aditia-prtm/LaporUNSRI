@@ -56,12 +56,12 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative flex h-screen h-[100dvh] min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none max-lg:min-h-0 max-sm:min-h-0" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex h-full h-screen h-[100svh] lg:h-[100dvh] min-h-0 lg:min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[48vh] h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[60vh] max-lg:h-[60dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[58vh] max-sm:h-[58dvh] max-sm:min-h-0 max-sm:pt-[60px]">
+      <div className="relative z-50 pointer-events-none flex h-[48vh] h-[48svh] lg:h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[56vh] max-lg:h-[56svh] lg:max-lg:h-[56dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[52vh] max-sm:h-[52svh] max-sm:min-h-0 max-sm:pt-[58px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
           className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
@@ -69,11 +69,11 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="m-0 text-[clamp(32px,3.8vw,50px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(28px,4.4vw,42px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,32px)] max-sm:leading-[1.22]">
+          <h1 className="m-0 text-[clamp(40px,3.8vw,50px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(28px,4.4vw,42px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,32px)] max-sm:leading-[1.22]">
             The value is in the{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-[620px] text-lg font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:leading-[1.54]">
+          <p className="mx-auto mt-4 max-w-[620px] text-base lg:text-lg font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:leading-[1.54]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
           </p>
         </motion.div>
@@ -115,7 +115,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       </div>
 
       {/* Kampus Unsri Foreground Stage */}
-      <motion.div className="absolute inset-x-0 bottom-0 z-30 flex w-full items-end justify-center pointer-events-none" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
+      <motion.div className="absolute inset-x-0 bottom-0 z-30 flex w-full items-end justify-center pointer-events-none pb-[env(safe-area-inset-bottom,0px)]" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.1, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}>
         <picture className="flex w-full items-end justify-center leading-none">
           <source media="(max-width: 640px)" srcSet={kampusUnsriMobile} />
           <source media="(max-width: 1024px)" srcSet={kampusUnsriTab} />
@@ -124,7 +124,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       </motion.div>
 
       {/* Bottom Scroll Down Arrow Indicator */}
-      <div className="absolute bottom-3 inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
+      <div className="absolute bottom-3 max-sm:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
         <button
           type="button"
           className="pointer-events-auto flex size-8 items-center justify-center rounded-full border border-white/35 bg-white/15 text-white backdrop-blur-md shadow-md shadow-black/25 transition-all duration-200 hover:bg-white/30 hover:translate-y-0.5 hover:shadow-lg"
