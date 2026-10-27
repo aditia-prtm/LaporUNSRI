@@ -92,7 +92,10 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
           isDesktop ? 'will-change-transform' : ''
         }`}
       >
-        <HeroSection onScrollDown={scrollToAbout} />
+        <HeroSection
+          onScrollDown={scrollToAbout}
+          onStartReport={() => onNavigate('/auth')}
+        />
       </motion.div>
 
       {/* Rising Parallax Content Container (Overlaps the Hero with dramatic top shadow) */}
