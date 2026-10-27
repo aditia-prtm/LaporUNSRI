@@ -42,7 +42,7 @@ const faqs: FaqItem[] = [
 ]
 
 export function FaqSection() {
-  const [openId, setOpenId] = useState<string | null>('faq-1')
+  const [openId, setOpenId] = useState<string | null>(null)
 
   const toggleFaq = (id: string) => {
     setOpenId((prev) => (prev === id ? null : id))
