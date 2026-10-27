@@ -1,6 +1,6 @@
 import { useLenis } from 'lenis/react'
 import { motion } from 'framer-motion'
-import { FiChevronDown } from 'react-icons/fi'
+import { FiChevronDown, FiArrowRight } from 'react-icons/fi'
 import awan1 from '../../assets/home/awan-1.png'
 import awan2 from '../../assets/home/awan-2.png'
 import awan3 from '../../assets/home/awan-3.png'
@@ -12,6 +12,7 @@ import kampusUnsriMobile from '../../assets/home/kampus-unsri-transparan-mobile.
 
 type HeroSectionProps = {
   onScrollDown?: () => void
+  onStartReport?: () => void
 }
 
 const upperClouds = [
@@ -37,7 +38,7 @@ const lowerClouds = [
   { img: awan3, pos: 'left-[3360px] bottom-[35px] h-[320px] opacity-[0.92]' },
 ]
 
-export function HeroSection({ onScrollDown }: HeroSectionProps) {
+export function HeroSection({ onScrollDown, onStartReport }: HeroSectionProps) {
   const lenis = useLenis()
 
   const handleScrollClick = () => {
@@ -55,27 +56,57 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
     }
   }
 
+  const handleReportClick = () => {
+    if (onStartReport) {
+      onStartReport()
+      return
+    }
+    const nextSection = document.getElementById('about-section')
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
-    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Poppins','Montserrat','Outfit',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[48svh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[48svh] max-sm:min-h-0 max-sm:pt-[58px]">
+      <div className="relative z-50 pointer-events-none flex h-[50svh] min-h-[320px] w-full flex-col pt-[86px] lg:pt-[94px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[90px] max-sm:h-[60svh] max-sm:min-h-0 max-sm:pt-[112px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
-          className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
+          className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2 text-center max-md:px-4.5 max-sm:px-4 max-sm:translate-y-3"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="m-0 text-[clamp(40px,3.8vw,50px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(28px,4.4vw,42px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,32px)] max-sm:leading-[1.22]">
+          <h1 className="m-0 text-[clamp(36px,3.5vw,48px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(27px,4.2vw,40px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,31px)] max-sm:leading-[1.2]">
             The value is in the{' '}
             <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
           </h1>
-          <p className="mx-auto mt-4 max-w-[620px] text-base lg:text-lg font-normal leading-[1.62] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[520px] max-lg:mt-3.5 max-lg:leading-[1.6] max-sm:mt-3 max-sm:max-w-[330px] max-sm:leading-[1.54]">
+          <p className="mx-auto mt-3 max-w-[600px] text-[15px] lg:text-[17px] font-normal leading-[1.58] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[500px] max-lg:mt-3 max-lg:leading-[1.56] max-sm:mt-2.5 max-sm:max-w-[325px] max-sm:text-[12.5px] max-sm:leading-[1.52]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
           </p>
+
+          {/* Hero CTAs */}
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-sm:mt-4 max-sm:gap-2.5">
+            <button
+              type="button"
+              onClick={handleReportClick}
+              className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#2b8ced] px-4.5 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-[#021427] shadow-[0_4px_20px_rgba(58,147,232,0.4)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(58,147,232,0.6)] hover:brightness-105 active:translate-y-0 cursor-pointer"
+            >
+              <span>Buat Laporan</span>
+              <FiArrowRight className="size-3.5 sm:size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              onClick={handleScrollClick}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-[#e1f0ff] backdrop-blur-md shadow-sm shadow-black/20 transition-all duration-200 hover:bg-white/20 hover:border-white/40 hover:text-white hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            >
+              <span>Pelajari Alur</span>
+            </button>
+          </div>
         </motion.div>
       </div>
 

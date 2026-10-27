@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiActivity, FiArrowRight } from 'react-icons/fi'
+import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiArrowRight } from 'react-icons/fi'
 import mascotImg from '../../assets/home/mascot.png'
 
 type AboutSectionProps = {
@@ -33,13 +33,6 @@ const pillars = [
       'Terhubung langsung dengan dashboard teknisi dan admin kampus. Setiap perbaikan fasilitas wajib menyertakan dokumentasi foto hasil penanganan sebelum status dinyatakan selesai.',
     highlight: 'Wajib Bukti Penyelesaian',
   },
-]
-
-const stats = [
-  { number: '10', label: 'Fakultas Terjangkau', sub: 'Indralaya & Palembang' },
-  { number: '100%', label: 'Terbuka & Akuntabel', sub: 'Dapat Dipantau Publik' },
-  { number: '< 2 mnt', label: 'Proses Lapor Cepat', sub: 'Mudah via Smartphone / PC' },
-  { number: '3 Tahap', label: 'Alur Terstandar', sub: 'Tercatat, Diproses, Tuntas' },
 ]
 
 export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) {
@@ -99,7 +92,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
 
               {/* Character Name & Role underneath mascot */}
               <div className="mt-1.5 sm:mt-2 text-center flex flex-col items-center">
-                <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
+                <span className="font-['Poppins','Montserrat','Outfit',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
                   Mamang Sarpras
                 </span>
                 <span className="mt-0.5 text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-xs lg:text-[13px] text-[#8cb6dc] leading-[1.3] text-center max-w-[135px] sm:max-w-[180px] md:max-w-[240px]">
@@ -118,7 +111,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, delay: 0.08 }}
             >
-              <h2 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
+              <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
                 Satu wadah terpadu untuk kampus yang lebih{' '}
                 <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
                   nyaman & responsif
@@ -191,7 +184,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
                     </span>
                   </div>
 
-                  <h3 className="mt-5 font-['Outfit','Montserrat','Poppins',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
+                  <h3 className="mt-5 font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
                     {item.title}
                   </h3>
                   <p className="mt-2.5 text-xs leading-[1.68] text-[#97b8d4]">
@@ -207,67 +200,6 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
             )
           })}
         </div>
-
-        {/* Stats & Mission Highlight Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-10 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br from-[#082e56]/70 via-[#051c36]/60 to-[#0c4278]/40 p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-black/25"
-        >
-          <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 divide-y lg:divide-y-0 lg:divide-x divide-white/10">
-            {stats.map((stat, i) => (
-              <div
-                key={stat.label}
-                className={`flex flex-col items-center text-center ${
-                  i % 2 === 0 ? '' : 'max-lg:border-none'
-                } ${i > 1 ? 'pt-6 lg:pt-0' : ''} ${i > 0 ? 'lg:pl-6' : ''}`}
-              >
-                <div className="flex items-center gap-1.5">
-                  <FiActivity className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
-                  <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    {stat.number}
-                  </span>
-                </div>
-                <span className="mt-1 text-xs font-semibold text-[#e1effa]">
-                  {stat.label}
-                </span>
-                <span className="mt-0.5 text-[10px] text-[#86a8c7]">
-                  {stat.sub}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* Quick Action row inside about */}
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-white/10 pt-6">
-            <p className="text-xs text-[#a0c0db] text-center sm:text-left">
-              Menemukan AC rusak, proyektor mati, atau fasilitas lain yang perlu penanganan segera?
-            </p>
-            <div className="flex items-center gap-3 shrink-0">
-              {onLearnMore && (
-                <button
-                  type="button"
-                  onClick={onLearnMore}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#7fc3f8] transition duration-200 hover:text-white"
-                >
-                  Lihat alur proses
-                  <FiArrowRight className="size-3" aria-hidden="true" />
-                </button>
-              )}
-              {onStartReport && (
-                <button
-                  type="button"
-                  onClick={onStartReport}
-                  className="flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-4.5 py-2 text-xs font-bold text-[#021427] shadow-md shadow-[#105292]/30 transition duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
-                >
-                  Buat Laporan
-                </button>
-              )}
-            </div>
-          </div>
-        </motion.div>
       </div>
     </section>
   )
