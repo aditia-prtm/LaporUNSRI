@@ -52,14 +52,14 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
   return (
     <section
       id="about-section"
-      className="relative px-6 pt-10 pb-12 sm:px-10 md:pt-16 md:pb-16 lg:px-16"
+      className="relative px-4 min-[380px]:px-5 sm:px-8 md:px-10 lg:px-16 pt-8 min-[380px]:pt-10 md:pt-16 pb-12 md:pb-16"
       aria-label="Tentang LaporUNSRI"
     >
       <div className="mx-auto max-w-[1280px]">
-        {/* Top Section Layout: Mascot on Left (protruding above rectangle), "Satu Wadah" Info Container on Right */}
-        <div className="relative grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
-          {/* Left Column: Mascot protruding above the rectangle border, triggered when 'satu wadah' enters view */}
-          <div className="relative flex justify-center lg:col-span-5 lg:justify-start">
+        {/* Top Section Layout: Mascot on Left (protruding above rectangle), "Satu Wadah" Info Container on Right - Always Side-by-Side */}
+        <div className="relative flex items-center gap-3 min-[380px]:gap-4 sm:gap-6 md:gap-8 lg:gap-12">
+          {/* Left Column: Mascot protruding above the rectangle border */}
+          <div className="relative shrink-0 flex justify-center w-[110px] min-[380px]:w-[125px] min-[440px]:w-[145px] sm:w-[180px] md:w-[220px] lg:w-[390px] xl:w-[440px]">
             <motion.div
               initial={{ opacity: 0, y: 90, scale: 0.85 }}
               animate={
@@ -71,21 +71,21 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
                 duration: isContainerInView ? 0.85 : 0.4,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative -mt-20 sm:-mt-28 md:-mt-40 lg:-mt-48 xl:-mt-52 z-30 flex justify-center"
+              className="relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex justify-center w-full"
             >
               {/* Soft ambient backlight glow */}
               <motion.div
                 animate={isContainerInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
                 transition={{ duration: isContainerInView ? 0.85 : 0.4 }}
-                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-52 sm:size-72 md:size-80 rounded-full bg-[#4899e8]/20 blur-3xl"
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-36 min-[380px]:size-44 sm:size-52 md:size-64 lg:size-80 rounded-full bg-[#4899e8]/20 blur-2xl sm:blur-3xl"
                 aria-hidden="true"
               />
 
-              {/* Mascot image with gentle idle float once in view */}
+              {/* Mascot image scaled seamlessly across all screens */}
               <motion.img
                 src={mascotImg}
                 alt="Maskot LaporUNSRI menyapa sivitas kampus"
-                className="relative z-10 w-[240px] sm:w-[300px] md:w-[360px] lg:w-[410px] xl:w-[440px] max-w-full h-auto select-none object-contain drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] filter transition-transform duration-300 hover:scale-[1.03]"
+                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] filter transition-transform duration-300 hover:scale-[1.03]"
                 animate={isContainerInView ? { y: [0, -10, 0] } : { y: 0 }}
                 transition={{
                   repeat: isContainerInView ? Infinity : 0,
@@ -97,49 +97,24 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
           </div>
 
           {/* Right Column: "Tulisan Satu Wadah" Container */}
-          <div ref={satuWadahRef} className="flex flex-col justify-center lg:col-span-7">
-            {/* Header pill & badge mirroring reference layout */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.6 }}
-              className="flex flex-wrap items-center gap-2.5"
-            >
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#4899e8]/30 bg-[#0c4278]/40 px-3.5 py-1 text-xs font-semibold text-[#7fc3f8] backdrop-blur-md">
-                <span className="size-1.5 rounded-full bg-[#60b6ff] animate-pulse" aria-hidden="true" />
-                Tentang LaporUNSRI
-              </div>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-[#8fc3ee]">
-                10 Fakultas Terjangkau
-              </span>
-            </motion.div>
-
-            {/* Main content: Emblem / Avatar + Title + Description */}
+          <div ref={satuWadahRef} className="flex-1 min-w-0 flex flex-col justify-center">
+            {/* Main content: Title + Description */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, delay: 0.08 }}
-              className="mt-5 flex items-start gap-4 sm:gap-5"
             >
-              {/* Rounded Squircle Avatar Emblem */}
-              <div className="flex size-13 sm:size-15 md:size-16 shrink-0 items-center justify-center rounded-2xl md:rounded-3xl border border-white/15 bg-gradient-to-br from-[#0c4278] via-[#082e56] to-[#041c36] text-[#ffbb00] shadow-lg shadow-[#020b17]/50 mt-1">
-                <FiShield className="size-6 sm:size-7 md:size-8" aria-hidden="true" />
-              </div>
+              <h2 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
+                Satu wadah terpadu untuk kampus yang lebih{' '}
+                <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
+                  nyaman & responsif
+                </span>
+              </h2>
 
-              <div>
-                <h2 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(24px,2.8vw,38px)] font-bold leading-[1.22] tracking-tight text-white">
-                  Satu wadah terpadu untuk kampus yang lebih{' '}
-                  <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
-                    nyaman & responsif
-                  </span>
-                </h2>
-
-                <p className="mt-3.5 text-[clamp(13px,1.1vw,15px)] leading-[1.68] text-[#a4c1db]">
-                  LaporUNSRI dirancang khusus untuk seluruh mahasiswa dan sivitas akademika Universitas Sriwijaya. Keluhan fasilitas yang biasanya tercecer di obrolan grup kini dirangkum ke dalam satu sistem terintegrasi, transparan, dan dapat dipantau hingga selesai diperbaiki.
-                </p>
-              </div>
+              <p className="mt-2 min-[380px]:mt-2.5 md:mt-3 text-[11.5px] min-[380px]:text-xs md:text-[13px] lg:text-[15px] leading-[1.6] sm:leading-[1.65] text-[#a4c1db] max-w-[640px]">
+                LaporUNSRI dirancang khusus untuk seluruh mahasiswa dan sivitas akademika Universitas Sriwijaya. Keluhan fasilitas kampus yang biasanya tercecer kini dirangkum ke dalam satu sistem terintegrasi, transparan, dan dapat dipantau hingga selesai diperbaiki.
+              </p>
             </motion.div>
 
             {/* Quick CTAs */}
@@ -148,23 +123,23 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, delay: 0.16 }}
-              className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4 pl-0 sm:pl-[calc(3.75rem+1rem)] md:pl-[calc(4rem+1.25rem)]"
+              className="mt-3.5 min-[380px]:mt-4 md:mt-6 flex flex-wrap items-center gap-2 min-[380px]:gap-2.5 sm:gap-3.5 md:gap-3 lg:gap-4"
             >
               {onStartReport && (
                 <button
                   type="button"
                   onClick={onStartReport}
-                  className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-5 py-2.5 text-xs sm:text-sm font-bold text-[#021427] shadow-lg shadow-[#105292]/30 transition duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
+                  className="flex items-center gap-1.5 min-[380px]:gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-3.5 py-1.5 min-[380px]:px-4 min-[380px]:py-2 lg:px-5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-bold text-[#021427] shadow-lg shadow-[#105292]/30 transition duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
                 >
                   Buat Laporan
-                  <FiArrowRight className="size-3.5" aria-hidden="true" />
+                  <FiArrowRight className="size-3 min-[380px]:size-3.5" aria-hidden="true" />
                 </button>
               )}
               {onLearnMore && (
                 <button
                   type="button"
                   onClick={onLearnMore}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4.5 py-2.5 text-xs sm:text-sm font-semibold text-[#cce5fb] backdrop-blur transition duration-200 hover:bg-white/10 hover:text-white"
+                  className="inline-flex items-center gap-1 min-[380px]:gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 min-[380px]:px-3.5 min-[380px]:py-2 lg:px-4.5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-semibold text-[#cce5fb] backdrop-blur transition duration-200 hover:bg-white/10 hover:text-white"
                 >
                   Pelajari Alur
                 </button>
