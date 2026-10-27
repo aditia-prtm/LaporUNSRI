@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .env*
 !.env.example
+
+# Documentations
+ARCHITECTURE.md
+PROJECT.md

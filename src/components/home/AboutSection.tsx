@@ -58,8 +58,8 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
       <div className="mx-auto max-w-[1280px]">
         {/* Top Section Layout: Mascot on Left (protruding above rectangle), "Satu Wadah" Info Container on Right - Always Side-by-Side */}
         <div className="relative flex items-center gap-3 min-[380px]:gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-          {/* Left Column: Mascot protruding above the rectangle border */}
-          <div className="relative shrink-0 flex justify-center w-[110px] min-[380px]:w-[125px] min-[440px]:w-[145px] sm:w-[180px] md:w-[220px] lg:w-[390px] xl:w-[440px]">
+          {/* Left Column: Mascot protruding above the rectangle border + character label underneath */}
+          <div className="relative shrink-0 flex justify-center w-[120px] min-[380px]:w-[135px] min-[440px]:w-[155px] sm:w-[190px] md:w-[220px] lg:w-[350px] xl:w-[400px]">
             <motion.div
               initial={{ opacity: 0, y: 90, scale: 0.85 }}
               animate={
@@ -71,7 +71,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
                 duration: isContainerInView ? 0.85 : 0.4,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex justify-center w-full"
+              className="relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex flex-col items-center justify-center w-full"
             >
               {/* Soft ambient backlight glow */}
               <motion.div
@@ -84,7 +84,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               {/* Mascot image scaled seamlessly across all screens */}
               <motion.img
                 src={mascotImg}
-                alt="Maskot LaporUNSRI menyapa sivitas kampus"
+                alt="Maskot LaporUNSRI Mamang Sarpras"
                 className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] filter transition-transform duration-300 hover:scale-[1.03]"
                 animate={isContainerInView ? { y: [0, -10, 0] } : { y: 0 }}
                 transition={{
@@ -93,6 +93,16 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
                   ease: 'easeInOut',
                 }}
               />
+
+              {/* Character Name & Role underneath mascot */}
+              <div className="mt-1.5 sm:mt-2 text-center flex flex-col items-center">
+                <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
+                  Mamang Sarpras
+                </span>
+                <span className="mt-0.5 text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-xs lg:text-[13px] text-[#8cb6dc] leading-[1.3] text-center max-w-[135px] sm:max-w-[180px] md:max-w-[240px]">
+                  Ketua Tim Sarana dan Prasarana UNSRI
+                </span>
+              </div>
             </motion.div>
           </div>
 
