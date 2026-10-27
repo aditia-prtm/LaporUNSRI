@@ -69,7 +69,7 @@ export function FaqSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.65, delay: 0.08 }}
-            className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(26px,3.2vw,40px)] font-bold leading-[1.2] tracking-tight text-white"
+            className="mt-4 font-['Poppins','Montserrat','Outfit',sans-serif] text-[clamp(26px,3.2vw,40px)] font-bold leading-[1.2] tracking-tight text-white"
           >
             Pertanyaan yang sering{' '}
             <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
@@ -112,7 +112,7 @@ export function FaqSection() {
                   aria-controls={`${faq.id}-content`}
                   className="flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left transition duration-200"
                 >
-                  <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-sm sm:text-base font-semibold text-white">
+                  <span className="font-['Poppins','Montserrat','Outfit',sans-serif] text-sm sm:text-base font-semibold text-white">
                     {faq.question}
                   </span>
                   <div

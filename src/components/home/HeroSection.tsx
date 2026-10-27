@@ -56,7 +56,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Poppins','Montserrat','Outfit',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 

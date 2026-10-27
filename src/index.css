@@ -2,8 +2,9 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'Outfit', 'Montserrat', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-outfit: 'Outfit', 'Montserrat', 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: 'Poppins', 'Montserrat', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-poppins: 'Poppins', 'Montserrat', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-outfit: 'Poppins', 'Montserrat', 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 :root {
@@ -12,11 +13,11 @@
   --ink: #1e302c;
   --muted: #73817d;
   --line: #e8eeeb;
-  @apply [font-family:'Outfit','Montserrat','Poppins',sans-serif] [color:#1e302c] [background:#fbfcfa] [font-synthesis:none] [text-rendering:optimizeLegibility] [-webkit-font-smoothing:antialiased] [-moz-osx-font-smoothing:grayscale] [font-optical-sizing:auto] [font-weight:400];
+  @apply [font-family:'Poppins','Montserrat','Outfit',sans-serif] [color:#1e302c] [background:#fbfcfa] [font-synthesis:none] [text-rendering:optimizeLegibility] [-webkit-font-smoothing:antialiased] [-moz-osx-font-smoothing:grayscale] [font-optical-sizing:auto] [font-weight:400];
 }
 
 @layer base {
-  body { @apply [font-family:'Outfit','Montserrat','Poppins',sans-serif] [margin:0] [min-width:320px] [min-height:100vh]; }
+  body { @apply [font-family:'Poppins','Montserrat','Outfit',sans-serif] [margin:0] [min-width:320px] [min-height:100vh]; }
   button { @apply [cursor:pointer] [font:inherit]; }
   input { @apply [font:inherit]; }
   button:focus-visible, a:focus-visible, input:focus-visible { @apply [outline:3px_solid_#93d5ba] [outline-offset:3px]; }

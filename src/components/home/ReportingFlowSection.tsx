@@ -102,7 +102,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                 />
                 <div className="hidden md:flex flex-col">
                   <span
-                    className={`font-['Outfit','Montserrat','Poppins',sans-serif] text-sm font-semibold transition-colors duration-200 ${
+                    className={`font-['Poppins','Montserrat','Outfit',sans-serif] text-sm font-semibold transition-colors duration-200 ${
                       i <= active ? 'text-white' : 'text-white/40'
                     }`}
                   >
@@ -134,7 +134,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                 <div className="text-xs font-bold tracking-widest text-[#60b6ff] uppercase mb-2">
                   Langkah {steps[active].number}
                 </div>
-                <h3 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+                <h3 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
                   {steps[active].title}
                 </h3>
                 <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg leading-relaxed text-white/70 max-w-xl">

@@ -99,7 +99,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
 
               {/* Character Name & Role underneath mascot */}
               <div className="mt-1.5 sm:mt-2 text-center flex flex-col items-center">
-                <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
+                <span className="font-['Poppins','Montserrat','Outfit',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
                   Mamang Sarpras
                 </span>
                 <span className="mt-0.5 text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-xs lg:text-[13px] text-[#8cb6dc] leading-[1.3] text-center max-w-[135px] sm:max-w-[180px] md:max-w-[240px]">
@@ -118,7 +118,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               viewport={{ once: true, margin: '-40px' }}
               transition={{ duration: 0.65, delay: 0.08 }}
             >
-              <h2 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
+              <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
                 Satu wadah terpadu untuk kampus yang lebih{' '}
                 <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
                   nyaman & responsif
@@ -191,7 +191,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
                     </span>
                   </div>
 
-                  <h3 className="mt-5 font-['Outfit','Montserrat','Poppins',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
+                  <h3 className="mt-5 font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
                     {item.title}
                   </h3>
                   <p className="mt-2.5 text-xs leading-[1.68] text-[#97b8d4]">
@@ -226,7 +226,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               >
                 <div className="flex items-center gap-1.5">
                   <FiActivity className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
-                  <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <span className="font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                     {stat.number}
                   </span>
                 </div>
