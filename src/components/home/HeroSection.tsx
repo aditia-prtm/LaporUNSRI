@@ -56,12 +56,12 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative flex h-full h-screen h-[100svh] lg:h-[100dvh] min-h-0 lg:min-h-[680px] w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Outfit','Montserrat','Poppins',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[48vh] h-[48svh] lg:h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[56vh] max-lg:h-[56svh] lg:max-lg:h-[56dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[52vh] max-sm:h-[52svh] max-sm:min-h-0 max-sm:pt-[58px]">
+      <div className="relative z-50 pointer-events-none flex h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[54dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[48dvh] max-sm:min-h-0 max-sm:pt-[58px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
           className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
@@ -124,7 +124,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       </motion.div>
 
       {/* Bottom Scroll Down Arrow Indicator */}
-      <div className="absolute bottom-3 max-sm:bottom-[calc(0.75rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
+      <div className="absolute bottom-4 max-sm:bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
         <button
           type="button"
           className="pointer-events-auto flex size-8 items-center justify-center rounded-full border border-white/35 bg-white/15 text-white backdrop-blur-md shadow-md shadow-black/25 transition-all duration-200 hover:bg-white/30 hover:translate-y-0.5 hover:shadow-lg"
