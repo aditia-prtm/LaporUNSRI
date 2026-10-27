@@ -46,7 +46,7 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
   const satuWadahRef = useRef<HTMLDivElement>(null)
   const isContainerInView = useInView(satuWadahRef, {
     amount: 0.15,
-    margin: '0px 0px -40px 0px',
+    margin: '0px 0px -20px 0px',
   })
 
   return (
@@ -61,22 +61,24 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
           {/* Left Column: Mascot protruding above the rectangle border + character label underneath */}
           <div className="relative shrink-0 flex justify-center w-[120px] min-[380px]:w-[135px] min-[440px]:w-[155px] sm:w-[190px] md:w-[220px] lg:w-[350px] xl:w-[400px]">
             <motion.div
-              initial={{ opacity: 0, y: 90, scale: 0.85 }}
+              initial={{ opacity: 0, y: 80, scale: 0.88 }}
               animate={
                 isContainerInView
                   ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: 90, scale: 0.85 }
+                  : { opacity: 0, y: 80, scale: 0.88 }
               }
               transition={{
-                duration: isContainerInView ? 0.85 : 0.4,
-                ease: [0.16, 1, 0.3, 1],
+                duration: isContainerInView ? 0.65 : 0.35,
+                ease: isContainerInView ? [0.16, 1, 0.3, 1] : 'easeOut',
               }}
-              className="relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex flex-col items-center justify-center w-full"
+              className={`relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex flex-col items-center justify-center w-full ${
+                isContainerInView ? 'pointer-events-auto' : 'pointer-events-none'
+              }`}
             >
               {/* Soft ambient backlight glow */}
               <motion.div
                 animate={isContainerInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
-                transition={{ duration: isContainerInView ? 0.85 : 0.4 }}
+                transition={{ duration: isContainerInView ? 0.65 : 0.35 }}
                 className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-36 min-[380px]:size-44 sm:size-52 md:size-64 lg:size-80 rounded-full bg-[#4899e8]/20 blur-2xl sm:blur-3xl"
                 aria-hidden="true"
               />
@@ -85,11 +87,12 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
               <motion.img
                 src={mascotImg}
                 alt="Maskot LaporUNSRI Mamang Sarpras"
-                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] filter transition-transform duration-300 hover:scale-[1.03]"
-                animate={isContainerInView ? { y: [0, -10, 0] } : { y: 0 }}
+                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] transition-transform duration-300 hover:scale-[1.03]"
+                animate={isContainerInView ? { y: [0, -8, 0] } : { y: 0 }}
                 transition={{
                   repeat: isContainerInView ? Infinity : 0,
-                  duration: 4.8,
+                  duration: 4.5,
+                  delay: isContainerInView ? 0.6 : 0,
                   ease: 'easeInOut',
                 }}
               />
