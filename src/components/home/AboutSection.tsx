@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiActivity, FiArrowRight } from 'react-icons/fi'
+import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiArrowRight } from 'react-icons/fi'
 import mascotImg from '../../assets/home/mascot.png'
 
 type AboutSectionProps = {
