@@ -8,7 +8,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
 } from 'framer-motion'
-import { FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight, FiGitCommit } from 'react-icons/fi'
 
 type ReportingFlowSectionProps = {
   onStartReport: () => void
@@ -75,11 +75,54 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
       aria-label="Alur Pelaporan LaporUNSRI"
     >
       {/* panel sticky: diam di layar selama section di-scroll */}
-      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-        <div className="mx-auto grid w-full max-w-5xl grid-cols-[80px_1fr] md:grid-cols-[280px_1fr] items-center gap-8 md:gap-16 px-6 pt-20">
+      <div className="sticky top-0 flex h-screen h-svh items-center justify-center overflow-hidden">
+        {/* Ambient Subtle Glow */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-[500px] rounded-full bg-[#105292]/15 blur-[120px]"
+          aria-hidden="true"
+        />
 
-          {/* KIRI: diagram */}
-          <div className="relative h-[55vh] md:h-[60vh]">
+        <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col px-6">
+          {/* Header Title Section */}
+          <div className="mb-6 sm:mb-8 md:mb-12 text-center md:text-left">
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 rounded-full border border-[#4899e8]/40 bg-[#0c3a6b]/50 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-[#7fc3f8] backdrop-blur-md"
+            >
+              <FiGitCommit className="size-3.5" aria-hidden="true" />
+              <span>Alur Pelaporan</span>
+            </motion.div>
+
+            <motion.h2
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.08 }}
+              className="mt-3 font-['Poppins','Montserrat','Outfit',sans-serif] text-[clamp(22px,2.8vw,38px)] font-bold leading-[1.2] tracking-tight text-white"
+            >
+              Bagaimana laporan Anda{' '}
+              <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
+                diproses?
+              </span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.16 }}
+              className="mt-2 max-w-xl text-xs sm:text-sm leading-relaxed text-[#a4c1db] mx-auto md:mx-0"
+            >
+              Empat tahapan terpadu dari pengunggahan keluhan hingga tindak lanjut dan penyelesaian di lapangan oleh tim sarana dan prasarana.
+            </motion.p>
+          </div>
+
+          <div className="grid grid-cols-[70px_1fr] md:grid-cols-[280px_1fr] items-center gap-6 sm:gap-8 md:gap-16">
+            {/* KIRI: diagram */}
+            <div className="relative h-[42vh] min-h-[250px] max-h-[380px]">
             <div className="absolute left-3 top-0 h-full w-[2px] bg-white/10" />
             <motion.div
               style={{ scaleY: reduce ? 1 : progress, transformOrigin: 'top' }}
@@ -165,6 +208,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
 
         </div>
       </div>
-    </section>
-  )
+    </div>
+  </section>
+)
 }
