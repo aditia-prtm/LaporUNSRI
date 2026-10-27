@@ -1,5 +1,14 @@
-import { motion } from 'framer-motion'
-import { FiEdit3, FiCheckSquare, FiTool, FiEye, FiArrowRight } from 'react-icons/fi'
+import { useRef, useState } from 'react'
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useSpring,
+  useTransform,
+  useMotionValueEvent,
+  useReducedMotion,
+} from 'framer-motion'
+import { FiArrowRight } from 'react-icons/fi'
 
 type ReportingFlowSectionProps = {
   onStartReport: () => void
@@ -8,160 +17,153 @@ type ReportingFlowSectionProps = {
 const steps = [
   {
     number: '01',
-    icon: FiEdit3,
     title: 'Unggah Kendala',
     tag: 'Cepat & Fleksibel',
     description:
-      'Tuliskan permasalahan fasilitas di lingkungan kampus UNSRI. Lampirkan foto bukti fisik dan tentukan lokasi gedung secara spesifik.',
-    perk: 'Dukungan Lapor Anonim',
+      'Tuliskan permasalahan fasilitas di lingkungan kampus UNSRI secara detail. Lampirkan foto bukti fisik dan tentukan lokasi gedung, lantai, hingga ruangan secara spesifik.',
   },
   {
     number: '02',
-    icon: FiCheckSquare,
     title: 'Verifikasi Petugas',
     tag: 'Maks. 24 Jam',
     description:
-      'Tim penanggung jawab sarana & prasarana memvalidasi laporan, menentukan tingkat urgensi, lalu mendisposisikan ke unit terkait.',
-    perk: 'Disposisi Akurat',
+      'Tim penanggung jawab sarana & prasarana memvalidasi keluhan, mengukur urgensi bahaya, lalu mendisposisikan laporan ke unit teknisi terkait secara akurat.',
   },
   {
     number: '03',
-    icon: FiTool,
     title: 'Penanganan Lapangan',
     tag: 'Aksi Nyata',
     description:
-      'Teknisi lapangan diterjunkan langsung untuk inspeksi fisik, perbaikan sarana, atau penggantian komponen yang mengalami kerusakan.',
-    perk: 'Pengerjaan Terpantau',
+      'Teknisi lapangan diterjunkan langsung ke lokasi kerusakan untuk inspeksi fisik, perbaikan sarana, atau penggantian suku cadang yang mengalami kendala.',
   },
   {
     number: '04',
-    icon: FiEye,
     title: 'Selesai & Transparan',
     tag: 'Terbuka Untuk Semua',
     description:
-      'Hasil perbaikan diunggah beserta dokumentasi foto akhir. Anda dan sivitas akademika dapat memverifikasi bahwa fasilitas siap digunakan.',
-    perk: 'Notifikasi & Bukti Foto',
+      'Hasil perbaikan diunggah lengkap dengan dokumentasi foto akhir. Seluruh sivitas akademika dapat memverifikasi dan melihat riwayat fasilitas kampus yang telah tuntas diperbaiki.',
   },
 ]
 
 export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProps) {
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const [active, setActive] = useState(0)
+  const reduce = useReducedMotion() ?? false
+  const n = steps.length
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end end'],
+  })
+
+  // 0 -> 0.85 scroll = 0 -> 1 progress. Sisa 15% jadi jeda supaya step terakhir sempat terbaca.
+  const raw = useTransform(scrollYProgress, [0, 0.85], [0, 1], { clamp: true })
+  const progress = useSpring(raw, { stiffness: 120, damping: 30, mass: 0.2 })
+
+  // step aktif = node terakhir yang sudah disentuh garis
+  useMotionValueEvent(raw, 'change', (v) => {
+    setActive(Math.min(n - 1, Math.floor(v * (n - 1) + 0.001)))
+  })
+
   return (
-    <section id="steps-section" className="relative px-6 py-20 sm:px-10 lg:px-16" aria-label="Alur Pelaporan LaporUNSRI">
-      <div className="mx-auto max-w-[1280px]">
-        {/* Section Header */}
-        <div className="mx-auto max-w-[760px] text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#4899e8]/30 bg-[#0a3560]/40 px-4 py-1.5 text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#7fc3f8] backdrop-blur-md"
-          >
-            <span className="size-1.5 rounded-full bg-[#60b6ff] animate-pulse" aria-hidden="true" />
-            Alur Terbuka & Akuntabel
-          </motion.div>
+    // tinggi total section = n x 100vh -> ini yang memberi "ruang scroll"
+    <section
+      ref={sectionRef}
+      id="steps-section"
+      className="relative w-full"
+      style={{ height: `${n * 100}vh` }}
+      aria-label="Alur Pelaporan LaporUNSRI"
+    >
+      {/* panel sticky: diam di layar selama section di-scroll */}
+      <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <div className="mx-auto grid w-full max-w-5xl grid-cols-[80px_1fr] md:grid-cols-[280px_1fr] items-center gap-8 md:gap-16 px-6 pt-20">
 
-          <motion.h2
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, delay: 0.08 }}
-            className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(26px,3.2vw,42px)] font-bold leading-[1.2] tracking-tight text-white"
-          >
-            Bagaimana aspirasi Anda{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
-              diproses?
-            </span>
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, delay: 0.16 }}
-            className="mx-auto mt-3.5 max-w-[620px] text-[clamp(13.5px,1.2vw,15.5px)] leading-[1.65] text-[#a4c1db]"
-          >
-            Setiap keluhan tercatat dalam sistem terpadu. Pantau linimasa penanganan fasilitas kampus dari awal hingga perbaikan tuntas.
-          </motion.p>
-        </div>
-
-        {/* 4 Steps Grid */}
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((item, index) => {
-            const Icon = item.icon
-            return (
-              <motion.article
-                key={item.number}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.55, delay: index * 0.1 }}
-                whileHover={{ y: -6, transition: { duration: 0.25 } }}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#072445]/45 p-6 backdrop-blur-md shadow-lg shadow-black/20 transition-colors duration-300 hover:border-[#4899e8]/50 hover:bg-[#0b2f59]/60 hover:shadow-2xl hover:shadow-[#0c4278]/25"
+          {/* KIRI: diagram */}
+          <div className="relative h-[55vh] md:h-[60vh]">
+            <div className="absolute left-3 top-0 h-full w-[2px] bg-white/10" />
+            <motion.div
+              style={{ scaleY: reduce ? 1 : progress, transformOrigin: 'top' }}
+              className="absolute left-3 top-0 h-full w-[2px] bg-[#60b6ff] shadow-[0_0_10px_rgba(96,182,255,0.8)]"
+            />
+            {steps.map((s, i) => (
+              <div
+                key={s.number}
+                className="absolute flex items-center gap-3.5"
+                style={{ top: `${(i / (n - 1)) * 100}%`, transform: 'translateY(-50%)' }}
               >
-                {/* Background Ambient Glow */}
-                <div className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-[#105292]/15 blur-2xl transition duration-500 group-hover:bg-[#4899e8]/25" aria-hidden="true" />
-
-                <div>
-                  {/* Top Bar with Number and Tag */}
-                  <div className="flex items-center justify-between">
-                    <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs font-extrabold tracking-widest text-[#60b6ff]/80">
-                      {item.number}
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold text-[#8fc3ee]">
-                      {item.tag}
-                    </span>
-                  </div>
-
-                  {/* Icon */}
-                  <div className="mt-5 inline-flex size-12 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-[#0c4278] to-[#062445] text-[#7fc3f8] shadow-inner transition duration-300 group-hover:border-[#7fc3f8]/50 group-hover:scale-105">
-                    <Icon className="size-5.5" aria-hidden="true" />
-                  </div>
-
-                  {/* Title & Description */}
-                  <h3 className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-xs leading-[1.65] text-[#97b8d4]">
-                    {item.description}
-                  </p>
+                <motion.div
+                  animate={{ scale: active === i ? 1.3 : 1 }}
+                  transition={{ duration: 0.2 }}
+                  className={`size-6 rounded-full border-2 transition-colors duration-200 ${
+                    i <= active
+                      ? 'border-[#60b6ff] bg-[#60b6ff] shadow-[0_0_12px_rgba(96,182,255,0.8)]'
+                      : 'border-white/20 bg-[#020b17]'
+                  }`}
+                />
+                <div className="hidden md:flex flex-col">
+                  <span
+                    className={`font-['Outfit','Montserrat','Poppins',sans-serif] text-sm font-semibold transition-colors duration-200 ${
+                      i <= active ? 'text-white' : 'text-white/40'
+                    }`}
+                  >
+                    {s.title}
+                  </span>
+                  <span
+                    className={`text-[11px] font-medium transition-colors duration-200 ${
+                      i <= active ? 'text-[#8fc3ee]' : 'text-white/20'
+                    }`}
+                  >
+                    {s.tag}
+                  </span>
                 </div>
-
-                {/* Bottom Perk Pill */}
-                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] font-medium text-[#7fc3f8]">
-                  <span>{item.perk}</span>
-                  <span className="transition duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
-                </div>
-              </motion.article>
-            )
-          })}
-        </div>
-
-        {/* Action Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-5 rounded-2xl border border-white/15 bg-gradient-to-r from-[#0a3560]/70 via-[#072545]/60 to-[#0c4278]/50 p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-black/25"
-        >
-          <div className="text-center sm:text-left">
-            <h4 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-base sm:text-lg font-bold text-white">
-              Menemukan fasilitas kampus yang perlu diperbaiki?
-            </h4>
-            <p className="mt-1 text-xs text-[#a4c1db]">
-              Kirimkan laporan Anda sekarang. Butuh waktu kurang dari 2 menit.
-            </p>
+              </div>
+            ))}
           </div>
-          <button
-            type="button"
-            onClick={onStartReport}
-            className="flex items-center gap-2 shrink-0 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-6 py-3 text-xs font-bold text-[#021427] shadow-lg shadow-[#105292]/40 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:brightness-110 active:translate-y-0"
-          >
-            <span>Mulai Melapor</span>
-            <FiArrowRight className="size-4" aria-hidden="true" />
-          </button>
-        </motion.div>
+
+          {/* KANAN: SATU deskripsi saja (TANPA KARTU, TANPA BOX/BORDER) */}
+          <div className="relative min-h-[220px] md:min-h-[260px] flex items-center">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={reduce ? false : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0, y: -16 }}
+                transition={{ duration: 0.25 }}
+                className="w-full"
+              >
+                <div className="text-xs font-bold tracking-widest text-[#60b6ff] uppercase mb-2">
+                  Langkah {steps[active].number}
+                </div>
+                <h3 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight">
+                  {steps[active].title}
+                </h3>
+                <p className="mt-4 sm:mt-6 text-sm sm:text-base md:text-lg leading-relaxed text-white/70 max-w-xl">
+                  {steps[active].description}
+                </p>
+
+                {/* CTA hanya muncul di langkah terakhir */}
+                {active === n - 1 && onStartReport && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.15 }}
+                    className="mt-8"
+                  >
+                    <button
+                      type="button"
+                      onClick={onStartReport}
+                      className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-6 py-3 text-xs sm:text-sm font-bold text-[#021427] shadow-xl shadow-[#105292]/40 transition duration-200 hover:brightness-110 active:translate-y-0 cursor-pointer"
+                    >
+                      <span>Mulai Melapor Sekarang</span>
+                      <FiArrowRight className="size-4" aria-hidden="true" />
+                    </button>
+                  </motion.div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+        </div>
       </div>
     </section>
   )
