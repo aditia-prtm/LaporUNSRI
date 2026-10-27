@@ -73,7 +73,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
       {/* Pinned Sticky Hero Section (Stays anchored while content scrolls over it) */}
       <motion.div
         style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
-        className="sticky top-0 h-screen h-[100svh] lg:h-[100dvh] min-h-0 lg:min-h-[680px] w-full z-10 overflow-hidden origin-center will-change-transform"
+        className="sticky top-0 hero-viewport-height w-full z-10 overflow-hidden origin-center will-change-transform"
       >
         <HeroSection onScrollDown={scrollToAbout} />
       </motion.div>

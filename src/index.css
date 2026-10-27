@@ -33,3 +33,13 @@
   }
 }
 
+.hero-viewport-height {
+  height: 100vh;
+  height: 100dvh;
+}
+
+@media (min-width: 1024px) {
+  .hero-viewport-height {
+    min-height: 680px;
+  }
+}
