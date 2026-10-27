@@ -61,7 +61,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[48dvh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[54dvh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[48dvh] max-sm:min-h-0 max-sm:pt-[58px]">
+      <div className="relative z-50 pointer-events-none flex h-[48svh] min-h-[280px] w-full flex-col pt-[76px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[68px] max-sm:h-[48svh] max-sm:min-h-0 max-sm:pt-[58px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
           className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2.5 text-center max-md:px-4.5"
@@ -119,7 +119,7 @@ export function HeroSection({ onScrollDown }: HeroSectionProps) {
         <picture className="flex w-full items-end justify-center leading-none">
           <source media="(max-width: 640px)" srcSet={kampusUnsriMobile} />
           <source media="(max-width: 1024px)" srcSet={kampusUnsriTab} />
-          <img src={kampusUnsriDesktop} alt="Gedung Rektorat Kampus Universitas Sriwijaya" className="block h-auto w-full min-w-full max-w-none object-cover object-bottom will-change-transform" />
+          <img src={kampusUnsriDesktop} alt="Gedung Rektorat Kampus Universitas Sriwijaya" className="block h-auto w-full min-w-full max-w-none object-cover object-bottom" />
         </picture>
       </motion.div>
 

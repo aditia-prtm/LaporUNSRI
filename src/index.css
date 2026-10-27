@@ -35,11 +35,12 @@
 
 .hero-viewport-height {
   height: 100vh;
-  height: 100dvh;
+  height: 100svh;
 }
 
 @media (min-width: 1024px) {
   .hero-viewport-height {
+    height: 100vh;
     min-height: 680px;
   }
 }
