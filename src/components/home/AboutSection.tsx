@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiActivity, FiArrowRight } from 'react-icons/fi'
+import mascotImg from '../../assets/home/mascot.png'
 
 type AboutSectionProps = {
   onLearnMore?: () => void
@@ -41,49 +43,119 @@ const stats = [
 ]
 
 export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) {
+  const satuWadahRef = useRef<HTMLDivElement>(null)
+  const isContainerInView = useInView(satuWadahRef, {
+    amount: 0.15,
+    margin: '0px 0px -40px 0px',
+  })
+
   return (
     <section
       id="about-section"
-      className="relative px-6 pt-16 pb-12 sm:px-10 md:pt-24 md:pb-16 lg:px-16"
+      className="relative px-4 min-[380px]:px-5 sm:px-8 md:px-10 lg:px-16 pt-8 min-[380px]:pt-10 md:pt-16 pb-12 md:pb-16"
       aria-label="Tentang LaporUNSRI"
     >
       <div className="mx-auto max-w-[1280px]">
-        {/* Top Header Badge & Headline */}
-        <div className="mx-auto max-w-[820px] text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#4899e8]/30 bg-[#0c4278]/40 px-3.5 py-1 text-xs font-semibold text-[#7fc3f8] backdrop-blur-md"
-          >
-            <span className="size-1.5 rounded-full bg-[#60b6ff] animate-pulse" aria-hidden="true" />
-            Tentang LaporUNSRI
-          </motion.div>
+        {/* Top Section Layout: Mascot on Left (protruding above rectangle), "Satu Wadah" Info Container on Right - Always Side-by-Side */}
+        <div className="relative flex items-center gap-3 min-[380px]:gap-4 sm:gap-6 md:gap-8 lg:gap-12">
+          {/* Left Column: Mascot protruding above the rectangle border + character label underneath */}
+          <div className="relative shrink-0 flex justify-center w-[120px] min-[380px]:w-[135px] min-[440px]:w-[155px] sm:w-[190px] md:w-[220px] lg:w-[350px] xl:w-[400px]">
+            <motion.div
+              initial={{ opacity: 0, y: 90, scale: 0.85 }}
+              animate={
+                isContainerInView
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 90, scale: 0.85 }
+              }
+              transition={{
+                duration: isContainerInView ? 0.85 : 0.4,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex flex-col items-center justify-center w-full"
+            >
+              {/* Soft ambient backlight glow */}
+              <motion.div
+                animate={isContainerInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
+                transition={{ duration: isContainerInView ? 0.85 : 0.4 }}
+                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-36 min-[380px]:size-44 sm:size-52 md:size-64 lg:size-80 rounded-full bg-[#4899e8]/20 blur-2xl sm:blur-3xl"
+                aria-hidden="true"
+              />
 
-          <motion.h2
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, delay: 0.08 }}
-            className="mt-4 font-['Outfit','Montserrat','Poppins',sans-serif] text-[clamp(26px,3.2vw,42px)] font-bold leading-[1.2] tracking-tight text-white"
-          >
-            Satu wadah terpadu untuk kampus yang lebih{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
-              nyaman & responsif
-            </span>
-          </motion.h2>
+              {/* Mascot image scaled seamlessly across all screens */}
+              <motion.img
+                src={mascotImg}
+                alt="Maskot LaporUNSRI Mamang Sarpras"
+                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] filter transition-transform duration-300 hover:scale-[1.03]"
+                animate={isContainerInView ? { y: [0, -10, 0] } : { y: 0 }}
+                transition={{
+                  repeat: isContainerInView ? Infinity : 0,
+                  duration: 4.8,
+                  ease: 'easeInOut',
+                }}
+              />
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.65, delay: 0.16 }}
-            className="mx-auto mt-4 max-w-[680px] text-[clamp(13.5px,1.2vw,15.5px)] leading-[1.65] text-[#a4c1db]"
-          >
-            LaporUNSRI dirancang khusus untuk seluruh mahasiswa dan sivitas akademika Universitas Sriwijaya.
-            Keluhan fasilitas yang biasanya tercecer di obrolan grup kini dirangkum ke dalam satu sistem terintegrasi, transparan, dan dapat dipantau hingga selesai diperbaiki.
-          </motion.p>
+              {/* Character Name & Role underneath mascot */}
+              <div className="mt-1.5 sm:mt-2 text-center flex flex-col items-center">
+                <span className="font-['Outfit','Montserrat','Poppins',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
+                  Mamang Sarpras
+                </span>
+                <span className="mt-0.5 text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-xs lg:text-[13px] text-[#8cb6dc] leading-[1.3] text-center max-w-[135px] sm:max-w-[180px] md:max-w-[240px]">
+                  Ketua Tim Sarana dan Prasarana UNSRI
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: "Tulisan Satu Wadah" Container */}
+          <div ref={satuWadahRef} className="flex-1 min-w-0 flex flex-col justify-center">
+            {/* Main content: Title + Description */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.65, delay: 0.08 }}
+            >
+              <h2 className="font-['Outfit','Montserrat','Poppins',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
+                Satu wadah terpadu untuk kampus yang lebih{' '}
+                <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
+                  nyaman & responsif
+                </span>
+              </h2>
+
+              <p className="mt-2 min-[380px]:mt-2.5 md:mt-3 text-[11.5px] min-[380px]:text-xs md:text-[13px] lg:text-[15px] leading-[1.6] sm:leading-[1.65] text-[#a4c1db] max-w-[640px]">
+                LaporUNSRI dirancang khusus untuk seluruh mahasiswa dan sivitas akademika Universitas Sriwijaya. Keluhan fasilitas kampus yang biasanya tercecer kini dirangkum ke dalam satu sistem terintegrasi, transparan, dan dapat dipantau hingga selesai diperbaiki.
+              </p>
+            </motion.div>
+
+            {/* Quick CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.65, delay: 0.16 }}
+              className="mt-3.5 min-[380px]:mt-4 md:mt-6 flex flex-wrap items-center gap-2 min-[380px]:gap-2.5 sm:gap-3.5 md:gap-3 lg:gap-4"
+            >
+              {onStartReport && (
+                <button
+                  type="button"
+                  onClick={onStartReport}
+                  className="flex items-center gap-1.5 min-[380px]:gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-3.5 py-1.5 min-[380px]:px-4 min-[380px]:py-2 lg:px-5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-bold text-[#021427] shadow-lg shadow-[#105292]/30 transition duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
+                >
+                  Buat Laporan
+                  <FiArrowRight className="size-3 min-[380px]:size-3.5" aria-hidden="true" />
+                </button>
+              )}
+              {onLearnMore && (
+                <button
+                  type="button"
+                  onClick={onLearnMore}
+                  className="inline-flex items-center gap-1 min-[380px]:gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 min-[380px]:px-3.5 min-[380px]:py-2 lg:px-4.5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-semibold text-[#cce5fb] backdrop-blur transition duration-200 hover:bg-white/10 hover:text-white"
+                >
+                  Pelajari Alur
+                </button>
+              )}
+            </motion.div>
+          </div>
         </div>
 
         {/* Feature Pillars: 3 Cards */}
