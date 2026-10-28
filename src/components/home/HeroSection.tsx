@@ -12,6 +12,7 @@ import kampusUnsriMobile from '../../assets/home/kampus-unsri-transparan-mobile.
 
 type HeroSectionProps = {
   onScrollDown?: () => void
+  onScrollToSteps?: () => void
   onStartReport?: () => void
 }
 
@@ -38,12 +39,12 @@ const lowerClouds = [
   { img: awan3, pos: 'left-[3360px] bottom-[35px] h-[320px] opacity-[0.92]' },
 ]
 
-export function HeroSection({ onScrollDown, onStartReport }: HeroSectionProps) {
+export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: HeroSectionProps) {
   const lenis = useLenis()
 
-  const handleScrollClick = () => {
-    if (onScrollDown) {
-      onScrollDown()
+  const handleScrollToSteps = () => {
+    if (onScrollToSteps) {
+      onScrollToSteps()
       return
     }
     if (lenis) {
@@ -53,6 +54,17 @@ export function HeroSection({ onScrollDown, onStartReport }: HeroSectionProps) {
       if (nextSection) {
         nextSection.scrollIntoView({ behavior: 'smooth' })
       }
+    }
+  }
+
+  const handleScrollClick = () => {
+    if (onScrollDown) {
+      onScrollDown()
+      return
+    }
+    const nextSection = document.getElementById('about-section')
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -101,7 +113,7 @@ export function HeroSection({ onScrollDown, onStartReport }: HeroSectionProps) {
             </button>
             <button
               type="button"
-              onClick={handleScrollClick}
+              onClick={handleScrollToSteps}
               className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-[#e1f0ff] backdrop-blur-md shadow-sm shadow-black/20 transition-all duration-200 hover:bg-white/20 hover:border-white/40 hover:text-white hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <span>Pelajari Alur</span>

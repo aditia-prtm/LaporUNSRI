@@ -82,6 +82,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         onNavigate={onNavigate}
         onScrollDown={scrollToAbout}
         onScrollToAbout={scrollToAbout}
+        onScrollToSteps={scrollToSteps}
         onScrollToFaq={scrollToFaq}
       />
 
@@ -94,6 +95,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
       >
         <HeroSection
           onScrollDown={scrollToAbout}
+          onScrollToSteps={scrollToSteps}
           onStartReport={() => onNavigate('/auth')}
         />
       </motion.div>

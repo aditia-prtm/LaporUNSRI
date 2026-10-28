@@ -3,8 +3,9 @@ import { BiMenu } from 'react-icons/bi'
 
 type LandingNavbarProps = {
   onNavigate: (path: string) => void
-  onScrollDown: () => void
+  onScrollDown?: () => void
   onScrollToAbout?: () => void
+  onScrollToSteps?: () => void
   onScrollToFaq?: () => void
 }
 
@@ -17,7 +18,7 @@ const menuItems = [
   { label: 'Portal Petugas', action: 'officer' },
 ] as const
 
-export function LandingNavbar({ onNavigate, onScrollDown, onScrollToAbout, onScrollToFaq }: LandingNavbarProps) {
+export function LandingNavbar({ onNavigate, onScrollDown, onScrollToAbout, onScrollToSteps, onScrollToFaq }: LandingNavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
@@ -41,7 +42,13 @@ export function LandingNavbar({ onNavigate, onScrollDown, onScrollToAbout, onScr
       return
     }
     if (action === 'steps') {
-      onScrollDown()
+      if (onScrollToSteps) {
+        onScrollToSteps()
+      } else if (onScrollDown) {
+        onScrollDown()
+      } else {
+        document.getElementById('steps-section')?.scrollIntoView({ behavior: 'smooth' })
+      }
       return
     }
     if (action === 'faq') {
