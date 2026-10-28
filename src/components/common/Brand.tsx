@@ -2,29 +2,51 @@ type BrandProps = {
   className?: string
   onClick?: () => void
   variant?: 'default' | 'light'
+  showSubtitle?: boolean
+  compact?: boolean
 }
 
-export function Brand({ className = '', onClick, variant = 'default' }: BrandProps) {
-  const light = variant === 'light'
-  const brandClassName = [
-    'inline-flex items-center gap-2.5 text-lg font-extrabold tracking-tight no-underline',
-    light ? 'text-white' : 'text-[var(--ink)]',
-    className,
-  ].filter(Boolean).join(' ')
+export function Brand({
+  className = '',
+  onClick,
+  variant = 'default',
+  showSubtitle = true,
+  compact = false,
+}: BrandProps) {
+  const isLight = variant === 'light' || variant === 'default'
 
   return (
     <a
-      className={brandClassName}
+      className={`group flex flex-col items-start no-underline transition-all duration-200 hover:-translate-y-px select-none cursor-pointer ${className}`}
       href="/"
-      aria-label="LaporUnsri beranda"
+      aria-label="LaporUNSRI Beranda"
       onClick={(event) => {
         if (!onClick) return
         event.preventDefault()
         onClick()
       }}
     >
-      <span className={`inline-grid size-8.5 place-items-center rounded-xl text-lg font-extrabold ${light ? 'bg-white/15 shadow-none' : 'bg-[var(--green)] shadow-md shadow-emerald-900/15'} text-white`} aria-hidden="true">L</span>
-      <span>Lapor<span className={light ? 'text-[#a8e2c0]' : 'text-[var(--green)]'}>Unsri</span></span>
+      <span
+        className={`flex items-baseline gap-0.5 font-['Poppins','Montserrat','Outfit',sans-serif] leading-none tracking-tight transition-colors ${
+          compact ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
+        } ${isLight ? 'text-white' : 'text-white'}`}
+      >
+        <span className="font-normal opacity-90">lapor</span>
+        <strong className="font-extrabold tracking-tight">UNSRI</strong>
+        <i
+          className="ml-0.5 h-1.5 w-1.5 -translate-y-1 rounded-full bg-[#60b6ff] shadow-[0_0_10px_#60b6ff]"
+          aria-hidden="true"
+        />
+      </span>
+      {showSubtitle && (
+        <span
+          className={`mt-1 font-semibold uppercase tracking-[0.24em] transition-colors ${
+            compact ? 'text-[7px]' : 'text-[8px]'
+          } text-[rgba(220,238,255,0.72)] group-hover:text-white/90`}
+        >
+          Layanan Aspirasi Kampus
+        </span>
+      )}
     </a>
   )
 }

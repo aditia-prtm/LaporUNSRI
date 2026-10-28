@@ -147,10 +147,7 @@ function ReportDetailRoute() {
   return <ReportDetailPage profile={profile} reportId={reportId} onNavigate={onNavigate} />
 }
 
-function NotFoundRoute() {
-  const navigate = useNavigate()
-  return <main className="access-page"><div className="access-card"><span className="eyebrow">404</span><h1>Halaman tidak ditemukan</h1><p>Alamat yang Anda buka tidak tersedia.</p><button className="button button-primary" onClick={() => navigate('/')}>Kembali ke beranda</button></div></main>
-}
+const NotFoundPage = lazy(() => import('../pages/public/NotFoundPage').then((module) => ({ default: module.NotFoundPage })))
 
 export function AppRoutes() {
   return (
@@ -170,7 +167,7 @@ export function AppRoutes() {
           <Route path="laporan/:reportId/edit" element={<EditReportRoute />} />
           <Route path="laporan/:reportId" element={<ReportDetailRoute />} />
         </Route>
-        <Route path="*" element={<NotFoundRoute />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   )

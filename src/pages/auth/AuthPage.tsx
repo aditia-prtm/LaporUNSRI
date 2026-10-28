@@ -7,6 +7,7 @@ import { useAuth } from '../../hooks/useAuth'
 import { getProfile, loginUser, registerUser } from '../../services/authService'
 import { isSupabaseConfigured } from '../../lib/supabaseClient'
 import type { AuthPageKind, UserRole } from '../../types/auth'
+import { FiArrowRight, FiLock, FiMail, FiUser } from 'react-icons/fi'
 
 type AuthPageProps = {
   kind: AuthPageKind
@@ -37,8 +38,6 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
   useEffect(() => {
     // A newly authenticated session can arrive before submit() checks its role.
-    // Wait until login validation finishes so a wrong-role account is rejected
-    // on the page where it attempted to sign in.
     if (loading || busy || roleRejected || !profile) return
     const destination = profile.role === 'admin'
       ? '/admin/dashboard'
@@ -77,7 +76,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
       if (officerPage && nextProfile.role !== 'petugas') {
         setRoleRejected(true)
         await signOut()
-        throw new Error('Halaman ini hanya untuk akun petugas. Gunakan halaman login pengguna untuk akun mahasiswa atau admin.')
+        throw new Error('Halaman ini khusus akun petugas. Gunakan halaman login pengguna untuk akun mahasiswa atau admin.')
       }
       if (!officerPage && nextProfile.role === 'petugas') {
         setRoleRejected(true)
@@ -96,51 +95,173 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
     }
   }
 
-  const title = officerPage ? 'Portal petugas' : 'Selamat datang kembali'
+  const title = officerPage ? 'Portal Petugas' : 'Selamat Datang'
 
   return (
     <AuthLayout officerPage={officerPage} onNavigate={onNavigate}>
-      <div className="w-full max-w-md">
+      <div className="relative rounded-3xl border border-white/12 bg-[#051c36]/75 p-6 sm:p-8 backdrop-blur-xl shadow-2xl shadow-black/50">
+        {/* Header inside Card */}
         <div className="mb-6">
-          <span className="eyebrow">{officerPage ? 'Akses petugas' : 'Akun LaporUnsri'}</span>
-          <h2 className="mb-2 mt-2 font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl tracking-tight max-sm:text-xl">{loading ? 'Memeriksa sesi…' : profile ? 'Membuka dashboard' : mode === 'login' ? title : 'Buat akun baru'}</h2>
-          <p className="m-0 text-xs leading-relaxed text-[#84908b]">{profile ? 'Anda akan diarahkan ke halaman sesuai role akun.' : mode === 'login' ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan.' : 'Masuk untuk mengirim dan memantau laporan.') : 'Konfirmasi email diperlukan sebelum Anda bisa masuk.'}</p>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#60b6ff]">
+              {officerPage ? 'Akses Khusus Petugas' : 'Autentikasi Kampus'}
+            </span>
+            {officerPage && (
+              <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-300">
+                Staff Only
+              </span>
+            )}
+          </div>
+          <h2 className="mt-2 font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl font-bold tracking-tight text-white">
+            {loading ? 'Memeriksa sesi...' : profile ? 'Membuka dashboard...' : mode === 'login' ? title : 'Buat Akun Baru'}
+          </h2>
+          <p className="mt-1 text-xs leading-relaxed text-[#8cb6dc]">
+            {profile
+              ? 'Anda akan diarahkan ke halaman sesuai role akun Anda.'
+              : mode === 'login'
+                ? (officerPage ? 'Masuk untuk mengelola laporan yang ditugaskan kepada Anda.' : 'Masuk untuk membuat laporan dan memantau perkembangannya.')
+                : 'Lengkapi formulir di bawah ini untuk mendaftar akun baru.'}
+          </p>
         </div>
+
+        {/* Tab switch for User Login/Register */}
+        {!officerPage && !profile && !loading && (
+          <div className="mb-6 grid grid-cols-2 rounded-xl border border-white/10 bg-[#031122]/60 p-1">
+            <button
+              type="button"
+              className={`rounded-lg py-2 text-xs font-semibold transition-all ${
+                mode === 'login'
+                  ? 'bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] text-[#021427] shadow-sm'
+                  : 'text-[#8cb6dc] hover:text-white'
+              }`}
+              onClick={() => {
+                setMode('login')
+                setError('')
+                setNotice('')
+              }}
+            >
+              Masuk
+            </button>
+            <button
+              type="button"
+              className={`rounded-lg py-2 text-xs font-semibold transition-all ${
+                mode === 'register'
+                  ? 'bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] text-[#021427] shadow-sm'
+                  : 'text-[#8cb6dc] hover:text-white'
+              }`}
+              onClick={() => {
+                setMode('register')
+                setError('')
+                setNotice('')
+              }}
+            >
+              Daftar Akun
+            </button>
+          </div>
+        )}
 
         {notice && <FeedbackMessage tone="success">{notice}</FeedbackMessage>}
         {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
-        {loading ? <div className="message message-warning" role="status">Sedang memeriksa sesi akun…</div> : profile ? (
-          <div className="message message-warning" role="status">Mengarahkan ke dashboard {roleLabel(profile.role)}…</div>
-        ) : <>
-          {!isSupabaseConfigured && <FeedbackMessage tone="warning">Supabase belum dikonfigurasi. Lengkapi URL dan publishable key di file .env untuk mengaktifkan autentikasi.</FeedbackMessage>}
-          <form className="grid gap-3.5 [&_label]:flex [&_label]:flex-wrap [&_label]:items-baseline [&_label]:gap-1.5 [&_label]:text-xs [&_label]:font-bold [&_label]:text-[#394741] [&_label_input]:h-11 [&_label_input]:w-full [&_label_input]:rounded-lg [&_label_input]:border [&_label_input]:border-[#dfe7e2] [&_label_input]:bg-white [&_label_input]:px-3.5 [&_label_input]:text-xs [&_label_input]:font-normal [&_label_input]:text-[var(--ink)] [&_label_input]:focus:border-[#70b693] [&_label_input]:focus:outline-none [&_label_input]:focus:ring-2 [&_label_input]:focus:ring-[#70b693]/20 [&_label_input::placeholder]:text-[#a9b3ae]" onSubmit={(event) => void submit(event)}>
-            {mode === 'register' && <>
-              <label>Nama lengkap<input required autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Nama Anda" /></label>
-              <label>{officerPage ? 'NIP' : 'NIM'}<span className="text-[10px] font-normal text-[#9aa59f]">Opsional</span><input autoComplete="off" value={nimNip} onChange={(event) => setNimNip(event.target.value)} placeholder={officerPage ? 'Nomor induk pegawai' : 'Nomor induk mahasiswa'} /></label>
-            </>}
-            <label>Email<input required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="nama@email.com" /></label>
-            <PasswordField
-              value={password}
-              onChange={setPassword}
-              mode={mode}
-              visible={showPassword}
-              onToggleVisibility={() => setShowPassword((visible) => !visible)}
-            />
-            <button className="mt-1 flex min-h-11 w-full items-center justify-center gap-4 rounded-lg bg-[var(--green)] px-5 text-sm font-bold text-white shadow-md shadow-emerald-900/10 transition hover:-translate-y-px hover:bg-[var(--green-dark)] disabled:cursor-not-allowed disabled:opacity-55" disabled={busy || !isSupabaseConfigured}>
-              {busy ? 'Mohon tunggu…' : mode === 'login' ? 'Masuk' : 'Daftar'}
-            </button>
-          </form>
-          <p className="mt-4 text-center text-xs text-[#87928d]">
-            {mode === 'login' ? 'Belum punya akun?' : 'Sudah punya akun?'}{' '}
-            <button className="bg-transparent p-1 text-xs font-bold text-[var(--green)]" onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setNotice(''); setError('') }}>
-              {mode === 'login' ? 'Daftar sekarang' : 'Masuk'}
-            </button>
-          </p>
-          {!officerPage && <p className="mt-4 rounded-lg bg-[#f3f8f4] px-3 py-2.5 text-xs leading-relaxed text-[#718079]">Akun admin masuk melalui halaman ini menggunakan akun admin yang sudah dibuat.</p>}
-        </>}
+        {loading ? (
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-white/10 bg-white/5 py-6 text-xs text-[#8cb6dc]" role="status">
+            <span className="size-2 animate-ping rounded-full bg-[#60b6ff]" />
+            <span>Sedang memeriksa sesi akun...</span>
+          </div>
+        ) : profile ? (
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-white/10 bg-white/5 py-6 text-xs text-[#8cb6dc]" role="status">
+            <span className="size-2 animate-ping rounded-full bg-[#34d399]" />
+            <span>Mengarahkan ke dashboard {roleLabel(profile.role)}...</span>
+          </div>
+        ) : (
+          <>
+            {!isSupabaseConfigured && (
+              <FeedbackMessage tone="warning">
+                Supabase belum dikonfigurasi. Lengkapi URL dan publishable key di file .env.
+              </FeedbackMessage>
+            )}
 
-        <div className="mt-6 flex items-center justify-center gap-2 border-t border-[#eef1ef] pt-4 text-xs text-[#a0aaa5] max-sm:mt-5"><span className="text-xs text-[#79a991]">&#9633;</span> Data akun tersimpan dengan aman.</div>
+            <form className="space-y-4" onSubmit={(event) => void submit(event)}>
+              {mode === 'register' && (
+                <>
+                  <label className="flex flex-col gap-1.5 text-xs font-semibold text-[#cce5fb]">
+                    <span>Nama Lengkap</span>
+                    <div className="relative">
+                      <input
+                        required
+                        autoComplete="name"
+                        value={fullName}
+                        onChange={(event) => setFullName(event.target.value)}
+                        placeholder="Nama lengkap Anda"
+                        className="h-11 w-full rounded-xl border border-white/15 bg-[#031528]/80 px-3.5 pr-10 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25"
+                      />
+                      <FiUser className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sm text-[#8cb6dc]" />
+                    </div>
+                  </label>
+
+                  <label className="flex flex-col gap-1.5 text-xs font-semibold text-[#cce5fb]">
+                    <div className="flex items-center justify-between">
+                      <span>{officerPage ? 'NIP' : 'NIM'}</span>
+                      <span className="text-[10px] font-normal text-[#8cb6dc]/70">Opsional</span>
+                    </div>
+                    <input
+                      autoComplete="off"
+                      value={nimNip}
+                      onChange={(event) => setNimNip(event.target.value)}
+                      placeholder={officerPage ? 'Nomor Induk Pegawai' : 'Nomor Induk Mahasiswa'}
+                      className="h-11 w-full rounded-xl border border-white/15 bg-[#031528]/80 px-3.5 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25"
+                    />
+                  </label>
+                </>
+              )}
+
+              <label className="flex flex-col gap-1.5 text-xs font-semibold text-[#cce5fb]">
+                <span>Alamat Email</span>
+                <div className="relative">
+                  <input
+                    required
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="nama@unsri.ac.id atau nama@email.com"
+                    className="h-11 w-full rounded-xl border border-white/15 bg-[#031528]/80 px-3.5 pr-10 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25"
+                  />
+                  <FiMail className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-sm text-[#8cb6dc]" />
+                </div>
+              </label>
+
+              <PasswordField
+                value={password}
+                onChange={setPassword}
+                mode={mode}
+                visible={showPassword}
+                onToggleVisibility={() => setShowPassword((visible) => !visible)}
+              />
+
+              <button
+                type="submit"
+                className="group relative mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#2b8ced] px-5 text-sm font-bold text-[#021427] shadow-[0_4px_20px_rgba(58,147,232,0.4)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(58,147,232,0.6)] hover:brightness-105 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                disabled={busy || !isSupabaseConfigured}
+              >
+                <span>{busy ? 'Memproses...' : mode === 'login' ? 'Masuk ke Akun' : 'Daftarkan Akun'}</span>
+                {!busy && <FiArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-1" />}
+              </button>
+            </form>
+
+            {!officerPage && (
+              <div className="mt-5 rounded-xl border border-white/10 bg-[#031224]/60 p-3 text-center text-xs leading-relaxed text-[#8cb6dc]">
+                Akun administrator universitas masuk melalui form ini menggunakan kredensial admin.
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Security Footer */}
+        <div className="mt-6 flex items-center justify-center gap-2 border-t border-white/10 pt-4 text-[11px] text-[#8cb6dc]">
+          <FiLock className="size-3 text-[#60b6ff]" />
+          <span>Koneksi aman & data akun terenkripsi</span>
+        </div>
       </div>
     </AuthLayout>
   )
