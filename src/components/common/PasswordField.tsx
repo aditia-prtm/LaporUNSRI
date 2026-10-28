@@ -10,12 +10,12 @@ type PasswordFieldProps = {
 
 export function PasswordField({ value, onChange, mode, visible, onToggleVisibility }: PasswordFieldProps) {
   return (
-    <label>
-      Kata sandi
+    <label className="flex flex-col gap-1.5 text-xs font-semibold text-[#cce5fb]">
+      <span>Kata sandi</span>
       <div className="relative w-full">
         <input
           required
-          className="h-11 w-full rounded-lg border border-[#dfe7e2] bg-white px-3.5 pr-11 text-xs font-normal text-[var(--ink)] placeholder:text-[#a9b3ae] focus:border-[#70b693] focus:outline-none focus:ring-2 focus:ring-[#70b693]/20"
+          className="h-11 w-full rounded-xl border border-white/15 bg-[#031528]/80 px-3.5 pr-11 text-xs font-normal text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25"
           type={visible ? 'text' : 'password'}
           minLength={6}
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -24,7 +24,7 @@ export function PasswordField({ value, onChange, mode, visible, onToggleVisibili
           placeholder={mode === 'login' ? 'Masukkan kata sandi' : 'Minimal 6 karakter'}
         />
         <button
-          className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-md bg-transparent text-base text-[#82918a] hover:bg-[#f0f6f2] hover:text-[var(--green)]"
+          className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg bg-transparent text-sm text-[#8cb6dc] transition hover:bg-white/10 hover:text-white"
           type="button"
           aria-label={visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
           aria-pressed={visible}
