@@ -94,8 +94,8 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         >
           <h1 className="m-0 text-[clamp(36px,3.5vw,48px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(27px,4.2vw,40px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,31px)] max-sm:leading-[1.2]">
-            The value is in the{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">journey</span>
+            Building a better campus,{' '}
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">together</span>
           </h1>
           <p className="mx-auto mt-3 max-w-[600px] text-[15px] lg:text-[17px] font-normal leading-[1.58] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[500px] max-lg:mt-3 max-lg:leading-[1.56] max-sm:mt-2.5 max-sm:max-w-[325px] max-sm:text-[12.5px] max-sm:leading-[1.52]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
