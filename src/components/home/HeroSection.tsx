@@ -167,7 +167,7 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
       </motion.div>
 
       {/* Bottom Scroll Down Arrow Indicator */}
-      <div className="absolute bottom-4 max-sm:bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
+      <div className="absolute bottom-8 max-sm:bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] inset-x-0 z-[35] flex w-full items-center justify-center pointer-events-none">
         <button
           type="button"
           className="pointer-events-auto flex size-8 items-center justify-center rounded-full border border-white/35 bg-white/15 text-white backdrop-blur-md shadow-md shadow-black/25 transition-all duration-200 hover:bg-white/30 hover:translate-y-0.5 hover:shadow-lg"

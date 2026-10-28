@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter, useLocation } from 'react-router-dom'
 import { ReactLenis, useLenis } from 'lenis/react'
 import { AuthProvider } from './context/AuthContext'
 import { AppRoutes } from './routes/AppRoutes'
+import { LoadingScreen } from './components/common/LoadingScreen'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -20,6 +21,16 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  const [initialLoading, setInitialLoading] = useState(true)
+
+  useEffect(() => {
+    // Saat web dibuka, tampilkan loading screen sejenak lalu lakukan transisi fade-out mulus
+    const timer = window.setTimeout(() => {
+      setInitialLoading(false)
+    }, 600)
+    return () => window.clearTimeout(timer)
+  }, [])
+
   return (
     <ReactLenis
       root
@@ -29,6 +40,7 @@ export default function App() {
         smoothWheel: true,
       }}
     >
+      <LoadingScreen isLoading={initialLoading} fadeDuration={0.6} />
       <BrowserRouter>
         <ScrollToTop />
         <AuthProvider>

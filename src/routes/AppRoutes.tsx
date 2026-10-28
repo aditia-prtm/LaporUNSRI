@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { StudentLayout } from '../components/layout/StudentLayout'
+import { LoadingScreen } from '../components/common/LoadingScreen'
 import { useAuth } from '../hooks/useAuth'
 import type { UserProfile } from '../types/auth'
 
@@ -32,8 +33,7 @@ function AuthRoute({ kind }: { kind: 'user' | 'officer' }) {
 function OfficerLayoutRoute() {
   const { profile, loading, signOut } = useAuth()
   const navigate = useNavigate()
-  if (loading) return <main className="access-page"><div className="access-card">Memeriksa sesi akun...</div></main>
-  if (!profile || profile.role !== 'petugas') return <Navigate to="/petugas" replace />
+  if (!loading && (!profile || profile.role !== 'petugas')) return <Navigate to="/petugas" replace />
   const handleSignOut = async () => {
     try {
       await signOut()
@@ -42,15 +42,19 @@ function OfficerLayoutRoute() {
       // Keep the workspace open if Supabase cannot complete sign-out.
     }
   }
-  return <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />
+  return (
+    <>
+      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      {profile && <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />}
+    </>
+  )
 }
 
 function AdminLayoutRoute() {
   const { profile, loading, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
-  if (loading) return <main className="access-page"><div className="access-card">Memeriksa sesi akun...</div></main>
-  if (!profile || profile.role !== 'admin') {
+  if (!loading && (!profile || profile.role !== 'admin')) {
     const destination = profile?.role === 'petugas' ? '/petugas/dashboard' : profile?.role === 'mahasiswa' ? '/mahasiswa' : '/auth'
     return <Navigate to={destination} replace />
   }
@@ -63,7 +67,12 @@ function AdminLayoutRoute() {
     }
   }
   const section = location.pathname.replace(/^\/admin\/?/, '').split('/')[0] || 'dashboard'
-  return <AdminDashboardPage profile={profile} section={section} onNavigate={navigate} onSignOut={() => void handleSignOut()} />
+  return (
+    <>
+      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      {profile && <AdminDashboardPage profile={profile} section={section} onNavigate={navigate} onSignOut={() => void handleSignOut()} />}
+    </>
+  )
 }
 
 function StudentLayoutRoute() {
@@ -71,8 +80,7 @@ function StudentLayoutRoute() {
   const location = useLocation()
   const navigate = useNavigate()
 
-  if (loading) return <main className="access-page"><div className="access-card">Memeriksa sesi akun...</div></main>
-  if (!profile || profile.role !== 'mahasiswa') {
+  if (!loading && (!profile || profile.role !== 'mahasiswa')) {
     return <Navigate to="/auth" replace state={{ from: location.pathname }} />
   }
 
@@ -91,7 +99,16 @@ function StudentLayoutRoute() {
     }
   }
 
-  return <StudentLayout profile={profile} active={active} onNavigate={navigate} onSignOut={() => void handleSignOut()}><Outlet context={profile} /></StudentLayout>
+  return (
+    <>
+      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      {profile && (
+        <StudentLayout profile={profile} active={active} onNavigate={navigate} onSignOut={() => void handleSignOut()}>
+          <Outlet context={profile} />
+        </StudentLayout>
+      )}
+    </>
+  )
 }
 
 function useStudentPage() {
@@ -137,7 +154,7 @@ function NotFoundRoute() {
 
 export function AppRoutes() {
   return (
-    <Suspense fallback={<main className="access-page"><div className="access-card">Memuat halaman...</div></main>}>
+    <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/" element={<LandingRoute />} />
         <Route path="/auth" element={<AuthRoute kind="user" />} />
