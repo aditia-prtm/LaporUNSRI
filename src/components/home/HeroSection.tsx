@@ -85,7 +85,7 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
       {/* Sky Zone: Dynamic flex area balancing hero copy below the fixed navbar */}
-      <div className="relative z-50 pointer-events-none flex h-[50svh] min-h-[320px] w-full flex-col pt-[86px] lg:pt-[94px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[90px] max-sm:h-[60svh] max-sm:min-h-0 max-sm:pt-[112px]">
+      <div className="relative z-50 pointer-events-none flex h-[50svh] min-h-[320px] w-full flex-col pt-[86px] lg:pt-[150px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[90px] max-sm:h-[60svh] max-sm:min-h-0 max-sm:pt-[112px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
           className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2 text-center max-md:px-4.5 max-sm:px-4 max-sm:translate-y-3"

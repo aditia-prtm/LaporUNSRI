@@ -84,6 +84,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         onScrollToAbout={scrollToAbout}
         onScrollToSteps={scrollToSteps}
         onScrollToFaq={scrollToFaq}
+        onScrollToTop={scrollToTop}
       />
 
       {/* Pinned Sticky Hero Section (Stays anchored while content scrolls over it) */}
