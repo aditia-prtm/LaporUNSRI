@@ -103,20 +103,20 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
           </p>
 
-          {/* Hero CTAs */}
+          {/* Hero CTAs matching Auth Page style */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-sm:mt-4 max-sm:gap-2.5">
             <button
               type="button"
               onClick={handleReportClick}
-              className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#257fda] px-5 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-sm font-bold text-[#021427] shadow-[0_4px_22px_rgba(58,147,232,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(58,147,232,0.65)] hover:brightness-105 active:translate-y-0 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#0c4278] hover:bg-[#08315c] border border-white/20 px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-black/30 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
             >
               <span>Buat Laporan</span>
-              <FiArrowRight className="size-3.5 sm:size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              <FiArrowRight className="size-3.5 sm:size-4" aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={handleScrollToSteps}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-4.5 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-[#e1f0ff] backdrop-blur-md shadow-sm shadow-black/20 transition-all duration-200 hover:bg-white/20 hover:border-white/40 hover:text-white hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white backdrop-blur-md shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
             >
               <span>Pelajari Alur</span>
             </button>

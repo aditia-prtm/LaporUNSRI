@@ -101,14 +101,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         />
       </motion.div>
 
-      {/* Rising Parallax Content Container (Overlaps the Hero with dramatic top shadow) */}
+      {/* Rising Parallax Content Container (Clean architectural white sheet rising over Hero) */}
       <div
         id="content-container"
-        className="relative z-20 w-full rounded-t-[32px] sm:rounded-t-[44px] md:rounded-t-[54px] bg-gradient-to-b from-[#041527] via-[#031120] to-[#020b17] shadow-[0_-16px_36px_rgba(0,0,0,0.85)] md:shadow-[0_-32px_100px_rgba(0,0,0,0.98),0_-8px_28px_rgba(1,10,20,0.9)] border-t border-white/15 isolate"
+        className="relative z-20 w-full rounded-t-[32px] sm:rounded-t-[44px] md:rounded-t-[54px] bg-white text-slate-900 shadow-[0_-16px_40px_rgba(0,0,0,0.16)] border-t border-slate-200/80 isolate"
       >
         {/* Subtle Sheet Handle Accent */}
         <div className="mx-auto flex justify-center pt-3.5 sm:pt-4" aria-hidden="true">
-          <div className="h-1 w-12 sm:w-16 rounded-full bg-white/20" />
+          <div className="h-1 w-12 sm:w-16 rounded-full bg-slate-200" />
         </div>
 
         {/* Section 1: Tentang LaporUNSRI */}
