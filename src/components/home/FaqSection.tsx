@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiChevronDown, FiHelpCircle } from 'react-icons/fi'
+import { FiChevronDown } from 'react-icons/fi'
 
 type FaqItem = {
   id: string
@@ -51,32 +51,21 @@ export function FaqSection() {
   return (
     <section
       id="faq-section"
-      className="relative px-6 py-20 sm:px-10 lg:px-16 bg-slate-50 border-t-2 border-slate-200"
+      className="relative px-6 py-20 sm:px-10 lg:px-16 bg-[#08315c] text-white border-t border-white/15"
       aria-label="Pertanyaan yang Sering Diajukan"
     >
       <div className="mx-auto max-w-[920px]">
         {/* Section Header */}
         <div className="text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-slate-300 bg-white px-4 py-1 text-xs font-bold uppercase tracking-wider text-[#0c4278] shadow-xs"
-          >
-            <FiHelpCircle className="size-3.5" aria-hidden="true" />
-            <span>Pusat Informasi & Bantuan</span>
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6, delay: 0.08 }}
-            className="mt-4 font-['Poppins','Montserrat',sans-serif] text-[clamp(26px,3vw,40px)] font-black leading-[1.2] tracking-tight text-slate-950"
+            className="mt-4 font-['Poppins','Montserrat',sans-serif] text-[clamp(26px,3vw,40px)] font-black leading-[1.2] tracking-tight text-white"
           >
             Pertanyaan yang sering{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#b45309] tracking-normal">
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
               diajukan
             </span>
           </motion.h2>
@@ -86,7 +75,7 @@ export function FaqSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
             transition={{ duration: 0.6, delay: 0.16 }}
-            className="mx-auto mt-2.5 max-w-[560px] text-sm sm:text-base leading-relaxed text-slate-700 font-normal"
+            className="mx-auto mt-2.5 max-w-[560px] text-sm sm:text-base leading-relaxed text-sky-100/90 font-normal"
           >
             Punya pertanyaan mengenai alur pelaporan atau penanganan fasilitas? Temukan jawaban praktisnya di bawah ini.
           </motion.p>
@@ -103,10 +92,10 @@ export function FaqSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.45, delay: index * 0.06 }}
-                className={`overflow-hidden rounded-2xl border-2 transition-all duration-200 ${
+                className={`overflow-hidden rounded-2xl border transition-all duration-200 ${
                   isOpen
-                    ? 'border-[#0c4278] bg-white shadow-md'
-                    : 'border-slate-300 bg-white hover:border-slate-400 shadow-2xs'
+                    ? 'border-[#38bdf8]/60 bg-white/[0.12] shadow-xl shadow-black/30'
+                    : 'border-white/15 bg-white/[0.06] hover:bg-white/[0.1] hover:border-white/25 shadow-xs'
                 }`}
               >
                 <button
@@ -116,12 +105,14 @@ export function FaqSection() {
                   aria-controls={`${faq.id}-content`}
                   className="flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left transition duration-150 cursor-pointer"
                 >
-                  <span className="font-['Poppins','Montserrat',sans-serif] text-base sm:text-lg font-bold text-slate-950">
+                  <span className="font-['Poppins','Montserrat',sans-serif] text-sm sm:text-base font-bold text-white">
                     {faq.question}
                   </span>
                   <div
                     className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 bg-[#0c4278] text-white' : 'bg-slate-100 text-slate-700'
+                      isOpen
+                        ? 'rotate-180 bg-[#ffbb00] text-slate-950 shadow-md shadow-[#ffbb00]/30'
+                        : 'bg-white/10 text-white'
                     }`}
                   >
                     <FiChevronDown className="size-4 stroke-[2.5]" aria-hidden="true" />
@@ -137,7 +128,7 @@ export function FaqSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25, ease: 'easeOut' }}
                     >
-                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-2 text-sm sm:text-base leading-relaxed text-slate-700 border-t-2 border-slate-100">
+                      <div className="px-5 pb-5 sm:px-6 sm:pb-6 pt-2 text-sm sm:text-base leading-relaxed text-sky-100/95 border-t border-white/15">
                         {faq.answer}
                       </div>
                     </motion.div>

@@ -101,14 +101,14 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
         />
       </motion.div>
 
-      {/* Rising Parallax Content Container (Clean architectural white sheet rising over Hero) */}
+      {/* Rising Parallax Content Container (Deep UNSRI blue sheet rising over Hero matching CTA button) */}
       <div
         id="content-container"
-        className="relative z-20 w-full rounded-t-[32px] sm:rounded-t-[44px] md:rounded-t-[54px] bg-white text-slate-900 shadow-[0_-16px_40px_rgba(0,0,0,0.16)] border-t border-slate-200/80 isolate"
+        className="relative z-20 w-full rounded-t-[32px] sm:rounded-t-[44px] md:rounded-t-[54px] bg-[#0c4278] text-white shadow-[0_-24px_50px_rgba(2,11,23,0.55)] border-t border-white/20 isolate"
       >
         {/* Subtle Sheet Handle Accent */}
         <div className="mx-auto flex justify-center pt-3.5 sm:pt-4" aria-hidden="true">
-          <div className="h-1 w-12 sm:w-16 rounded-full bg-slate-200" />
+          <div className="h-1.5 w-12 sm:w-16 rounded-full bg-white/25" />
         </div>
 
         {/* Section 1: Tentang LaporUNSRI */}

@@ -8,7 +8,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
 } from 'framer-motion'
-import { FiArrowRight, FiGitCommit } from 'react-icons/fi'
+import { FiArrowRight } from 'react-icons/fi'
 
 type ReportingFlowSectionProps = {
   onStartReport: () => void
@@ -70,7 +70,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
     <section
       ref={sectionRef}
       id="steps-section"
-      className="relative w-full bg-white text-slate-950 border-t-2 border-slate-200"
+      className="relative w-full bg-[#0a3a6b] text-white border-t border-white/15"
       style={{ height: `${n * 100}vh` }}
       aria-label="Alur Pelaporan LaporUNSRI"
     >
@@ -79,26 +79,15 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
         <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col px-6">
           {/* Header Title Section */}
           <div className="mb-6 sm:mb-8 md:mb-12 text-center md:text-left">
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#0c4278]"
-            >
-              <FiGitCommit className="size-3.5" aria-hidden="true" />
-              <span>Alur Pelaporan</span>
-            </motion.div>
-
             <motion.h2
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.08 }}
-              className="mt-3 font-['Poppins','Montserrat',sans-serif] text-[clamp(26px,3vw,42px)] font-black leading-[1.2] tracking-tight text-slate-950"
+              className="mt-3 font-['Poppins','Montserrat',sans-serif] text-[clamp(26px,3vw,42px)] font-black leading-[1.2] tracking-tight text-white"
             >
               Bagaimana laporan Anda{' '}
-              <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#b45309] tracking-normal">
+              <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
                 diproses?
               </span>
             </motion.h2>
@@ -108,7 +97,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.16 }}
-              className="mt-2.5 max-w-xl text-sm sm:text-base leading-relaxed text-slate-700 font-normal mx-auto md:mx-0"
+              className="mt-2.5 max-w-xl text-sm sm:text-base leading-relaxed text-sky-100/90 font-normal mx-auto md:mx-0"
             >
               Empat tahapan terpadu dari pengunggahan keluhan hingga tindak lanjut dan penyelesaian di lapangan oleh tim sarana dan prasarana.
             </motion.p>
@@ -117,10 +106,10 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
           <div className="grid grid-cols-[70px_1fr] md:grid-cols-[280px_1fr] items-center gap-6 sm:gap-8 md:gap-16">
             {/* KIRI: diagram */}
             <div className="relative h-[42vh] min-h-[250px] max-h-[380px]">
-              <div className="absolute left-3 top-0 h-full w-[3px] bg-slate-300" />
+              <div className="absolute left-3 top-0 h-full w-[3px] bg-white/20" />
               <motion.div
                 style={{ scaleY: reduce ? 1 : progress, transformOrigin: 'top' }}
-                className="absolute left-3 top-0 h-full w-[3px] bg-[#0c4278]"
+                className="absolute left-3 top-0 h-full w-[3px] bg-[#ffbb00]"
               />
               {steps.map((s, i) => (
                 <div
@@ -133,21 +122,21 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                     transition={{ duration: 0.2 }}
                     className={`size-6 rounded-full border-2 transition-colors duration-200 ${
                       i <= active
-                        ? 'border-[#0c4278] bg-[#0c4278] shadow-md shadow-[#0c4278]/40'
-                        : 'border-slate-400 bg-white'
+                        ? 'border-[#ffbb00] bg-[#ffbb00] shadow-md shadow-[#ffbb00]/40'
+                        : 'border-white/40 bg-[#08315c]'
                     }`}
                   />
                   <div className="hidden md:flex flex-col">
                     <span
                       className={`font-['Poppins','Montserrat',sans-serif] text-sm font-extrabold transition-colors duration-200 ${
-                        i <= active ? 'text-slate-950' : 'text-slate-400'
+                        i <= active ? 'text-white' : 'text-white/45'
                       }`}
                     >
                       {s.title}
                     </span>
                     <span
                       className={`text-[11px] font-bold transition-colors duration-200 ${
-                        i <= active ? 'text-[#0c4278]' : 'text-slate-400'
+                        i <= active ? 'text-[#ffbb00]' : 'text-white/35'
                       }`}
                     >
                       {s.tag}
@@ -168,13 +157,13 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                   transition={{ duration: 0.25 }}
                   className="w-full"
                 >
-                  <div className="text-xs font-black tracking-widest text-[#0c4278] uppercase mb-2">
+                  <div className="text-xs font-black tracking-widest text-[#ffbb00] uppercase mb-2">
                     Langkah {steps[active].number}
                   </div>
-                  <h3 className="font-['Poppins','Montserrat',sans-serif] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 leading-tight">
+                  <h3 className="font-['Poppins','Montserrat',sans-serif] text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-tight text-white leading-tight">
                     {steps[active].title}
                   </h3>
-                  <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-slate-700 max-w-xl font-normal">
+                  <p className="mt-4 sm:mt-6 text-base sm:text-lg md:text-xl leading-relaxed text-sky-100/90 max-w-xl font-normal">
                     {steps[active].description}
                   </p>
 
@@ -189,7 +178,7 @@ export function ReportingFlowSection({ onStartReport }: ReportingFlowSectionProp
                       <button
                         type="button"
                         onClick={onStartReport}
-                        className="inline-flex items-center gap-2 rounded-2xl bg-[#0c4278] hover:bg-[#08315c] px-7 py-3.5 text-xs sm:text-sm font-bold text-white shadow-lg shadow-[#0c4278]/25 transition active:scale-[0.98] cursor-pointer"
+                        className="inline-flex items-center gap-2 rounded-2xl bg-white hover:bg-sky-50 px-7 py-3.5 text-xs sm:text-sm font-bold text-[#0c4278] shadow-lg shadow-black/25 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
                       >
                         <span>Mulai Melapor Sekarang</span>
                         <FiArrowRight className="size-4" aria-hidden="true" />

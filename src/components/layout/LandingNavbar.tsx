@@ -92,18 +92,14 @@ export function LandingNavbar({
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-[100] w-full bg-transparent transition-all duration-300 ${
-        isScrolled ? 'backdrop-blur-md' : ''
-      } ${
-        isOverContent
-          ? 'border-b border-slate-200/80'
-          : isScrolled
-            ? 'border-b border-white/10'
-            : 'border-b border-transparent'
+      className={`fixed inset-x-0 top-0 z-[100] w-full transition-all duration-300 ${
+        isScrolled || isOverContent
+          ? 'bg-[#08315c]/85 backdrop-blur-md border-b border-white/15 shadow-md shadow-black/20'
+          : 'bg-transparent border-b border-transparent'
       }`}
     >
       <div className="relative mx-auto flex min-h-[70px] w-full max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14 py-2.5">
-        {/* Brand Logo (Otomatis kontras: putih saat di hero, gelap tajam saat di konten putih) */}
+        {/* Brand Logo */}
         <a
           className="flex flex-col items-start no-underline transition duration-150 hover:-translate-y-px cursor-pointer"
           href="/"
@@ -117,61 +113,41 @@ export function LandingNavbar({
           }}
           aria-label="LaporUNSRI Beranda"
         >
-          <span
-            className={`flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight transition-colors ${
-              isOverContent ? 'text-slate-950 font-black' : 'text-white'
-            }`}
-          >
+          <span className="flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight text-white transition-colors">
             <span className="font-normal opacity-90">lapor</span>
-            <strong className="font-black tracking-tight">UNSRI</strong>
+            <strong className="font-black tracking-tight text-white">UNSRI</strong>
             <i
               className="ml-0.5 size-1.5 -translate-y-1 rounded-full bg-[#ffbb00] shadow-[0_0_8px_#ffbb00]"
               aria-hidden="true"
             />
           </span>
-          <span
-            className={`mt-1 text-[8px] font-bold uppercase tracking-[0.24em] transition-colors ${
-              isOverContent ? 'text-slate-600' : 'text-white/80'
-            }`}
-          >
+          <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.24em] text-sky-200/80 transition-colors">
             Layanan Aspirasi Kampus
           </span>
         </a>
 
-        {/* Desktop Navigation Links (Otomatis kontras tajam sesuai background) */}
+        {/* Desktop Navigation Links */}
         <nav
           className="hidden md:flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2"
           aria-label="Navigasi landing page"
         >
           <button
             type="button"
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
-              isOverContent
-                ? 'text-slate-800 hover:text-slate-950 hover:bg-slate-200/60'
-                : 'text-white/90 hover:text-white hover:bg-white/10'
-            }`}
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('about')}
           >
             Tentang
           </button>
           <button
             type="button"
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
-              isOverContent
-                ? 'text-slate-800 hover:text-slate-950 hover:bg-slate-200/60'
-                : 'text-white/90 hover:text-white hover:bg-white/10'
-            }`}
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('steps')}
           >
             Alur Pelaporan
           </button>
           <button
             type="button"
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition cursor-pointer ${
-              isOverContent
-                ? 'text-slate-800 hover:text-slate-950 hover:bg-slate-200/60'
-                : 'text-white/90 hover:text-white hover:bg-white/10'
-            }`}
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('faq')}
           >
             FAQ
@@ -183,8 +159,8 @@ export function LandingNavbar({
           <button
             type="button"
             className={`rounded-2xl px-5 py-2 text-xs font-bold transition active:scale-[0.98] cursor-pointer shadow-sm ${
-              isOverContent
-                ? 'bg-[#0c4278] hover:bg-[#08315c] text-white shadow-md'
+              isScrolled || isOverContent
+                ? 'bg-[#ffbb00] hover:bg-[#f0b000] text-slate-950 font-bold shadow-md shadow-black/20'
                 : 'border border-white/35 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md'
             }`}
             onClick={() => onNavigate('/auth')}
@@ -193,9 +169,7 @@ export function LandingNavbar({
           </button>
           <button
             type="button"
-            className={`flex md:hidden size-9 items-center justify-center rounded-lg transition cursor-pointer ${
-              isOverContent ? 'text-slate-950 hover:bg-slate-200/60' : 'text-white hover:bg-white/10'
-            }`}
+            className="flex md:hidden size-9 items-center justify-center rounded-lg text-white hover:bg-white/15 transition cursor-pointer"
             aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -208,13 +182,13 @@ export function LandingNavbar({
         {menuOpen && (
           <nav
             id="landing-navigation-menu"
-            className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl"
+            className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
             aria-label="Navigasi mobile"
           >
             {menuItems.map((item) => (
               <button
                 key={item.action}
-                className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-slate-800 hover:bg-slate-100 hover:text-slate-950 transition cursor-pointer"
+                className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
                 type="button"
                 onClick={() => handleMenuAction(item.action)}
               >
