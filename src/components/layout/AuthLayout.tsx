@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react'
 import { Brand } from '../common/Brand'
-import { FiArrowLeft } from 'react-icons/fi'
 import unsriDroneImg from '../../assets/auth/unsri-drone.jpg'
 
 type AuthLayoutProps = {
@@ -11,7 +10,7 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ officerPage, onNavigate, children }: AuthLayoutProps) {
   return (
-    <main className="relative min-h-screen bg-white font-['Poppins','Montserrat',sans-serif]">
+    <main className="relative min-h-screen bg-[#08315c] font-['Poppins','Montserrat',sans-serif]">
       {/* Desktop & Mobile Responsive Grid */}
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-2">
         {/* Left Side: Campus Aerial Photography Showcase (Desktop Only) */}
@@ -30,7 +29,7 @@ export function AuthLayout({ officerPage, onNavigate, children }: AuthLayoutProp
             <Brand onClick={() => onNavigate('/')} />
           </div>
 
-          {/* Bottom Headline & Tagline with Bar Accent (Directly replicating the desktop screenshot) */}
+          {/* Bottom Headline & Tagline with Bar Accent */}
           <div className="relative z-10 max-w-[480px]">
             <h1 className="text-3xl xl:text-4xl font-bold leading-tight tracking-tight text-white drop-shadow">
               {officerPage
@@ -48,49 +47,27 @@ export function AuthLayout({ officerPage, onNavigate, children }: AuthLayoutProp
           </div>
         </section>
 
-        {/* Mobile Header Photo Zone (Replicating the mobile screenshot) */}
-        <div className="relative lg:hidden h-[260px] sm:h-[300px] w-full text-white select-none">
+        {/* Mobile Header Photo Zone */}
+        <div className="relative lg:hidden h-[230px] sm:h-[260px] w-full text-white select-none">
           <img
             src={unsriDroneImg}
             alt="Kampus Universitas Sriwijaya"
             className="absolute inset-0 size-full object-cover object-center filter brightness-[0.85]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#020b17]/80 via-[#020b17]/50 to-[#020b17]/90" />
 
-          {/* Top Back Button */}
-          <div className="relative z-10 p-4 flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => onNavigate('/')}
-              className="inline-flex size-9 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-md transition hover:bg-black/60"
-              aria-label="Kembali ke Beranda"
-            >
-              <FiArrowLeft className="size-4" />
-            </button>
-          </div>
-
-          {/* Centered Brand & Tagline */}
-          <div className="relative z-10 flex flex-col items-center justify-center text-center px-6 -mt-3">
+          {/* Centered Brand & Tagline (Brand logo navigates back to '/') */}
+          <div className="relative z-10 flex h-full flex-col items-center justify-center text-center px-6">
             <Brand onClick={() => onNavigate('/')} />
-            <p className="mt-2 text-xs text-slate-200 max-w-[290px] leading-relaxed drop-shadow">
+            <p className="mt-2 text-xs text-sky-100 max-w-[290px] leading-relaxed drop-shadow">
               Layanan aspirasi & pemeliharaan fasilitas kampus Universitas Sriwijaya
             </p>
           </div>
         </div>
 
-        {/* Right Form Container (Desktop Right Side / Mobile White Sheet sliding up) */}
-        <section className="relative z-20 flex-1 flex flex-col justify-center px-6 py-8 sm:px-12 lg:px-16 xl:px-20 bg-white -mt-7 sm:-mt-8 lg:mt-0 rounded-t-[32px] lg:rounded-none">
+        {/* Right Form Container (Desktop Right Side / Mobile Blue Sheet sliding up) */}
+        <section className="relative z-20 flex-1 flex flex-col justify-center px-6 py-10 sm:px-12 lg:px-16 xl:px-20 bg-[#0c4278] text-white -mt-7 sm:-mt-8 lg:mt-0 rounded-t-[32px] lg:rounded-none border-t border-white/20 lg:border-t-0 lg:border-l lg:border-white/10 shadow-2xl">
           <div className="w-full max-w-[420px] mx-auto">
-            {/* Desktop Back Button */}
-            <button
-              type="button"
-              onClick={() => onNavigate('/')}
-              className="hidden lg:inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-800 transition mb-6 cursor-pointer"
-            >
-              <FiArrowLeft className="size-3.5" />
-              <span>Kembali</span>
-            </button>
-
             {children}
           </div>
         </section>

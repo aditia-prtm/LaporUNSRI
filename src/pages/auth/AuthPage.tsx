@@ -104,7 +104,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
     <AuthLayout officerPage={officerPage} onNavigate={onNavigate}>
       {/* Heading & Subtitle exactly matching reference */}
       <div className="mb-6">
-        <h2 className="text-2xl sm:text-[28px] font-bold text-slate-900 tracking-tight">
+        <h2 className="text-2xl sm:text-[28px] font-bold text-white tracking-tight">
           {loading
             ? 'Memeriksa sesi...'
             : profile
@@ -115,10 +115,10 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                   : 'Selamat Datang'
                 : 'Buat Akun LaporUNSRI'}
         </h2>
-        <p className="mt-1.5 text-sm text-slate-500">
+        <p className="mt-1.5 text-sm text-sky-100/85">
           {mode === 'login' ? (
             <>
-              Masuk ke akun <strong className="font-semibold text-[#0c4278]">LaporUNSRI</strong> Anda
+              Masuk ke akun <strong className="font-semibold text-[#ffbb00]">LaporUNSRI</strong> Anda
             </>
           ) : (
             'Daftar gratis dan mulai kawal fasilitas kampus'
@@ -140,11 +140,11 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
       {/* Form or Sesi Checking */}
       {loading ? (
-        <div className="py-12 text-center text-sm text-slate-500" role="status">
+        <div className="py-12 text-center text-sm text-sky-100/80" role="status">
           Sedang memeriksa sesi akun...
         </div>
       ) : profile ? (
-        <div className="py-12 text-center text-sm text-slate-500" role="status">
+        <div className="py-12 text-center text-sm text-sky-100/80" role="status">
           Mengarahkan ke dashboard {roleLabel(profile.role)}...
         </div>
       ) : (
@@ -152,7 +152,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
           {mode === 'register' && (
             <>
               <label className="flex flex-col gap-1.5">
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
                   Nama Lengkap
                 </span>
                 <input
@@ -161,30 +161,30 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                   value={fullName}
                   onChange={(event) => setFullName(event.target.value)}
                   placeholder="Nama kamu"
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-[#f9fafb] px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0c4278] focus:outline-none focus:ring-2 focus:ring-[#0c4278]/20 transition"
+                  className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
                 />
               </label>
 
               <label className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
                     {officerPage ? 'NIP' : 'NIM'}
                   </span>
-                  <span className="text-[11px] text-slate-400">Opsional</span>
+                  <span className="text-[11px] text-sky-200/60">Opsional</span>
                 </div>
                 <input
                   autoComplete="off"
                   value={nimNip}
                   onChange={(event) => setNimNip(event.target.value)}
                   placeholder={officerPage ? 'Nomor Induk Pegawai' : 'Nomor Induk Mahasiswa'}
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-[#f9fafb] px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0c4278] focus:outline-none focus:ring-2 focus:ring-[#0c4278]/20 transition"
+                  className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
                 />
               </label>
             </>
           )}
 
           <label className="flex flex-col gap-1.5">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
               Email
             </span>
             <input
@@ -194,7 +194,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="contoh@email.com"
-              className="h-12 w-full rounded-xl border border-slate-200 bg-[#f9fafb] px-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0c4278] focus:outline-none focus:ring-2 focus:ring-[#0c4278]/20 transition"
+              className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
             />
           </label>
 
@@ -211,7 +211,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                 <button
                   type="button"
                   onClick={() => alert('Fitur reset password dapat dilakukan melalui email konfirmasi Supabase.')}
-                  className="text-xs font-semibold text-[#0c4278] hover:underline"
+                  className="text-xs font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                 >
                   Lupa password?
                 </button>
@@ -221,7 +221,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
           <button
             type="submit"
-            className="w-full h-12 rounded-2xl bg-[#0c4278] hover:bg-[#08315c] text-white font-semibold text-sm transition active:scale-[0.99] mt-3 cursor-pointer shadow-md shadow-[#0c4278]/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-12 rounded-2xl bg-white hover:bg-sky-50 text-[#0c4278] font-bold text-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.99] mt-3 cursor-pointer shadow-lg shadow-black/25 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={busy || !isSupabaseConfigured}
           >
             {busy ? 'Memproses...' : mode === 'login' ? 'Masuk' : 'Daftar Sekarang'}
@@ -229,7 +229,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
           {/* Mode Switcher matching screenshot exactly */}
           {!officerPage && (
-            <div className="mt-4 text-center text-xs sm:text-sm text-slate-500">
+            <div className="mt-4 text-center text-xs sm:text-sm text-sky-100/80">
               {mode === 'login' ? (
                 <>
                   Belum punya akun?{' '}
@@ -240,7 +240,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                       setError('')
                       setNotice('')
                     }}
-                    className="font-semibold text-[#0c4278] hover:underline cursor-pointer"
+                    className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                   >
                     Daftar sekarang
                   </button>
@@ -255,7 +255,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                       setError('')
                       setNotice('')
                     }}
-                    className="font-semibold text-[#0c4278] hover:underline cursor-pointer"
+                    className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                   >
                     Masuk
                   </button>
@@ -265,14 +265,14 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
           )}
 
           {/* Officer Portal Switcher Link */}
-          <div className="mt-6 pt-5 border-t border-slate-100 text-center text-xs text-slate-500">
+          <div className="mt-6 pt-5 border-t border-white/15 text-center text-xs text-sky-100/80">
             {officerPage ? (
               <div>
                 Bukan petugas sarpras?{' '}
                 <button
                   type="button"
                   onClick={() => onNavigate('/auth')}
-                  className="font-semibold text-[#0c4278] hover:underline cursor-pointer"
+                  className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                 >
                   Masuk sebagai Mahasiswa
                 </button>
@@ -283,7 +283,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                 <button
                   type="button"
                   onClick={() => onNavigate('/petugas')}
-                  className="font-semibold text-[#0c4278] hover:underline cursor-pointer"
+                  className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                 >
                   Portal Petugas →
                 </button>

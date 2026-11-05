@@ -34,7 +34,7 @@ export function Brand({
         <span className="font-normal opacity-90">lapor</span>
         <strong className="font-extrabold tracking-tight">UNSRI</strong>
         <i
-          className="ml-0.5 h-1.5 w-1.5 -translate-y-1 rounded-full bg-[#60b6ff] shadow-[0_0_10px_#60b6ff]"
+          className="ml-0.5 h-1.5 w-1.5 -translate-y-1 rounded-full bg-[#ffbb00] shadow-[0_0_10px_#ffbb00]"
           aria-hidden="true"
         />
       </span>
