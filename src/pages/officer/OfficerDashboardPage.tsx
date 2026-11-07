@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
+import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
-import { MetricCard } from '../../components/common/MetricCard'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportCardSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
 import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUpCard'
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
 import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
-import { FiAlertCircle, FiCheckCircle, FiClock, FiLogOut, FiTool } from 'react-icons/fi'
+import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiLogOut, FiTool } from 'react-icons/fi'
 
 type Props = { profile: UserProfile; onSignOut: () => void }
 
@@ -27,6 +28,24 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
   const [status, setStatus] = useState<ReportStatus | ''>('')
   const [busyId, setBusyId] = useState('')
   const [drafts, setDrafts] = useState<Record<string, ReportFollowUpDraft>>({})
+  const navRef = useRef<HTMLElement>(null)
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
+
+  useLayoutEffect(() => {
+    const updatePill = () => {
+      if (!navRef.current) return
+      const activeBtn = navRef.current.querySelector<HTMLButtonElement>(`[data-status="${status}"]`)
+      if (activeBtn) {
+        setPillStyle({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+        })
+      }
+    }
+    updatePill()
+    window.addEventListener('resize', updatePill)
+    return () => window.removeEventListener('resize', updatePill)
+  }, [status])
 
   const load = async () => {
     setError('')
@@ -94,110 +113,200 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
 
   const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
 
+  const queueTabs: { label: string; value: ReportStatus | ''; count: number }[] = [
+    { label: 'Semua Aduan', value: '', count: reports.length },
+    { label: 'Perlu Ditangani Segera', value: 'belum_diproses', count: openCount },
+    { label: 'Sedang Dikerjakan', value: 'diproses', count: progressCount },
+    { label: 'Tuntas Selesai', value: 'selesai', count: doneCount },
+  ]
+
+  const avatarLetter = (profile.full_name || 'P').slice(0, 1).toUpperCase()
+
   return (
-    <main className="relative min-h-screen w-full bg-[#020b17] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-white">
-      {/* Ambient background lighting */}
-      <div
-        className="pointer-events-none fixed -left-40 top-0 size-[500px] rounded-full bg-[#105292]/15 blur-[140px]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none fixed right-0 bottom-0 size-[500px] rounded-full bg-[#4899e8]/10 blur-[150px]"
-        aria-hidden="true"
-      />
-
-      {/* Header Bar */}
-      <header className="sticky top-0 z-30 flex h-18 w-full items-center justify-between border-b border-white/10 bg-[#031830]/85 px-6 sm:px-10 backdrop-blur-md">
-        <Brand onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} />
-
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-            <div className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-[#0c4278] to-[#4899e8] text-xs font-bold text-white shadow-sm">
-              {(profile.full_name || 'P').slice(0, 1).toUpperCase()}
-            </div>
-            <div className="hidden sm:block text-right">
-              <strong className="block text-xs font-bold text-white">{profile.full_name}</strong>
-              <small className="flex items-center justify-end gap-1 text-[10px] text-[#60b6ff]">
-                <span className="size-1.5 rounded-full bg-[#60b6ff] shadow-[0_0_6px_#60b6ff]" />
-                Petugas Fasilitas Sarpras
-              </small>
-            </div>
+    <div className="min-h-screen w-full bg-[#f4f7fb] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-slate-800 antialiased flex flex-col">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-40 w-full bg-[#08315c] border-b border-white/10 shadow-md">
+        <div className="mx-auto flex h-18 w-full max-w-[1280px] items-center justify-between px-4 sm:px-8 lg:px-12">
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <Brand
+              showSubtitle={false}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="text-white"
+            />
           </div>
 
-          <button
-            type="button"
-            onClick={onSignOut}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-[#8cb6dc] transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-300 cursor-pointer"
-          >
-            <FiLogOut className="size-3.5" />
-            <span className="hidden sm:inline">Keluar</span>
-          </button>
+          {/* Center Tabs (Desktop) */}
+          <nav ref={navRef} className="relative hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
+            {pillStyle && (
+              <motion.div
+                className="absolute rounded-full bg-white shadow-sm z-0 pointer-events-none"
+                style={{ top: 6, bottom: 6 }}
+                initial={false}
+                animate={{
+                  left: pillStyle.left,
+                  width: pillStyle.width,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 420,
+                  damping: 32,
+                }}
+              />
+            )}
+            {queueTabs.map((tab) => {
+              const isActive = status === tab.value
+              return (
+                <button
+                  key={tab.label}
+                  data-status={tab.value}
+                  type="button"
+                  onClick={() => setStatus(tab.value)}
+                  className={`relative z-10 min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
+                    isActive
+                      ? 'text-[#08315c]'
+                      : 'text-white/80 hover:text-white'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
+                    {loading ? '...' : tab.count}
+                  </span>
+                </button>
+              )
+            })}
+          </nav>
+
+          {/* Right: Officer Profile & Logout */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
+                aria-hidden="true"
+              >
+                {avatarLetter}
+              </div>
+              <div className="hidden sm:block text-right">
+                <span className="block text-xs font-bold text-white max-w-[160px] truncate">{profile.full_name}</span>
+                <span className="block text-[10px] text-[#ffbb00]">Petugas Sarpras</span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onSignOut}
+              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
+            >
+              <FiLogOut className="size-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Keluar</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Dashboard Content */}
-      <div className="relative z-10 mx-auto max-w-[1240px] px-4 sm:px-8 py-8 space-y-8">
-        {/* Hero Welcome Box */}
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-[#051d38] via-[#04162a] to-[#020b17] p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-black/20">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-300">
-              <FiTool className="size-3" />
-              <span>Ruang Kerja Petugas Sarpras</span>
-            </div>
+      {/* Blue Hero Header Zone */}
+      <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 pt-8 pb-20 sm:pb-24 shadow-inner">
+        <div className="mx-auto max-w-[1280px]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffbb00]">
+            <FiTool className="size-3" aria-hidden="true" />
+            <span>Ruang Kerja Petugas Sarpras</span>
+          </div>
 
-            <h1 className="mt-3 font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Halo, {profile.full_name}{' '}
-              <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00]">
-                siap bertugas?
-              </span>
-            </h1>
+          <h1 className="mt-3 text-3xl sm:text-4xl lg:text-[40px] font-bold tracking-tight text-white leading-[1.15]">
+            Halo, {profile.full_name}{' '}
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00]">
+              siap bertugas?
+            </span>
+          </h1>
 
-            <p className="mt-2 text-xs sm:text-sm text-[#a4c1db] max-w-2xl leading-relaxed">
-              Tinjau seluruh aduan kerusakan dari mahasiswa dan sivitas akademika UNSRI. Setiap pembaruan status wajib menyertakan foto dokumentasi penanganan nyata.
-            </p>
+          <p className="mt-2 text-xs sm:text-sm text-sky-100/90 max-w-2xl leading-relaxed">
+            Tinjau seluruh aduan kerusakan dari mahasiswa dan sivitas akademika UNSRI. Setiap pembaruan status wajib menyertakan foto dokumentasi penanganan nyata di lapangan.
+          </p>
+        </div>
+      </section>
+
+      {/* Floating 3 Metric Cards */}
+      <section className="-mt-12 sm:-mt-14 relative z-10 w-full px-4 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-[1280px] grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6">
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+            <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1.5">
+              <FiAlertCircle className="size-3.5 text-amber-500" aria-hidden="true" />
+              <span>Perlu Diproses Segera</span>
+            </span>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {openCount}
+              </strong>
+            )}
+          </div>
+
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+            <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1.5">
+              <FiClock className="size-3.5 text-sky-500" aria-hidden="true" />
+              <span>Sedang Dikerjakan</span>
+            </span>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {progressCount}
+              </strong>
+            )}
+          </div>
+
+          <div className="rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+            <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1.5">
+              <FiCheck className="size-3.5 text-emerald-500 stroke-[2.5]" aria-hidden="true" />
+              <span>Tuntas Selesai</span>
+            </span>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {doneCount}
+              </strong>
+            )}
           </div>
         </div>
+      </section>
 
-        {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
+      {/* Main Content Area */}
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-10 pb-16 flex-1">
+        <div className="mx-auto max-w-[1280px] space-y-6">
+          {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
-        {/* Metric Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <MetricCard
-            label="Perlu Diproses Segera"
-            value={loading ? '—' : openCount}
-            description="Laporan baru menunggu tindak lanjut tim"
-            icon={<FiAlertCircle />}
-            iconClassName="text-amber-300 border-amber-400/30 from-amber-950/40 to-amber-900/20"
-          />
-          <MetricCard
-            label="Sedang Dikerjakan"
-            value={loading ? '—' : progressCount}
-            description="Fasilitas dalam proses perbaikan lapangan"
-            icon={<FiClock />}
-            iconClassName="text-sky-300 border-sky-400/30 from-sky-950/40 to-sky-900/20"
-          />
-          <MetricCard
-            label="Tuntas Selesai"
-            value={loading ? '—' : doneCount}
-            description="Laporan telah diverifikasi selesai dikerjakan"
-            icon={<FiCheckCircle />}
-            iconClassName="text-emerald-300 border-emerald-400/30 from-emerald-950/40 to-emerald-900/20"
-          />
-        </div>
-
-        {/* Reports Listing Section */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-[#08315c] tracking-tight">
                 Daftar Penugasan Fasilitas
               </h2>
-              <p className="text-xs text-[#8cb6dc]">
-                {visibleReports.length} laporan tersedia untuk ditindaklanjuti
+              <p className="text-xs text-slate-500">
+                {visibleReports.length} laporan siap ditindaklanjuti dan diperbarui statusnya
               </p>
+            </div>
+
+            {/* Mobile Queue Filter Buttons */}
+            <div className="flex flex-wrap gap-1.5 lg:hidden" role="tablist">
+              {queueTabs.map((tab) => (
+                <button
+                  key={tab.label}
+                  type="button"
+                  onClick={() => setStatus(tab.value)}
+                  className={`rounded-full px-3 py-1 text-xs font-bold transition ${
+                    status === tab.value
+                      ? 'bg-[#08315c] text-white'
+                      : 'bg-white border border-slate-200 text-slate-600'
+                  }`}
+                >
+                  {tab.label} ({loading ? '...' : tab.count})
+                </button>
+              ))}
             </div>
           </div>
 
+          {/* Filter Component */}
           <ReportFilters
             search={search}
             status={status}
@@ -206,16 +315,25 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
           />
 
           {loading ? (
-            <div className="rounded-2xl border border-white/10 bg-[#072445]/45 p-12 text-center text-xs text-[#8cb6dc] backdrop-blur-md">
-              Memuat penugasan laporan...
-            </div>
+            <ReportCardSkeleton count={3} />
           ) : visibleReports.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[#072445]/30 p-12 text-center backdrop-blur-md">
-              <FiCheckCircle className="size-10 text-emerald-400/50 mb-3" />
-              <h3 className="text-sm font-bold text-white">Tidak Ada Laporan yang Perlu Ditindaklanjuti</h3>
-              <p className="mt-1 text-xs text-[#8cb6dc] max-w-sm">
-                Semua laporan sesuai filter sudah tertangani dengan baik atau belum ada laporan baru.
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
+              <FiInbox className="size-10 text-slate-400 mb-3" aria-hidden="true" />
+              <h3 className="text-sm font-bold text-slate-800">Tidak Ada Laporan di Antrean Ini</h3>
+              <p className="mt-1 text-xs text-slate-500 max-w-sm">
+                {status
+                  ? 'Tidak ada laporan yang berstatus ini atau semua aduan sudah diproses.'
+                  : 'Seluruh aduan sarpras kampus saat ini telah tertangani.'}
               </p>
+              {status && (
+                <button
+                  type="button"
+                  onClick={() => setStatus('')}
+                  className="mt-4 rounded-xl bg-[#08315c] text-white px-5 py-2 text-xs font-bold hover:bg-[#0c4278]"
+                >
+                  Tampilkan Semua Antrean
+                </button>
+              )}
             </div>
           ) : (
             <div className="space-y-4">
@@ -237,8 +355,8 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
             </div>
           )}
         </div>
-      </div>
-    </main>
+      </section>
+    </div>
   )
 }
 export default OfficerDashboardPage

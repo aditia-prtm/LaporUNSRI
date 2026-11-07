@@ -1,7 +1,6 @@
 import type { FormEvent } from 'react'
 import type { Report, ReportStatus } from '../../types/report'
 import { REPORT_STATUS_LABELS } from '../../constants/report'
-import { ReportStatusBadge } from './ReportStatusBadge'
 import { formatDate } from '../../utils/date'
 import { FiAlertTriangle, FiArrowUpRight, FiCamera, FiCheck, FiMapPin, FiUser } from 'react-icons/fi'
 
@@ -33,58 +32,75 @@ export function ReportFollowUpCard({
   onSubmit,
 }: ReportFollowUpCardProps) {
   return (
-    <article className="group relative grid grid-cols-1 lg:grid-cols-[1fr_minmax(280px,360px)] gap-6 rounded-2xl border border-white/10 bg-[#072445]/45 p-5 sm:p-6 backdrop-blur-md shadow-lg shadow-black/20 transition-all duration-300 hover:border-[#4899e8]/40 hover:bg-[#092c55]/55">
+    <article className="group relative grid grid-cols-1 lg:grid-cols-[1fr_minmax(300px,380px)] gap-6 rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm transition-all duration-200 hover:border-[#08315c]/40 hover:shadow-md">
       {/* Left: Report Overview */}
       <div className="flex flex-col justify-between">
         <div>
-          <div className="flex flex-wrap items-center gap-2.5 text-xs text-[#8cb6dc]">
-            <ReportStatusBadge status={report.status} />
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-medium text-[#cce5fb]">
-              {report.categories?.name ?? 'Lainnya'}
+          <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500">
+            {report.status === 'belum_diproses' ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true" />
+                <span>Belum diproses</span>
+              </span>
+            ) : report.status === 'diproses' ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200/80 px-2.5 py-0.5 text-xs font-semibold text-sky-700">
+                <span className="size-1.5 rounded-full bg-sky-500" aria-hidden="true" />
+                <span>Diproses</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                <FiCheck className="size-3 stroke-[2.5]" aria-hidden="true" />
+                <span>Selesai</span>
+              </span>
+            )}
+
+            <span className="rounded-full bg-slate-100 border border-slate-200 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600">
+              {report.categories?.name ?? 'Umum'}
             </span>
-            <time className="text-[11px] text-[#8cb6dc]/80">{formatDate(report.created_at)}</time>
+            <time className="text-[11px] text-slate-500">{formatDate(report.created_at)}</time>
+
             {overdueDays !== undefined && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-rose-500/30 bg-rose-500/10 px-2.5 py-0.5 text-[10px] font-bold text-rose-300">
-                <FiAlertTriangle className="size-3" />
+              <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 border border-rose-200 px-2.5 py-0.5 text-[10px] font-bold text-rose-700">
+                <FiAlertTriangle className="size-3 text-rose-500" aria-hidden="true" />
                 <span>Terlambat {overdueDays} hari</span>
               </span>
             )}
           </div>
 
-          <h3 className="mt-3.5 font-['Poppins','Montserrat','Outfit',sans-serif] text-base sm:text-lg font-bold text-white transition-colors group-hover:text-[#c4e4ff]">
+          <h3 className="mt-3.5 text-base sm:text-lg font-bold text-slate-800 transition-colors group-hover:text-[#08315c]">
             {report.title}
           </h3>
 
-          <p className="mt-2 text-xs leading-relaxed text-[#a4c1db] line-clamp-3">
+          <p className="mt-2 text-xs leading-relaxed text-slate-600 line-clamp-3">
             {report.description}
           </p>
 
-          <div className="mt-4 flex items-center gap-1.5 text-xs text-[#8cb6dc]">
-            <FiMapPin className="size-3.5 text-[#60b6ff]" />
+          <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-500">
+            <FiMapPin className="size-3.5 text-[#08315c]" aria-hidden="true" />
             <span>
               {report.faculty} · {report.building}
               {report.room ? ` · ${report.room}` : ''}
             </span>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-[#6f96be]">
-            <FiUser className="size-3 text-[#6f96be]" />
+          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500">
+            <FiUser className="size-3 text-slate-400" aria-hidden="true" />
             <span>
-              Pelapor: <strong className="text-[#a4c1db] font-semibold">{report.profiles?.full_name ?? 'Mahasiswa'}</strong> · Dukungan {report.vote_count}
+              Pelapor: <strong className="text-slate-700 font-semibold">{report.profiles?.full_name ?? 'Mahasiswa'}</strong> · Dukungan {report.vote_count}
             </span>
           </div>
         </div>
 
         {report.photo_url && (
-          <div className="mt-4 pt-3 border-t border-white/10">
+          <div className="mt-4 pt-3 border-t border-slate-100">
             <a
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#60b6ff] hover:text-[#93d5ba] transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#08315c] hover:underline transition-colors"
               href={report.photo_url}
               target="_blank"
               rel="noreferrer"
             >
               <span>Buka foto bukti laporan</span>
-              <FiArrowUpRight className="size-3.5" />
+              <FiArrowUpRight className="size-3.5" aria-hidden="true" />
             </a>
           </div>
         )}
@@ -92,21 +108,21 @@ export function ReportFollowUpCard({
 
       {/* Right: Follow-up Action Form */}
       <form
-        className="flex flex-col justify-between gap-3.5 border-t lg:border-t-0 lg:border-l border-white/10 pt-4 lg:pt-0 lg:pl-6"
+        className="flex flex-col justify-between gap-3.5 border-t lg:border-t-0 lg:border-l border-slate-100 pt-4 lg:pt-0 lg:pl-6"
         onSubmit={onSubmit}
       >
         <div className="space-y-3">
-          <span className="block text-xs font-bold uppercase tracking-wider text-[#60b6ff]">
+          <span className="block text-xs font-bold uppercase tracking-wider text-[#08315c]">
             {photoRequired ? 'Catat Tindak Lanjut Petugas' : 'Tindak Lanjut & Status'}
           </span>
 
-          <label className="block text-xs font-medium text-[#cce5fb]">
-            <span className="mb-1 block text-[11px] text-[#8cb6dc]">Ubah Status</span>
+          <label className="block text-xs font-semibold text-slate-700">
+            <span className="mb-1 block text-[11px] text-slate-500">Ubah Status</span>
             <select
               aria-label={`Status baru untuk ${report.title}`}
               value={draft.status}
               onChange={(event) => onDraftChange({ status: event.target.value as ReportStatus })}
-              className="h-10 w-full rounded-xl border border-white/15 bg-[#031427] px-3 text-xs text-white backdrop-blur-md transition focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25 cursor-pointer [&_option]:bg-[#031427] [&_option]:text-white"
+              className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs text-slate-800 shadow-sm focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/15 transition cursor-pointer"
             >
               {Object.entries(REPORT_STATUS_LABELS).map(([value, label]) => (
                 <option key={value} value={value}>
@@ -116,9 +132,9 @@ export function ReportFollowUpCard({
             </select>
           </label>
 
-          <label className="block text-xs font-medium text-[#cce5fb]">
-            <span className="mb-1 block text-[11px] text-[#8cb6dc]">
-              Catatan Penanganan <span className="text-rose-400">*</span>
+          <label className="block text-xs font-semibold text-slate-700">
+            <span className="mb-1 block text-[11px] text-slate-500">
+              Catatan Penanganan <span className="text-rose-500">*</span>
             </span>
             <textarea
               required
@@ -131,24 +147,24 @@ export function ReportFollowUpCard({
               }
               value={draft.message}
               onChange={(event) => onDraftChange({ message: event.target.value })}
-              className="w-full rounded-xl border border-white/15 bg-[#031427]/80 p-3 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25 resize-vertical"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/15 transition resize-vertical"
             />
           </label>
 
-          <label className="block text-xs font-medium text-[#cce5fb]">
-            <span className="mb-1 flex items-center justify-between text-[11px] text-[#8cb6dc]">
+          <label className="block text-xs font-semibold text-slate-700">
+            <span className="mb-1 flex items-center justify-between text-[11px] text-slate-500">
               <span className="inline-flex items-center gap-1">
-                <FiCamera className="size-3 text-[#60b6ff]" />
+                <FiCamera className="size-3.5 text-[#08315c]" aria-hidden="true" />
                 <span>Foto Bukti Penanganan</span>
               </span>
-              <span className="text-[10px] text-[#6f96be]">{photoRequired ? 'Wajib' : 'Opsional'}</span>
+              <span className="text-[10px] text-slate-400">{photoRequired ? 'Wajib' : 'Opsional'}</span>
             </span>
             <input
               required={photoRequired}
               type="file"
               accept="image/*"
               onChange={(event) => onDraftChange({ file: event.target.files?.[0] ?? null })}
-              className="w-full rounded-xl border border-white/15 bg-[#031427]/80 p-2 text-xs text-[#8cb6dc] file:mr-2.5 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-1 file:text-xs file:font-semibold file:text-[#cce5fb] file:cursor-pointer hover:file:bg-white/20"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2 text-xs text-slate-600 file:mr-2.5 file:rounded-lg file:border-0 file:bg-[#08315c] file:px-3 file:py-1 file:text-xs file:font-semibold file:text-white file:cursor-pointer hover:file:bg-[#0c4278]"
             />
           </label>
         </div>
@@ -156,12 +172,13 @@ export function ReportFollowUpCard({
         <button
           type="submit"
           disabled={busy}
-          className="mt-2 flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#2b8ced] px-4 py-2 text-xs font-bold text-[#021427] shadow-[0_4px_16px_rgba(58,147,232,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_22px_rgba(58,147,232,0.55)] hover:brightness-105 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="mt-2 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-[#08315c] hover:bg-[#0c4278] px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
-          <FiCheck className="size-4" />
+          <FiCheck className="size-4 stroke-[3]" aria-hidden="true" />
           <span>{busy ? 'Menyimpan...' : submitLabel}</span>
         </button>
       </form>
     </article>
   )
 }
+export default ReportFollowUpCard

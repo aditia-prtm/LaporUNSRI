@@ -1,4 +1,5 @@
 import { FiArrowUp, FiMapPin, FiMail, FiClock, FiShield } from 'react-icons/fi'
+import { Brand } from '../common/Brand'
 
 type LandingFooterProps = {
   onNavigate: (path: string) => void
@@ -26,24 +27,10 @@ export function LandingFooter({
           {/* Column 1: Brand & Purpose (5 cols on lg) */}
           <div className="lg:col-span-5 flex flex-col justify-between">
             <div>
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onScrollToTop()
-                }}
-                className="inline-flex flex-col items-start no-underline transition duration-150 hover:opacity-90"
-                aria-label="Kembali ke atas"
-              >
-                <span className="flex items-baseline gap-0.5 text-2xl sm:text-[26px] font-normal leading-none tracking-tight text-white">
-                  <span>lapor</span>
-                  <strong className="font-extrabold text-white">UNSRI</strong>
-                  <span className="ml-1 size-2 rounded-full bg-[#ffbb00] shadow-[0_0_8px_#ffbb00]" aria-hidden="true" />
-                </span>
-                <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.2em] text-sky-200/80">
-                  Layanan Aspirasi Sarana & Prasarana
-                </span>
-              </a>
+              <Brand
+                onClick={onScrollToTop}
+                subtitle="Layanan Aspirasi Sarana & Prasarana"
+              />
 
               <p className="mt-3.5 text-xs sm:text-[13px] leading-relaxed text-sky-100/80 max-w-[420px]">
                 Platform resmi keterbukaan dan pelaporan fasilitas kampus Universitas Sriwijaya. Menghubungkan aspirasi mahasiswa langsung ke tim teknisi sarana dan prasarana.

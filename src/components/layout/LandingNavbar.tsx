@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { BiMenu, BiX } from 'react-icons/bi'
+import { Brand } from '../common/Brand'
 
 type LandingNavbarProps = {
   onNavigate: (path: string) => void
@@ -11,12 +13,9 @@ type LandingNavbarProps = {
 }
 
 const menuItems = [
-  { label: 'Beranda', action: 'home' },
   { label: 'Tentang', action: 'about' },
-  { label: 'Alur Pelaporan', action: 'steps' },
+  { label: 'Alur Laporan', action: 'steps' },
   { label: 'FAQ', action: 'faq' },
-  { label: 'Layanan Aspirasi', action: 'auth' },
-  { label: 'Portal Petugas', action: 'officer' },
 ] as const
 
 export function LandingNavbar({
@@ -53,14 +52,6 @@ export function LandingNavbar({
 
   const handleMenuAction = (action: (typeof menuItems)[number]['action']) => {
     setMenuOpen(false)
-    if (action === 'home') {
-      if (onScrollToTop) {
-        onScrollToTop()
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-      return
-    }
     if (action === 'about') {
       if (onScrollToAbout) {
         onScrollToAbout()
@@ -85,9 +76,7 @@ export function LandingNavbar({
       } else {
         document.getElementById('faq-section')?.scrollIntoView({ behavior: 'smooth' })
       }
-      return
     }
-    onNavigate(action === 'auth' ? '/auth' : '/petugas')
   }
 
   return (
@@ -100,31 +89,15 @@ export function LandingNavbar({
     >
       <div className="relative mx-auto flex min-h-[70px] w-full max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14 py-2.5">
         {/* Brand Logo */}
-        <a
-          className="flex flex-col items-start no-underline transition duration-150 hover:-translate-y-px cursor-pointer"
-          href="/"
-          onClick={(event) => {
-            event.preventDefault()
+        <Brand
+          onClick={() => {
             if (onScrollToTop) {
               onScrollToTop()
             } else {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
           }}
-          aria-label="LaporUNSRI Beranda"
-        >
-          <span className="flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight text-white transition-colors">
-            <span className="font-normal opacity-90">lapor</span>
-            <strong className="font-black tracking-tight text-white">UNSRI</strong>
-            <i
-              className="ml-0.5 size-1.5 -translate-y-1 rounded-full bg-[#ffbb00] shadow-[0_0_8px_#ffbb00]"
-              aria-hidden="true"
-            />
-          </span>
-          <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.24em] text-sky-200/80 transition-colors">
-            Layanan Aspirasi Kampus
-          </span>
-        </a>
+        />
 
         {/* Desktop Navigation Links */}
         <nav
@@ -143,7 +116,7 @@ export function LandingNavbar({
             className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('steps')}
           >
-            Alur Pelaporan
+            Alur Laporan
           </button>
           <button
             type="button"
@@ -178,25 +151,32 @@ export function LandingNavbar({
           </button>
         </div>
 
-        {/* Mobile Dropdown Menu */}
-        {menuOpen && (
-          <nav
-            id="landing-navigation-menu"
-            className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
-            aria-label="Navigasi mobile"
-          >
-            {menuItems.map((item) => (
-              <button
-                key={item.action}
-                className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
-                type="button"
-                onClick={() => handleMenuAction(item.action)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* Mobile Dropdown Menu with Smooth Animation */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              id="landing-navigation-menu"
+              key="landing-mobile-menu"
+              initial={{ opacity: 0, scale: 0.95, y: -6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -6 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
+              aria-label="Navigasi mobile"
+            >
+              {menuItems.map((item) => (
+                <button
+                  key={item.action}
+                  className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
+                  type="button"
+                  onClick={() => handleMenuAction(item.action)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )
