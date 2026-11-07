@@ -123,7 +123,7 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
                   initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
                   animate={{ rotate: 0, opacity: 1, scale: 1 }}
                   exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.16 }}
+                  transition={{ duration: 0.14 }}
                 >
                   {mobileMenuOpen ? <FiX className="size-5" /> : <FiMenu className="size-5" />}
                 </motion.div>
@@ -132,51 +132,50 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu dengan Animasi Halus & Stagger */}
+        {/* Mobile Dropdown Menu: Container terpisah overflow-hidden agar penutupan mulus tanpa jeda/lompatan */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
               key="mobile-nav-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden border-t border-white/10 bg-[#062445] px-4 py-3 lg:hidden space-y-1.5 shadow-2xl"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{
+                height: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.18, ease: 'easeInOut' },
+              }}
+              className="overflow-hidden border-t border-white/10 bg-[#062445] lg:hidden"
             >
-              <div className="px-3 py-2 text-xs font-semibold text-sky-200 border-b border-white/10">
-                {profile.full_name}
+              <div className="px-4 py-3 space-y-1.5 shadow-2xl">
+                <div className="px-3 py-2 text-xs font-semibold text-sky-200 border-b border-white/10">
+                  {profile.full_name}
+                </div>
+                {navItems.map((item) => {
+                  const isActive = active === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => handleNavClick(item.path)}
+                      className={`flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold transition cursor-pointer ${
+                        isActive
+                          ? 'bg-white text-[#08315c]'
+                          : 'text-white/80 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  )
+                })}
+                <button
+                  type="button"
+                  onClick={onSignOut}
+                  className="flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
+                >
+                  <FiLogOut className="size-4" aria-hidden="true" />
+                  <span>Keluar Akun</span>
+                </button>
               </div>
-              {navItems.map((item, index) => {
-                const isActive = active === item.id
-                return (
-                  <motion.button
-                    key={item.id}
-                    initial={{ opacity: 0, x: -8 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.2, delay: 0.03 + index * 0.03 }}
-                    type="button"
-                    onClick={() => handleNavClick(item.path)}
-                    className={`flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold transition cursor-pointer ${
-                      isActive
-                        ? 'bg-white text-[#08315c]'
-                        : 'text-white/80 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    {item.label}
-                  </motion.button>
-                )
-              })}
-              <motion.button
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.2, delay: 0.03 + navItems.length * 0.03 }}
-                type="button"
-                onClick={onSignOut}
-                className="flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
-              >
-                <FiLogOut className="size-4" aria-hidden="true" />
-                <span>Keluar Akun</span>
-              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>

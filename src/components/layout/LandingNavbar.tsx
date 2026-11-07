@@ -13,12 +13,9 @@ type LandingNavbarProps = {
 }
 
 const menuItems = [
-  { label: 'Beranda', action: 'home' },
   { label: 'Tentang', action: 'about' },
-  { label: 'Alur Pelaporan', action: 'steps' },
+  { label: 'Alur Laporan', action: 'steps' },
   { label: 'FAQ', action: 'faq' },
-  { label: 'Layanan Aspirasi', action: 'auth' },
-  { label: 'Portal Petugas', action: 'officer' },
 ] as const
 
 export function LandingNavbar({
@@ -55,14 +52,6 @@ export function LandingNavbar({
 
   const handleMenuAction = (action: (typeof menuItems)[number]['action']) => {
     setMenuOpen(false)
-    if (action === 'home') {
-      if (onScrollToTop) {
-        onScrollToTop()
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-      return
-    }
     if (action === 'about') {
       if (onScrollToAbout) {
         onScrollToAbout()
@@ -87,9 +76,7 @@ export function LandingNavbar({
       } else {
         document.getElementById('faq-section')?.scrollIntoView({ behavior: 'smooth' })
       }
-      return
     }
-    onNavigate(action === 'auth' ? '/auth' : '/petugas')
   }
 
   return (
@@ -129,7 +116,7 @@ export function LandingNavbar({
             className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('steps')}
           >
-            Alur Pelaporan
+            Alur Laporan
           </button>
           <button
             type="button"
