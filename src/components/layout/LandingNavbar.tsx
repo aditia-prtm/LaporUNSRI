@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { BiMenu, BiX } from 'react-icons/bi'
 import { Brand } from '../common/Brand'
 
@@ -163,25 +164,32 @@ export function LandingNavbar({
           </button>
         </div>
 
-        {/* Mobile Dropdown Menu */}
-        {menuOpen && (
-          <nav
-            id="landing-navigation-menu"
-            className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
-            aria-label="Navigasi mobile"
-          >
-            {menuItems.map((item) => (
-              <button
-                key={item.action}
-                className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
-                type="button"
-                onClick={() => handleMenuAction(item.action)}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* Mobile Dropdown Menu with Smooth Animation */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              id="landing-navigation-menu"
+              key="landing-mobile-menu"
+              initial={{ opacity: 0, scale: 0.95, y: -6 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -6 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
+              aria-label="Navigasi mobile"
+            >
+              {menuItems.map((item) => (
+                <button
+                  key={item.action}
+                  className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
+                  type="button"
+                  onClick={() => handleMenuAction(item.action)}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   )

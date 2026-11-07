@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import { Brand } from '../common/Brand'
 import { FiLogOut, FiMenu, FiX } from 'react-icons/fi'
@@ -41,9 +42,9 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
             />
           </div>
 
-          {/* Center: Navigation Pills (Desktop) */}
+          {/* Center: Navigation Pills (Desktop) dengan Framer Motion layoutId */}
           <nav
-            className="hidden lg:flex items-center gap-2 bg-[#062445]/60 p-1.5 rounded-full border border-white/10 backdrop-blur-sm"
+            className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10 backdrop-blur-sm"
             aria-label="Navigasi Utama Mahasiswa"
           >
             {navItems.map((item) => {
@@ -53,13 +54,25 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
                   key={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.path)}
-                  className={`min-h-[38px] rounded-full px-5 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                  className={`relative min-h-[38px] rounded-full px-5 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer select-none ${
                     isActive
-                      ? 'bg-white text-[#08315c] shadow-md'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      ? 'text-[#08315c]'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  {item.label}
+                  {/* Animasi latar putih bergeser mulus antar menu */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="student-nav-active-pill"
+                      className="absolute inset-0 rounded-full bg-white shadow-md z-0"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 420,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
                 </button>
               )
             })}
@@ -89,7 +102,7 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Menu Button with Animated Icon */}
           <div className="flex items-center gap-2 lg:hidden">
             <div
               className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm"
@@ -101,47 +114,72 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
               aria-expanded={mobileMenuOpen}
-              aria-label="Buka menu navigasi"
+              aria-label={mobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
               className="grid size-10 place-items-center rounded-xl bg-white/10 text-white hover:bg-white/20 transition cursor-pointer"
             >
-              {mobileMenuOpen ? <FiX className="size-5" /> : <FiMenu className="size-5" />}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={mobileMenuOpen ? 'close' : 'menu'}
+                  initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                  exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.16 }}
+                >
+                  {mobileMenuOpen ? <FiX className="size-5" /> : <FiMenu className="size-5" />}
+                </motion.div>
+              </AnimatePresence>
             </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown Menu */}
-        {mobileMenuOpen && (
-          <div className="border-t border-white/10 bg-[#062445] px-4 py-4 lg:hidden space-y-2 shadow-xl">
-            <div className="px-3 py-2 text-xs font-semibold text-sky-200 border-b border-white/10">
-              {profile.full_name}
-            </div>
-            {navItems.map((item) => {
-              const isActive = active === item.id
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => handleNavClick(item.path)}
-                  className={`flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold transition cursor-pointer ${
-                    isActive
-                      ? 'bg-white text-[#08315c]'
-                      : 'text-white/80 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              )
-            })}
-            <button
-              type="button"
-              onClick={onSignOut}
-              className="flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
+        {/* Mobile Dropdown Menu dengan Animasi Halus & Stagger */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              key="mobile-nav-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+              className="overflow-hidden border-t border-white/10 bg-[#062445] px-4 py-3 lg:hidden space-y-1.5 shadow-2xl"
             >
-              <FiLogOut className="size-4" aria-hidden="true" />
-              <span>Keluar Akun</span>
-            </button>
-          </div>
-        )}
+              <div className="px-3 py-2 text-xs font-semibold text-sky-200 border-b border-white/10">
+                {profile.full_name}
+              </div>
+              {navItems.map((item, index) => {
+                const isActive = active === item.id
+                return (
+                  <motion.button
+                    key={item.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2, delay: 0.03 + index * 0.03 }}
+                    type="button"
+                    onClick={() => handleNavClick(item.path)}
+                    className={`flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold transition cursor-pointer ${
+                      isActive
+                        ? 'bg-white text-[#08315c]'
+                        : 'text-white/80 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </motion.button>
+                )
+              })}
+              <motion.button
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.2, delay: 0.03 + navItems.length * 0.03 }}
+                type="button"
+                onClick={onSignOut}
+                className="flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
+              >
+                <FiLogOut className="size-4" aria-hidden="true" />
+                <span>Keluar Akun</span>
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Main View Container */}
@@ -151,4 +189,5 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
     </div>
   )
 }
+
 export default StudentLayout

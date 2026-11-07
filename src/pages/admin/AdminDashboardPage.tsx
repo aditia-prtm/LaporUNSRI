@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
@@ -209,8 +210,8 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
             />
           </div>
 
-          {/* Navigation Pills (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-2 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Menu Admin">
+          {/* Navigation Pills (Desktop) dengan Framer Motion layoutId */}
+          <nav className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Menu Admin">
             {navigation.map((item) => {
               const isActive = activeSection === item.id
               const hasOverdue = item.id === 'terlambat' && overdueReports.length > 0
@@ -219,15 +220,26 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                   key={item.id}
                   type="button"
                   onClick={() => onNavigate(`/admin/${item.id}`)}
-                  className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
+                  className={`relative min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
                     isActive
-                      ? 'bg-white text-[#08315c] shadow-sm'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      ? 'text-[#08315c]'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  {isActive && (
+                    <motion.div
+                      layoutId="admin-nav-active-pill"
+                      className="absolute inset-0 rounded-full bg-white shadow-sm z-0"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 420,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10">{item.label}</span>
                   {hasOverdue && (
-                    <span className="grid size-4.5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                    <span className="relative z-10 grid size-4.5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
                       {overdueReports.length}
                     </span>
                   )}

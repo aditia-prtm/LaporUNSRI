@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
@@ -117,8 +118,8 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
             />
           </div>
 
-          {/* Center Tabs (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-2 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
+          {/* Center Tabs (Desktop) dengan Framer Motion layoutId */}
+          <nav className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
             {queueTabs.map((tab) => {
               const isActive = status === tab.value
               return (
@@ -126,14 +127,25 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
                   key={tab.label}
                   type="button"
                   onClick={() => setStatus(tab.value)}
-                  className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
+                  className={`relative min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
                     isActive
-                      ? 'bg-white text-[#08315c] shadow-sm'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      ? 'text-[#08315c]'
+                      : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  <span>{tab.label}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
+                  {isActive && (
+                    <motion.div
+                      layoutId="officer-nav-active-pill"
+                      className="absolute inset-0 rounded-full bg-white shadow-sm z-0"
+                      transition={{
+                        type: 'spring',
+                        stiffness: 420,
+                        damping: 32,
+                      }}
+                    />
+                  )}
+                  <span className="relative z-10">{tab.label}</span>
+                  <span className={`relative z-10 rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
                     {loading ? '...' : tab.count}
                   </span>
                 </button>
