@@ -3,6 +3,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { getCategories, getReports, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportCardSkeleton } from '../../components/common/Skeleton'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { formatReportDate } from '../../utils/date'
 import { filterReports } from '../../utils/report'
@@ -137,9 +138,7 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
 
           {/* Report Cards Grid */}
           {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
-              Memuat daftar laporan...
-            </div>
+            <ReportCardSkeleton count={4} />
           ) : visibleReports.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
               <FiSearch className="size-10 text-slate-400 mb-3" aria-hidden="true" />

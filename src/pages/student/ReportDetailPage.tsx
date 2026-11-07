@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportComment } from '../../types/report'
 import { addReportComment, deleteReport, getReport, getReportComments, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportDetailSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { formatDateTime } from '../../utils/date'
 import { FiArrowLeft, FiCheck, FiEdit3, FiHeart, FiMapPin, FiMessageSquare, FiSend, FiTrash2, FiUser } from 'react-icons/fi'
 
@@ -119,7 +120,12 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
             <span>Kembali ke Semua Laporan</span>
           </button>
 
-          {report && (
+          {loading ? (
+            <div className="space-y-2 pt-1">
+              <Skeleton className="h-5 w-28 rounded-full" variant="dark" />
+              <Skeleton className="h-8 w-72 max-w-full" variant="dark" />
+            </div>
+          ) : report ? (
             <div>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="rounded-full bg-white/10 border border-white/20 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#ffbb00]">
@@ -131,7 +137,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
                 {report.title}
               </h1>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
@@ -141,9 +147,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
           {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
           {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
-              Memuat detail laporan...
-            </div>
+            <ReportDetailSkeleton />
           ) : !report ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
               <h2 className="text-base font-bold text-slate-800">Laporan Tidak Ditemukan</h2>

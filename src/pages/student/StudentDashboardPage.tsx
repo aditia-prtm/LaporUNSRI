@@ -3,6 +3,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { getReports } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { Skeleton, TableSkeleton } from '../../components/common/Skeleton'
 import { countReportsByStatus } from '../../utils/report'
 import { formatDate } from '../../utils/date'
 import mascotImg from '../../assets/dashboard/mascot-2.png'
@@ -117,9 +118,13 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
             <span className="text-xs font-semibold text-slate-500">
               Laporan saya
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : mine.length}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {mine.length}
+              </strong>
+            )}
           </div>
 
           {/* Card 2: Sedang Diproses */}
@@ -128,9 +133,13 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
               <span className="size-2 rounded-full bg-amber-400" aria-hidden="true" />
               <span>Sedang diproses</span>
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : inProgress}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {inProgress}
+              </strong>
+            )}
           </div>
 
           {/* Card 3: Selesai */}
@@ -139,9 +148,13 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
               <FiCheck className="size-3.5 text-emerald-500 stroke-[2.5]" aria-hidden="true" />
               <span>Selesai</span>
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : completed}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {completed}
+              </strong>
+            )}
           </div>
         </div>
       </section>
@@ -213,9 +226,7 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
           {/* Table Container */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200/90 overflow-hidden">
             {loading ? (
-              <div className="py-16 text-center text-xs text-slate-500 font-medium">
-                Memuat daftar laporan...
-              </div>
+              <TableSkeleton rows={4} />
             ) : filteredRecent.length === 0 ? (
               <div className="py-16 text-center space-y-2">
                 <p className="text-sm font-bold text-slate-700">Tidak ada laporan untuk filter ini</p>

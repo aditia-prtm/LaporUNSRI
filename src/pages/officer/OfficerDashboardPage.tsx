@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportCardSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
 import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUpCard'
@@ -196,9 +197,13 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
               <FiAlertCircle className="size-3.5 text-amber-500" aria-hidden="true" />
               <span>Perlu Diproses Segera</span>
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : openCount}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {openCount}
+              </strong>
+            )}
           </div>
 
           <div className="rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
@@ -206,9 +211,13 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
               <FiClock className="size-3.5 text-sky-500" aria-hidden="true" />
               <span>Sedang Dikerjakan</span>
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : progressCount}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {progressCount}
+              </strong>
+            )}
           </div>
 
           <div className="rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
@@ -216,9 +225,13 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
               <FiCheck className="size-3.5 text-emerald-500 stroke-[2.5]" aria-hidden="true" />
               <span>Tuntas Selesai</span>
             </span>
-            <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
-              {loading ? '...' : doneCount}
-            </strong>
+            {loading ? (
+              <Skeleton className="h-9 w-14 mt-2" />
+            ) : (
+              <strong className="block text-3xl sm:text-4xl font-extrabold text-[#08315c] mt-2">
+                {doneCount}
+              </strong>
+            )}
           </div>
         </div>
       </section>
@@ -266,9 +279,7 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
           />
 
           {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
-              Memuat penugasan laporan fasilitas...
-            </div>
+            <ReportCardSkeleton count={3} />
           ) : visibleReports.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
               <FiInbox className="size-10 text-slate-400 mb-3" aria-hidden="true" />

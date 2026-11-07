@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { ReportCardSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
 import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUpCard'
@@ -296,9 +297,13 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
           <div className="mx-auto max-w-[1280px] grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
               <span className="text-xs font-semibold text-slate-500">Total Aduan</span>
-              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                {loading ? '...' : reports.length}
-              </strong>
+              {loading ? (
+                <Skeleton className="h-8 w-12 mt-2" />
+              ) : (
+                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                  {reports.length}
+                </strong>
+              )}
             </div>
 
             <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
@@ -306,9 +311,13 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 <FiClock className="size-3 text-amber-500" aria-hidden="true" />
                 <span>Belum Diproses</span>
               </span>
-              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                {loading ? '...' : openCount}
-              </strong>
+              {loading ? (
+                <Skeleton className="h-8 w-12 mt-2" />
+              ) : (
+                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                  {openCount}
+                </strong>
+              )}
             </div>
 
             <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
@@ -316,9 +325,13 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 <FiClock className="size-3 text-sky-500" aria-hidden="true" />
                 <span>Sedang Diproses</span>
               </span>
-              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                {loading ? '...' : progressCount}
-              </strong>
+              {loading ? (
+                <Skeleton className="h-8 w-12 mt-2" />
+              ) : (
+                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                  {progressCount}
+                </strong>
+              )}
             </div>
 
             <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
@@ -326,9 +339,13 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 <FiCheckCircle className="size-3 text-emerald-500" aria-hidden="true" />
                 <span>Tuntas Selesai</span>
               </span>
-              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                {loading ? '...' : doneCount}
-              </strong>
+              {loading ? (
+                <Skeleton className="h-8 w-12 mt-2" />
+              ) : (
+                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                  {doneCount}
+                </strong>
+              )}
             </div>
 
             <div className="col-span-2 lg:col-span-1 rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-rose-200 flex flex-col justify-between">
@@ -336,9 +353,13 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 <FiAlertTriangle className="size-3 text-rose-500" aria-hidden="true" />
                 <span>Perlu Eskalasi</span>
               </span>
-              <strong className="block text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
-                {loading ? '...' : overdueReports.length}
-              </strong>
+              {loading ? (
+                <Skeleton className="h-8 w-12 mt-2" />
+              ) : (
+                <strong className="block text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
+                  {overdueReports.length}
+                </strong>
+              )}
             </div>
           </div>
         </section>
@@ -497,9 +518,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
 
               {/* Report List */}
               {loading ? (
-                <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
-                  Memuat data laporan fasilitas...
-                </div>
+                <ReportCardSkeleton count={3} />
               ) : visibleReports.length === 0 ? (
                 <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
                   <FiCheckCircle className="size-10 text-emerald-500 mb-3" aria-hidden="true" />

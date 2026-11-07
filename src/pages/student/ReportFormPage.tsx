@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, ReportInput } from '../../types/report'
 import { createReport, getCategories, getReport, updateReport, uploadReportPhoto } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { FormSkeleton } from '../../components/common/Skeleton'
 import { REPORT_PHOTO_MAX_BYTES, validateImageFile, validateReportInput } from '../../schemas/report'
 import { FiArrowLeft, FiCamera, FiCheck, FiX } from 'react-icons/fi'
 
@@ -134,9 +135,7 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
           {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
           {loading ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
-              Memuat data formulir...
-            </div>
+            <FormSkeleton />
           ) : (
             <form
               className="space-y-6 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-sm"
