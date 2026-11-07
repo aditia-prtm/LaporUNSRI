@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
@@ -62,6 +62,25 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   const [newCategory, setNewCategory] = useState('')
   const [categoryNames, setCategoryNames] = useState<Record<string, string>>({})
   const [categoryBusy, setCategoryBusy] = useState(false)
+  const activeSection = navigation.some((item) => item.id === section) ? section : 'dashboard'
+  const navRef = useRef<HTMLElement>(null)
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
+
+  useLayoutEffect(() => {
+    const updatePill = () => {
+      if (!navRef.current) return
+      const activeBtn = navRef.current.querySelector<HTMLButtonElement>(`[data-section="${activeSection}"]`)
+      if (activeBtn) {
+        setPillStyle({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+        })
+      }
+    }
+    updatePill()
+    window.addEventListener('resize', updatePill)
+    return () => window.removeEventListener('resize', updatePill)
+  }, [activeSection])
 
   const loadData = async () => {
     setError('')
@@ -193,7 +212,6 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   }
 
   const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
-  const activeSection = navigation.some((item) => item.id === section) ? section : 'dashboard'
   const avatarLetter = (profile.full_name || 'A').slice(0, 1).toUpperCase()
 
   return (
@@ -210,36 +228,42 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
             />
           </div>
 
-          {/* Navigation Pills (Desktop) dengan Framer Motion layoutId */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Menu Admin">
+          {/* Navigation Pills (Desktop) */}
+          <nav ref={navRef} className="relative hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Menu Admin">
+            {pillStyle && (
+              <motion.div
+                className="absolute rounded-full bg-white shadow-sm z-0 pointer-events-none"
+                style={{ top: 6, bottom: 6 }}
+                initial={false}
+                animate={{
+                  left: pillStyle.left,
+                  width: pillStyle.width,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 420,
+                  damping: 32,
+                }}
+              />
+            )}
             {navigation.map((item) => {
               const isActive = activeSection === item.id
               const hasOverdue = item.id === 'terlambat' && overdueReports.length > 0
               return (
                 <button
                   key={item.id}
+                  data-section={item.id}
                   type="button"
                   onClick={() => onNavigate(`/admin/${item.id}`)}
-                  className={`relative min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
+                  className={`relative z-10 min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
                     isActive
                       ? 'text-[#08315c]'
                       : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="admin-nav-active-pill"
-                      className="absolute inset-0 rounded-full bg-white shadow-sm z-0"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 420,
-                        damping: 32,
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{item.label}</span>
+                  <span>{item.label}</span>
                   {hasOverdue && (
-                    <span className="relative z-10 grid size-4.5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
+                    <span className="grid size-4.5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
                       {overdueReports.length}
                     </span>
                   )}

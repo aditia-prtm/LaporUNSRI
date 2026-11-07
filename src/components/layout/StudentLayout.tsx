@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useLayoutEffect } from 'react'
 import type { ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
@@ -21,12 +21,32 @@ const navItems = [
 
 export function StudentLayout({ profile, active, onNavigate, onSignOut, children }: StudentLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navRef = useRef<HTMLElement>(null)
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
   const avatarLetter = (profile.full_name || 'M').slice(0, 1).toUpperCase()
 
   const handleNavClick = (path: string) => {
     setMobileMenuOpen(false)
     onNavigate(path)
   }
+
+  // Hitung posisi horizontal (left & width) murni relatif terhadap nav container
+  // sehingga kebal terhadap scroll halaman dan tidak ada glitch terbang vertikal menyilang
+  useLayoutEffect(() => {
+    const updatePill = () => {
+      if (!navRef.current) return
+      const activeBtn = navRef.current.querySelector<HTMLButtonElement>(`[data-tab="${active}"]`)
+      if (activeBtn) {
+        setPillStyle({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+        })
+      }
+    }
+    updatePill()
+    window.addEventListener('resize', updatePill)
+    return () => window.removeEventListener('resize', updatePill)
+  }, [active])
 
   return (
     <div className="min-h-screen w-full bg-[#f4f7fb] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-slate-800 antialiased flex flex-col">
@@ -42,37 +62,45 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
             />
           </div>
 
-          {/* Center: Navigation Pills (Desktop) dengan Framer Motion layoutId */}
+          {/* Center: Navigation Pills (Desktop) */}
           <nav
-            className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10 backdrop-blur-sm"
+            ref={navRef}
+            className="relative hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10 backdrop-blur-sm"
             aria-label="Navigasi Utama Mahasiswa"
           >
+            {/* Latar belakang pill putih bergeser mulus secara horizontal */}
+            {pillStyle && (
+              <motion.div
+                className="absolute rounded-full bg-white shadow-md z-0 pointer-events-none"
+                style={{ top: 6, bottom: 6 }}
+                initial={false}
+                animate={{
+                  left: pillStyle.left,
+                  width: pillStyle.width,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 420,
+                  damping: 32,
+                }}
+              />
+            )}
+
             {navItems.map((item) => {
               const isActive = active === item.id
               return (
                 <button
                   key={item.id}
+                  data-tab={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.path)}
-                  className={`relative min-h-[38px] rounded-full px-5 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer select-none ${
+                  className={`relative z-10 min-h-[38px] rounded-full px-5 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer select-none ${
                     isActive
                       ? 'text-[#08315c]'
                       : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  {/* Animasi latar putih bergeser mulus antar menu */}
-                  {isActive && (
-                    <motion.div
-                      layoutId="student-nav-active-pill"
-                      className="absolute inset-0 rounded-full bg-white shadow-md z-0"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 420,
-                        damping: 32,
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{item.label}</span>
+                  {item.label}
                 </button>
               )
             })}

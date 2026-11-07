@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
@@ -28,6 +28,24 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
   const [status, setStatus] = useState<ReportStatus | ''>('')
   const [busyId, setBusyId] = useState('')
   const [drafts, setDrafts] = useState<Record<string, ReportFollowUpDraft>>({})
+  const navRef = useRef<HTMLElement>(null)
+  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
+
+  useLayoutEffect(() => {
+    const updatePill = () => {
+      if (!navRef.current) return
+      const activeBtn = navRef.current.querySelector<HTMLButtonElement>(`[data-status="${status}"]`)
+      if (activeBtn) {
+        setPillStyle({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+        })
+      }
+    }
+    updatePill()
+    window.addEventListener('resize', updatePill)
+    return () => window.removeEventListener('resize', updatePill)
+  }, [status])
 
   const load = async () => {
     setError('')
@@ -118,34 +136,40 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
             />
           </div>
 
-          {/* Center Tabs (Desktop) dengan Framer Motion layoutId */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
+          {/* Center Tabs (Desktop) */}
+          <nav ref={navRef} className="relative hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
+            {pillStyle && (
+              <motion.div
+                className="absolute rounded-full bg-white shadow-sm z-0 pointer-events-none"
+                style={{ top: 6, bottom: 6 }}
+                initial={false}
+                animate={{
+                  left: pillStyle.left,
+                  width: pillStyle.width,
+                }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 420,
+                  damping: 32,
+                }}
+              />
+            )}
             {queueTabs.map((tab) => {
               const isActive = status === tab.value
               return (
                 <button
                   key={tab.label}
+                  data-status={tab.value}
                   type="button"
                   onClick={() => setStatus(tab.value)}
-                  className={`relative min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
+                  className={`relative z-10 min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
                     isActive
                       ? 'text-[#08315c]'
                       : 'text-white/80 hover:text-white'
                   }`}
                 >
-                  {isActive && (
-                    <motion.div
-                      layoutId="officer-nav-active-pill"
-                      className="absolute inset-0 rounded-full bg-white shadow-sm z-0"
-                      transition={{
-                        type: 'spring',
-                        stiffness: 420,
-                        damping: 32,
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{tab.label}</span>
-                  <span className={`relative z-10 rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
+                  <span>{tab.label}</span>
+                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
                     {loading ? '...' : tab.count}
                   </span>
                 </button>
