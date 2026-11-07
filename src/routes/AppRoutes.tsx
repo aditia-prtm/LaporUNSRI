@@ -44,7 +44,7 @@ function OfficerLayoutRoute() {
   }
   return (
     <>
-      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      <LoadingScreen isLoading={loading} />
       {profile && <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />}
     </>
   )
@@ -69,7 +69,7 @@ function AdminLayoutRoute() {
   const section = location.pathname.replace(/^\/admin\/?/, '').split('/')[0] || 'dashboard'
   return (
     <>
-      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      <LoadingScreen isLoading={loading} />
       {profile && <AdminDashboardPage profile={profile} section={section} onNavigate={navigate} onSignOut={() => void handleSignOut()} />}
     </>
   )
@@ -101,7 +101,7 @@ function StudentLayoutRoute() {
 
   return (
     <>
-      <LoadingScreen isLoading={loading} message="Memeriksa sesi akun..." />
+      <LoadingScreen isLoading={loading} />
       {profile && (
         <StudentLayout profile={profile} active={active} onNavigate={navigate} onSignOut={() => void handleSignOut()}>
           <Outlet context={profile} />

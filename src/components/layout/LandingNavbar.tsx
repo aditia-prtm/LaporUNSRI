@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BiMenu, BiX } from 'react-icons/bi'
+import { Brand } from '../common/Brand'
 
 type LandingNavbarProps = {
   onNavigate: (path: string) => void
@@ -100,31 +101,15 @@ export function LandingNavbar({
     >
       <div className="relative mx-auto flex min-h-[70px] w-full max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14 py-2.5">
         {/* Brand Logo */}
-        <a
-          className="flex flex-col items-start no-underline transition duration-150 hover:-translate-y-px cursor-pointer"
-          href="/"
-          onClick={(event) => {
-            event.preventDefault()
+        <Brand
+          onClick={() => {
             if (onScrollToTop) {
               onScrollToTop()
             } else {
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
           }}
-          aria-label="LaporUNSRI Beranda"
-        >
-          <span className="flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight text-white transition-colors">
-            <span className="font-normal opacity-90">lapor</span>
-            <strong className="font-black tracking-tight text-white">UNSRI</strong>
-            <i
-              className="ml-0.5 size-1.5 -translate-y-1 rounded-full bg-[#ffbb00] shadow-[0_0_8px_#ffbb00]"
-              aria-hidden="true"
-            />
-          </span>
-          <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.24em] text-sky-200/80 transition-colors">
-            Layanan Aspirasi Kampus
-          </span>
-        </a>
+        />
 
         {/* Desktop Navigation Links */}
         <nav
