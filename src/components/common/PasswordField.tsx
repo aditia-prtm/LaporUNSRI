@@ -10,12 +10,14 @@ type PasswordFieldProps = {
 
 export function PasswordField({ value, onChange, mode, visible, onToggleVisibility }: PasswordFieldProps) {
   return (
-    <label className="flex flex-col gap-1.5 text-xs font-semibold text-[#cce5fb]">
-      <span>Kata sandi</span>
+    <label className="flex flex-col gap-1.5">
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
+        Password
+      </span>
       <div className="relative w-full">
         <input
           required
-          className="h-11 w-full rounded-xl border border-white/15 bg-[#031528]/80 px-3.5 pr-11 text-xs font-normal text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25"
+          className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 pr-11 text-sm font-normal text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
           type={visible ? 'text' : 'password'}
           minLength={6}
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
@@ -24,13 +26,13 @@ export function PasswordField({ value, onChange, mode, visible, onToggleVisibili
           placeholder={mode === 'login' ? 'Masukkan kata sandi' : 'Minimal 6 karakter'}
         />
         <button
-          className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg bg-transparent text-sm text-[#8cb6dc] transition hover:bg-white/10 hover:text-white"
+          className="absolute right-2 top-1/2 grid size-8 -translate-y-1/2 place-items-center rounded-lg bg-transparent text-sky-200/70 transition hover:bg-white/10 hover:text-white cursor-pointer"
           type="button"
           aria-label={visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
           aria-pressed={visible}
           onClick={onToggleVisibility}
         >
-          {visible ? <FiEyeOff aria-hidden="true" /> : <FiEye aria-hidden="true" />}
+          {visible ? <FiEyeOff className="size-4" aria-hidden="true" /> : <FiEye className="size-4" aria-hidden="true" />}
         </button>
       </div>
     </label>

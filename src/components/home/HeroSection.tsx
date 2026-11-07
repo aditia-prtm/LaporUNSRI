@@ -95,26 +95,28 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
         >
           <h1 className="m-0 text-[clamp(36px,3.5vw,48px)] font-bold leading-[1.15] tracking-[-0.025em] text-white whitespace-nowrap [text-shadow:0_2px_24px_rgba(2,16,32,0.5)] max-lg:text-[clamp(27px,4.2vw,40px)] max-lg:whitespace-normal max-sm:text-[clamp(24px,6.8vw,31px)] max-sm:leading-[1.2]">
             Building a better campus,{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">together</span>
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00] tracking-[0.015em] pl-1.5 [text-shadow:0_0_28px_rgba(127,195,248,0.45)]">
+              together
+            </span>
           </h1>
           <p className="mx-auto mt-3 max-w-[600px] text-[15px] lg:text-[17px] font-normal leading-[1.58] text-white [text-shadow:0_2px_14px_rgba(2,14,28,0.6)] max-lg:max-w-[500px] max-lg:mt-3 max-lg:leading-[1.56] max-sm:mt-2.5 max-sm:max-w-[325px] max-sm:text-[12.5px] max-sm:leading-[1.52]">
             Bantu wujudkan lingkungan Universitas Sriwijaya yang lebih nyaman dan transparan. Laporkan fasilitas kampus yang perlu diperbaiki dan pantau tindak lanjutnya bersama kami.
           </p>
 
-          {/* Hero CTAs */}
+          {/* Hero CTAs matching Auth Page style */}
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-sm:mt-4 max-sm:gap-2.5">
             <button
               type="button"
               onClick={handleReportClick}
-              className="group inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#2b8ced] px-4.5 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-bold text-[#021427] shadow-[0_4px_20px_rgba(58,147,232,0.4)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(58,147,232,0.6)] hover:brightness-105 active:translate-y-0 cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-2xl bg-[#0c4278] hover:bg-[#08315c] border border-white/20 px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-black/30 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
             >
               <span>Buat Laporan</span>
-              <FiArrowRight className="size-3.5 sm:size-4 transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden="true" />
+              <FiArrowRight className="size-3.5 sm:size-4" aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={handleScrollToSteps}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-4 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-[#e1f0ff] backdrop-blur-md shadow-sm shadow-black/20 transition-all duration-200 hover:bg-white/20 hover:border-white/40 hover:text-white hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 px-5 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white backdrop-blur-md shadow-sm transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
             >
               <span>Pelajari Alur</span>
             </button>

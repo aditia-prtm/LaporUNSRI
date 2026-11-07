@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BiMenu } from 'react-icons/bi'
+import { BiMenu, BiX } from 'react-icons/bi'
 
 type LandingNavbarProps = {
   onNavigate: (path: string) => void
@@ -29,11 +29,23 @@ export function LandingNavbar({
 }: LandingNavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isOverContent, setIsOverContent] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 30)
+      const scrollY = window.scrollY
+      setIsScrolled(scrollY > 20)
+
+      const contentEl = document.getElementById('content-container')
+      if (contentEl) {
+        const rect = contentEl.getBoundingClientRect()
+        // Saat ujung atas content-container mencapai navbar (tinggi ~70px)
+        setIsOverContent(rect.top <= 70)
+      } else {
+        setIsOverContent(scrollY > (typeof window !== 'undefined' ? window.innerHeight - 80 : 600))
+      }
     }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
@@ -79,14 +91,17 @@ export function LandingNavbar({
   }
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-[100] w-full transition-all duration-300 ${
-      isScrolled
-        ? 'bg-[#031830]/85 backdrop-blur-md border-b border-white/10 shadow-lg shadow-black/20'
-        : 'bg-transparent border-b border-transparent'
-    }`}>
-      <div className="relative mx-auto flex min-h-[76px] w-full max-w-[1440px] items-center justify-between px-11 py-3 max-lg:min-h-[68px] max-lg:px-7 max-lg:py-2.5 max-sm:min-h-[60px] max-sm:px-4.5">
+    <header
+      className={`fixed inset-x-0 top-0 z-[100] w-full transition-all duration-300 ${
+        isScrolled || isOverContent
+          ? 'bg-[#08315c]/85 backdrop-blur-md border-b border-white/15 shadow-md shadow-black/20'
+          : 'bg-transparent border-b border-transparent'
+      }`}
+    >
+      <div className="relative mx-auto flex min-h-[70px] w-full max-w-[1440px] items-center justify-between px-6 sm:px-10 lg:px-14 py-2.5">
+        {/* Brand Logo */}
         <a
-          className="flex flex-col items-start text-white no-underline transition duration-200 hover:-translate-y-px hover:opacity-95 cursor-pointer"
+          className="flex flex-col items-start no-underline transition duration-150 hover:-translate-y-px cursor-pointer"
           href="/"
           onClick={(event) => {
             event.preventDefault()
@@ -96,64 +111,70 @@ export function LandingNavbar({
               window.scrollTo({ top: 0, behavior: 'smooth' })
             }
           }}
-          aria-label="LaporUnsri beranda"
+          aria-label="LaporUNSRI Beranda"
         >
-          <span className="flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight max-sm:text-xl">
-            <span>lapor</span>
-            <strong className="font-extrabold">UNSRI</strong>
-            <i className="ml-0.5 h-1.5 w-1.5 -translate-y-1 rounded-full bg-[#60b6ff] shadow-[0_0_10px_#60b6ff]" aria-hidden="true" />
+          <span className="flex items-baseline gap-0.5 text-2xl font-normal leading-none tracking-tight text-white transition-colors">
+            <span className="font-normal opacity-90">lapor</span>
+            <strong className="font-black tracking-tight text-white">UNSRI</strong>
+            <i
+              className="ml-0.5 size-1.5 -translate-y-1 rounded-full bg-[#ffbb00] shadow-[0_0_8px_#ffbb00]"
+              aria-hidden="true"
+            />
           </span>
-          <span className="mt-1 text-[8px] font-semibold uppercase tracking-[0.28em] text-[rgba(220,238,255,0.72)] max-lg:tracking-[0.22em] max-sm:text-[7.5px] max-sm:tracking-[0.18em]">
+          <span className="mt-1 text-[8px] font-bold uppercase tracking-[0.24em] text-sky-200/80 transition-colors">
             Layanan Aspirasi Kampus
           </span>
         </a>
 
         {/* Desktop Navigation Links */}
         <nav
-          className="hidden md:flex items-center gap-1 lg:gap-2 absolute left-1/2 -translate-x-1/2"
+          className="hidden md:flex items-center gap-1.5 absolute left-1/2 -translate-x-1/2"
           aria-label="Navigasi landing page"
         >
           <button
             type="button"
-            className="rounded-full px-4 py-2 text-[13.5px] font-medium text-[#c8e2fb] transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('about')}
           >
             Tentang
           </button>
           <button
             type="button"
-            className="rounded-full px-4 py-2 text-[13.5px] font-medium text-[#c8e2fb] transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('steps')}
           >
             Alur Pelaporan
           </button>
           <button
             type="button"
-            className="rounded-full px-4 py-2 text-[13.5px] font-medium text-[#c8e2fb] transition hover:bg-white/10 hover:text-white"
+            className="rounded-lg px-3.5 py-1.5 text-xs font-bold text-white/90 hover:text-white hover:bg-white/15 transition cursor-pointer"
             onClick={() => handleMenuAction('faq')}
           >
             FAQ
           </button>
         </nav>
 
-        {/* Right Action: Masuk button on far right + Mobile Burger toggle */}
+        {/* Right CTA and Mobile Hamburger */}
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className="rounded-full border border-white/30 bg-white/10 backdrop-blur-md px-6 py-2 text-[13.5px] font-semibold text-white transition hover:-translate-y-px hover:bg-white/25 max-sm:px-4 max-sm:py-1.5 max-sm:text-xs"
+            className={`rounded-2xl px-5 py-2 text-xs font-bold transition active:scale-[0.98] cursor-pointer shadow-sm ${
+              isScrolled || isOverContent
+                ? 'bg-[#ffbb00] hover:bg-[#f0b000] text-slate-950 font-bold shadow-md shadow-black/20'
+                : 'border border-white/35 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md'
+            }`}
             onClick={() => onNavigate('/auth')}
           >
             Masuk
           </button>
           <button
             type="button"
-            className="flex md:hidden h-10 w-10 flex-col items-center justify-center gap-1 rounded-full bg-transparent p-0 transition hover:bg-white/15 max-sm:h-9 max-sm:w-9"
-            aria-label={menuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
+            className="flex md:hidden size-9 items-center justify-center rounded-lg text-white hover:bg-white/15 transition cursor-pointer"
+            aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={menuOpen}
-            aria-controls="landing-navigation-menu"
             onClick={() => setMenuOpen((open) => !open)}
           >
-            <BiMenu size={24} color="white" />
+            {menuOpen ? <BiX size={26} /> : <BiMenu size={26} />}
           </button>
         </div>
 
@@ -161,13 +182,13 @@ export function LandingNavbar({
         {menuOpen && (
           <nav
             id="landing-navigation-menu"
-            className="md:hidden absolute right-11 top-full mt-2 z-10 min-w-[200px] rounded-2xl border border-white/20 bg-[#061e3a]/95 p-2 shadow-[0_16px_36px_rgba(2,16,32,0.45)] backdrop-blur-xl max-lg:right-7 max-sm:right-4.5"
-            aria-label="Navigasi landing page mobile"
+            className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
+            aria-label="Navigasi mobile"
           >
             {menuItems.map((item) => (
               <button
                 key={item.action}
-                className="block w-full rounded-lg border-0 bg-transparent px-4 py-2.5 text-left text-xs font-medium text-[#e2effa] transition hover:bg-white/10 hover:text-white"
+                className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
                 type="button"
                 onClick={() => handleMenuAction(item.action)}
               >

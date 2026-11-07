@@ -1,39 +1,12 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { FiShield, FiUsers, FiMapPin, FiCheckCircle, FiArrowRight } from 'react-icons/fi'
+import { FiArrowRight, FiCheck } from 'react-icons/fi'
 import mascotImg from '../../assets/home/mascot.png'
 
 type AboutSectionProps = {
   onLearnMore?: () => void
   onStartReport?: () => void
 }
-
-const pillars = [
-  {
-    icon: FiMapPin,
-    title: 'Pelaporan Presisi & Terbuka',
-    badge: 'Transparansi',
-    description:
-      'Setiap laporan dilengkapi foto bukti kerusakan, penandaan lokasi akurat (fakultas, gedung, hingga ruang kelas), serta linimasa penanganan yang transparan untuk seluruh sivitas kampus.',
-    highlight: 'Data Terstruktur & Terlacak',
-  },
-  {
-    icon: FiUsers,
-    title: 'Prioritas Kolektif Mahasiswa',
-    badge: 'Kolaborasi',
-    description:
-      'Melalui fitur "Saya juga mengalami", laporan serupa secara otomatis terkonsolidasi dan naik ke tingkat prioritas utama tanpa perlu mengulang aduan yang sama.',
-    highlight: 'Kekuatan Suara Bersama',
-  },
-  {
-    icon: FiShield,
-    title: 'Akuntabilitas Tindak Lanjut',
-    badge: 'Solutif',
-    description:
-      'Terhubung langsung dengan dashboard teknisi dan admin kampus. Setiap perbaikan fasilitas wajib menyertakan dokumentasi foto hasil penanganan sebelum status dinyatakan selesai.',
-    highlight: 'Wajib Bukti Penyelesaian',
-  },
-]
 
 export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) {
   const satuWadahRef = useRef<HTMLDivElement>(null)
@@ -45,161 +18,127 @@ export function AboutSection({ onLearnMore, onStartReport }: AboutSectionProps) 
   return (
     <section
       id="about-section"
-      className="relative px-4 min-[380px]:px-5 sm:px-8 md:px-10 lg:px-16 pt-8 min-[380px]:pt-10 md:pt-16 pb-12 md:pb-16"
+      className="relative px-3.5 min-[380px]:px-5 sm:px-8 md:px-12 lg:px-16 pt-7 min-[380px]:pt-9 md:pt-14 pb-14 md:pb-24 text-white"
       aria-label="Tentang LaporUNSRI"
     >
-      <div className="mx-auto max-w-[1280px]">
-        {/* Top Section Layout: Mascot on Left (protruding above rectangle), "Satu Wadah" Info Container on Right - Always Side-by-Side */}
-        <div className="relative flex items-center gap-3 min-[380px]:gap-4 sm:gap-6 md:gap-8 lg:gap-12">
-          {/* Left Column: Mascot protruding above the rectangle border + character label underneath */}
-          <div className="relative shrink-0 flex justify-center w-[120px] min-[380px]:w-[135px] min-[440px]:w-[155px] sm:w-[190px] md:w-[220px] lg:w-[350px] xl:w-[400px]">
+      <div className="mx-auto max-w-[1180px]">
+        {/* Selalu Side-by-Side di semua ukuran layar (Mobile & Desktop: Maskot di Kiri, Satu Wadah di Kanan) */}
+        <div className="relative flex flex-row items-center gap-3 min-[380px]:gap-4 sm:gap-7 md:gap-10 lg:gap-14">
+          {/* Sisi Kiri: Maskot tetap di kiri dan menyembul ke atas batas kontainer */}
+          <div className="relative shrink-0 flex justify-center w-[110px] min-[380px]:w-[125px] min-[440px]:w-[145px] sm:w-[190px] md:w-[240px] lg:w-[320px] xl:w-[360px]">
             <motion.div
-              initial={{ opacity: 0, y: 80, scale: 0.88 }}
+              initial={{ opacity: 0, y: 70, scale: 0.92 }}
               animate={
                 isContainerInView
                   ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 0, y: 80, scale: 0.88 }
+                  : { opacity: 0, y: 70, scale: 0.92 }
               }
               transition={{
                 duration: isContainerInView ? 0.65 : 0.35,
                 ease: isContainerInView ? [0.16, 1, 0.3, 1] : 'easeOut',
               }}
-              className={`relative -mt-14 min-[380px]:-mt-16 sm:-mt-22 md:-mt-32 lg:-mt-48 xl:-mt-52 z-30 flex flex-col items-center justify-center w-full ${
+              className={`relative -mt-12 min-[380px]:-mt-14 sm:-mt-20 md:-mt-28 lg:-mt-40 xl:-mt-44 z-30 flex flex-col items-center justify-center w-full ${
                 isContainerInView ? 'pointer-events-auto' : 'pointer-events-none'
               }`}
             >
-              {/* Soft ambient backlight glow */}
-              <motion.div
-                animate={isContainerInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.6 }}
-                transition={{ duration: isContainerInView ? 0.65 : 0.35 }}
-                className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-36 min-[380px]:size-44 sm:size-52 md:size-64 lg:size-80 rounded-full bg-[#4899e8]/20 blur-2xl sm:blur-3xl"
-                aria-hidden="true"
-              />
-
-              {/* Mascot image scaled seamlessly across all screens */}
+              {/* Mascot image */}
               <motion.img
                 src={mascotImg}
                 alt="Maskot LaporUNSRI Mamang Sarpras"
-                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.8)] sm:drop-shadow-[0_24px_40px_rgba(2,11,23,0.8)] transition-transform duration-300 hover:scale-[1.03]"
-                animate={isContainerInView ? { y: [0, -8, 0] } : { y: 0 }}
+                className="relative z-10 w-full max-w-full h-auto select-none object-contain drop-shadow-[0_16px_30px_rgba(2,11,23,0.35)] sm:drop-shadow-[0_24px_44px_rgba(2,11,23,0.45)] transition-transform duration-300 hover:scale-[1.02]"
+                animate={isContainerInView ? { y: [0, -7, 0] } : { y: 0 }}
                 transition={{
                   repeat: isContainerInView ? Infinity : 0,
-                  duration: 4.5,
-                  delay: isContainerInView ? 0.6 : 0,
+                  duration: 4.8,
+                  delay: isContainerInView ? 0.5 : 0,
                   ease: 'easeInOut',
                 }}
               />
 
-              {/* Character Name & Role underneath mascot */}
+              {/* Mascot Nameplate */}
               <div className="mt-1.5 sm:mt-2 text-center flex flex-col items-center">
-                <span className="font-['Poppins','Montserrat','Outfit',sans-serif] text-xs min-[380px]:text-[13px] sm:text-sm md:text-base lg:text-lg font-bold text-white tracking-tight leading-tight">
+                <span className="font-['Poppins','Montserrat',sans-serif] text-[11px] min-[380px]:text-xs sm:text-sm md:text-base font-extrabold text-white tracking-tight leading-tight">
                   Mamang Sarpras
                 </span>
-                <span className="mt-0.5 text-[9px] min-[380px]:text-[10px] sm:text-xs md:text-xs lg:text-[13px] text-[#8cb6dc] leading-[1.3] text-center max-w-[135px] sm:max-w-[180px] md:max-w-[240px]">
-                  Ketua Tim Sarana dan Prasarana UNSRI
+                <span className="mt-0.5 text-[8.5px] min-[380px]:text-[9.5px] sm:text-xs text-sky-200/90 font-semibold leading-tight text-center">
+                  Kawal Sarana Prasarana
                 </span>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Column: "Tulisan Satu Wadah" Container */}
-          <div ref={satuWadahRef} className="flex-1 min-w-0 flex flex-col justify-center">
-            {/* Main content: Title + Description */}
+          {/* Sisi Kanan: Kontainer Info "Satu Wadah" + CTAs (Tetap di kanan mendampingi maskot) */}
+          <div ref={satuWadahRef} className="flex-1 min-w-0 flex flex-col justify-center text-left">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.65, delay: 0.08 }}
+              transition={{ duration: 0.6 }}
             >
-              <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-[16px] min-[380px]:text-[18px] min-[440px]:text-[20px] sm:text-2xl md:text-[25px] lg:text-[clamp(28px,2.8vw,40px)] font-bold leading-[1.22] tracking-tight text-white">
-                Satu wadah terpadu untuk kampus yang lebih{' '}
+              <h2 className="font-['Poppins','Montserrat',sans-serif] text-[15px] min-[380px]:text-[17px] min-[440px]:text-[19px] sm:text-2xl md:text-[30px] lg:text-[38px] font-black leading-[1.22] tracking-tight text-white">
+                Satu wadah terpadu untuk fasilitas kampus yang{' '}
                 <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00] tracking-normal">
                   nyaman & responsif
                 </span>
               </h2>
 
-              <p className="mt-2 min-[380px]:mt-2.5 md:mt-3 text-[11.5px] min-[380px]:text-xs md:text-[13px] lg:text-[15px] leading-[1.6] sm:leading-[1.65] text-[#a4c1db] max-w-[640px]">
-                LaporUNSRI dirancang khusus untuk seluruh mahasiswa dan sivitas akademika Universitas Sriwijaya. Keluhan fasilitas kampus yang biasanya tercecer kini dirangkum ke dalam satu sistem terintegrasi, transparan, dan dapat dipantau hingga selesai diperbaiki.
+              <p className="mt-1.5 min-[380px]:mt-2 sm:mt-3 text-[10.5px] min-[380px]:text-[11.5px] sm:text-[13.5px] md:text-[14.5px] leading-relaxed text-sky-100/90 font-normal max-w-[620px]">
+                Sampaikan laporan fasilitas kampus secara terstruktur, dipantau langsung oleh unit sarpras, dan transparan bagi seluruh mahasiswa.
               </p>
             </motion.div>
 
-            {/* Quick CTAs */}
+            {/* CTAs Berdampingan */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.65, delay: 0.16 }}
-              className="mt-3.5 min-[380px]:mt-4 md:mt-6 flex flex-wrap items-center gap-2 min-[380px]:gap-2.5 sm:gap-3.5 md:gap-3 lg:gap-4"
+              transition={{ duration: 0.6, delay: 0.12 }}
+              className="mt-3 min-[380px]:mt-3.5 sm:mt-5 flex flex-wrap items-center justify-start gap-2 min-[380px]:gap-2.5 sm:gap-3.5"
             >
               {onStartReport && (
                 <button
                   type="button"
                   onClick={onStartReport}
-                  className="flex items-center gap-1.5 min-[380px]:gap-2 rounded-full bg-gradient-to-r from-[#60b6ff] to-[#3a93e8] px-3.5 py-1.5 min-[380px]:px-4 min-[380px]:py-2 lg:px-5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-bold text-[#021427] shadow-lg shadow-[#105292]/30 transition duration-200 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl bg-white hover:bg-sky-50 px-3.5 py-1.5 min-[380px]:px-4 min-[380px]:py-2 sm:px-6 sm:py-3 text-[11px] min-[380px]:text-xs sm:text-sm font-bold text-[#0c4278] shadow-lg shadow-black/25 transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
                 >
-                  Buat Laporan
-                  <FiArrowRight className="size-3 min-[380px]:size-3.5" aria-hidden="true" />
+                  <span>Buat Laporan</span>
+                  <FiArrowRight className="size-3.5 sm:size-4" aria-hidden="true" />
                 </button>
               )}
               {onLearnMore && (
                 <button
                   type="button"
                   onClick={onLearnMore}
-                  className="inline-flex items-center gap-1 min-[380px]:gap-1.5 rounded-full border border-white/20 bg-white/5 px-3 py-1.5 min-[380px]:px-3.5 min-[380px]:py-2 lg:px-4.5 lg:py-2.5 text-[11px] min-[380px]:text-xs lg:text-sm font-semibold text-[#cce5fb] backdrop-blur transition duration-200 hover:bg-white/10 hover:text-white"
+                  className="inline-flex items-center gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl border border-white/30 bg-white/10 hover:bg-white/20 px-3 py-1.5 min-[380px]:px-3.5 min-[380px]:py-2 sm:px-5 sm:py-3 text-[11px] min-[380px]:text-xs sm:text-sm font-bold text-white backdrop-blur-md shadow-xs transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
                 >
-                  Pelajari Alur
+                  <span>Pelajari Alur</span>
                 </button>
               )}
             </motion.div>
           </div>
         </div>
 
-        {/* Feature Pillars: 3 Cards */}
-        <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {pillars.map((item, index) => {
-            const Icon = item.icon
-            return (
-              <motion.article
-                key={item.title}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.55, delay: index * 0.1 }}
-                whileHover={{ y: -6, transition: { duration: 0.25 } }}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-[#072445]/45 p-6 sm:p-7 backdrop-blur-md shadow-lg shadow-black/20 transition-all duration-300 hover:border-[#4899e8]/50 hover:bg-[#0b2f59]/60 hover:shadow-2xl hover:shadow-[#0c4278]/25"
-              >
-                {/* Glow Background Accent */}
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 size-32 rounded-full bg-[#105292]/15 blur-2xl transition duration-500 group-hover:bg-[#4899e8]/25"
-                  aria-hidden="true"
-                />
-
-                <div>
-                  <div className="flex items-center justify-between">
-                    <div className="inline-flex size-11 items-center justify-center rounded-xl border border-white/15 bg-gradient-to-br from-[#0c4278] to-[#062445] text-[#7fc3f8] shadow-inner transition duration-300 group-hover:scale-105 group-hover:border-[#7fc3f8]/50">
-                      <Icon className="size-5" aria-hidden="true" />
-                    </div>
-                    <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold text-[#8fc3ee]">
-                      {item.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="mt-5 font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white transition duration-200 group-hover:text-[#c4e4ff]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2.5 text-xs leading-[1.68] text-[#97b8d4]">
-                    {item.description}
-                  </p>
-                </div>
-
-                <div className="mt-6 flex items-center gap-1.5 border-t border-white/10 pt-4 text-[11px] font-semibold text-[#60b6ff]">
-                  <FiCheckCircle className="size-3.5" aria-hidden="true" />
-                  <span>{item.highlight}</span>
-                </div>
-              </motion.article>
-            )
-          })}
-        </div>
+        {/* Poin Ringkas di Bawah Kedua Elemen (Maskot di kiri & Satu Wadah di kanan), Align Left */}
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-20px' }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="mt-4 min-[380px]:mt-5 sm:mt-8 pt-3 sm:pt-4 border-t border-white/15 flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center justify-start gap-x-6 gap-y-1.5 text-[9.5px] min-[380px]:text-[10.5px] sm:text-xs text-sky-100/95 font-semibold text-left"
+        >
+          <span className="flex items-center gap-1.5">
+            <FiCheck className="size-3.5 text-[#ffbb00] stroke-[2.5] shrink-0" />
+            Penandaan lokasi spesifik ruang & gedung
+          </span>
+          <span className="flex items-center gap-1.5">
+            <FiCheck className="size-3.5 text-[#ffbb00] stroke-[2.5] shrink-0" />
+            Prioritas berbasis suara kolektif
+          </span>
+          <span className="flex items-center gap-1.5">
+            <FiCheck className="size-3.5 text-[#ffbb00] stroke-[2.5] shrink-0" />
+            Wajib verifikasi foto penyelesaian
+          </span>
+        </motion.div>
       </div>
     </section>
   )
