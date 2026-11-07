@@ -3,7 +3,6 @@ import type { FormEvent } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
-import { MetricCard } from '../../components/common/MetricCard'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
@@ -22,6 +21,7 @@ import {
 import {
   FiAlertTriangle,
   FiArrowRight,
+  FiCheck,
   FiCheckCircle,
   FiClock,
   FiFileText,
@@ -175,7 +175,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   }
 
   const removeCategory = async (category: Category) => {
-    if (!window.confirm(`Hapus kategori “${category.name}”?`)) return
+    if (!window.confirm(`Hapus kategori "${category.name}"?`)) return
     setCategoryBusy(true)
     setError('')
     setNotice('')
@@ -192,79 +192,41 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
 
   const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
   const activeSection = navigation.some((item) => item.id === section) ? section : 'dashboard'
+  const avatarLetter = (profile.full_name || 'A').slice(0, 1).toUpperCase()
 
   return (
-    <main className="relative min-h-screen w-full bg-[#020b17] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-white">
-      {/* Ambient background lighting */}
-      <div
-        className="pointer-events-none fixed -left-40 top-0 size-[500px] rounded-full bg-[#105292]/15 blur-[140px]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none fixed right-0 bottom-0 size-[500px] rounded-full bg-[#4899e8]/10 blur-[150px]"
-        aria-hidden="true"
-      />
-
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 flex h-18 w-full items-center justify-between border-b border-white/10 bg-[#031830]/85 px-6 sm:px-10 backdrop-blur-md">
-        <Brand onClick={() => onNavigate('/admin/dashboard')} />
-
-        <div className="flex items-center gap-3 sm:gap-4">
-          <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-            <div className="grid size-8 place-items-center rounded-lg bg-gradient-to-br from-[#0c4278] to-[#2b8ced] text-xs font-bold text-white shadow-sm">
-              {(profile.full_name || 'A').slice(0, 1).toUpperCase()}
-            </div>
-            <div className="hidden sm:block text-right">
-              <strong className="block text-xs font-bold text-white">{profile.full_name}</strong>
-              <small className="flex items-center justify-end gap-1 text-[10px] text-amber-300">
-                <span className="size-1.5 rounded-full bg-amber-400 shadow-[0_0_6px_#f59e0b]" />
-                Administrator Kampus
-              </small>
-            </div>
+    <div className="min-h-screen w-full bg-[#f4f7fb] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-slate-800 antialiased flex flex-col">
+      {/* Top Navbar */}
+      <header className="sticky top-0 z-40 w-full bg-[#08315c] border-b border-white/10 shadow-md">
+        <div className="mx-auto flex h-18 w-full max-w-[1280px] items-center justify-between px-4 sm:px-8 lg:px-12">
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <Brand
+              showSubtitle={false}
+              onClick={() => onNavigate('/admin/dashboard')}
+              className="text-white"
+            />
           </div>
 
-          <button
-            type="button"
-            onClick={onSignOut}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs font-semibold text-[#8cb6dc] transition hover:border-rose-500/30 hover:bg-rose-500/10 hover:text-rose-300 cursor-pointer"
-          >
-            <FiLogOut className="size-3.5" />
-            <span className="hidden sm:inline">Keluar</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Main Body with Sidebar Layout */}
-      <div className="relative mx-auto flex w-full max-w-[1440px] flex-col lg:flex-row">
-        {/* Sidebar Nav */}
-        <aside className="sticky top-18 z-20 w-full lg:w-64 shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 bg-[#031326]/90 p-4 lg:p-6 backdrop-blur-xl lg:min-h-[calc(100vh-72px)]">
-          <div className="hidden lg:block text-[10px] font-bold uppercase tracking-[0.2em] text-[#60b6ff] mb-3">
-            Menu Administrasi
-          </div>
-
-          <nav className="flex flex-wrap lg:flex-col gap-1.5" aria-label="Menu admin">
+          {/* Navigation Pills (Desktop) */}
+          <nav className="hidden lg:flex items-center gap-2 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Menu Admin">
             {navigation.map((item) => {
-              const Icon = item.icon
               const isActive = activeSection === item.id
               const hasOverdue = item.id === 'terlambat' && overdueReports.length > 0
-
               return (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => onNavigate(`/admin/${item.id}`)}
-                  className={`group flex items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition-all cursor-pointer ${
+                  className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition cursor-pointer flex items-center gap-2 ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#4899e8]/20 to-[#60b6ff]/10 text-[#60b6ff] border-l-2 border-[#60b6ff] shadow-[0_0_15px_rgba(96,182,255,0.15)]'
-                      : 'text-[#8cb6dc] hover:bg-white/5 hover:text-white'
+                      ? 'bg-white text-[#08315c] shadow-sm'
+                      : 'text-white/80 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className="size-4" />
-                    <span>{item.label}</span>
-                  </div>
+                  <span>{item.label}</span>
                   {hasOverdue && (
-                    <span className="grid size-5 place-items-center rounded-full bg-rose-500/20 text-[10px] font-bold text-rose-300 border border-rose-500/40">
+                    <span className="grid size-4.5 place-items-center rounded-full bg-rose-500 text-[10px] font-bold text-white">
                       {overdueReports.length}
                     </span>
                   )}
@@ -272,42 +234,150 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
               )
             })}
           </nav>
-        </aside>
 
-        {/* Content View */}
-        <section className="relative z-10 flex-1 p-4 sm:p-8 space-y-6">
-          {/* Section Hero Banner */}
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-r from-[#051d38] via-[#04162a] to-[#020b17] p-6 backdrop-blur-xl shadow-xl shadow-black/20">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#60b6ff]/30 bg-[#60b6ff]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-[#8fc3ee]">
-              <FiShield className="size-3" />
-              <span>Panel Manajemen UNSRI</span>
+          {/* Right: Admin Profile & Logout */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5">
+              <div
+                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
+                aria-hidden="true"
+              >
+                {avatarLetter}
+              </div>
+              <div className="hidden sm:block text-right">
+                <span className="block text-xs font-bold text-white max-w-[160px] truncate">{profile.full_name}</span>
+                <span className="block text-[10px] text-[#ffbb00]">Administrator Sarpras</span>
+              </div>
             </div>
 
-            <h1 className="mt-3 font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {activeSection === 'kategori'
-                ? 'Kelola Kategori Laporan'
-                : activeSection === 'terlambat'
-                  ? 'Laporan Perlu Eskalasi Cepat'
-                  : activeSection === 'laporan'
-                    ? 'Seluruh Laporan Kampus'
-                    : `Selamat Datang, ${profile.full_name}`}
-            </h1>
+            <button
+              type="button"
+              onClick={onSignOut}
+              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
+            >
+              <FiLogOut className="size-3.5" aria-hidden="true" />
+              <span className="hidden sm:inline">Keluar</span>
+            </button>
+          </div>
+        </div>
+      </header>
 
-            <p className="mt-1 text-xs sm:text-sm text-[#a4c1db] max-w-xl">
-              {activeSection === 'kategori'
-                ? 'Atur klasifikasi sarana & prasarana agar mahasiswa dapat menyampaikan aduan dengan presisi.'
-                : activeSection === 'terlambat'
-                  ? `Laporan yang belum tertangani selama ${REPORT_OVERDUE_AFTER_DAYS} hari atau lebih dan memerlukan tindakan segera.`
-                  : 'Pantau seluruh aktivitas pelaporan fasilitas, rekam jejak teknisi, dan performa penanganan.'}
-            </p>
+      {/* Blue Hero Header Zone */}
+      <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 pt-8 pb-20 sm:pb-24 shadow-inner">
+        <div className="mx-auto max-w-[1280px]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffbb00]">
+            <FiShield className="size-3" aria-hidden="true" />
+            <span>Panel Manajemen UNSRI</span>
           </div>
 
+          <h1 className="mt-3 text-3xl sm:text-4xl lg:text-[40px] font-bold tracking-tight text-white leading-[1.15]">
+            {activeSection === 'kategori'
+              ? 'Kelola Kategori Laporan'
+              : activeSection === 'terlambat'
+                ? 'Laporan Perlu Eskalasi Cepat'
+                : activeSection === 'laporan'
+                  ? 'Seluruh Laporan Kampus'
+                  : `Selamat Datang, ${profile.full_name}`}
+          </h1>
+
+          <p className="mt-2 text-xs sm:text-sm text-sky-100/90 max-w-xl leading-relaxed">
+            {activeSection === 'kategori'
+              ? 'Atur klasifikasi sarana & prasarana agar mahasiswa dapat menyampaikan aduan dengan presisi.'
+              : activeSection === 'terlambat'
+                ? `Laporan yang belum tertangani selama ${REPORT_OVERDUE_AFTER_DAYS} hari atau lebih dan memerlukan tindakan segera.`
+                : 'Pantau seluruh aktivitas pelaporan fasilitas, rekam jejak teknisi, dan performa penanganan kampus.'}
+          </p>
+        </div>
+      </section>
+
+      {/* Floating Metric Cards on Dashboard Section */}
+      {activeSection === 'dashboard' && (
+        <section className="-mt-12 sm:-mt-14 relative z-10 w-full px-4 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1280px] grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
+            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+              <span className="text-xs font-semibold text-slate-500">Total Aduan</span>
+              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                {loading ? '...' : reports.length}
+              </strong>
+            </div>
+
+            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
+                <FiClock className="size-3 text-amber-500" aria-hidden="true" />
+                <span>Belum Diproses</span>
+              </span>
+              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                {loading ? '...' : openCount}
+              </strong>
+            </div>
+
+            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
+                <FiClock className="size-3 text-sky-500" aria-hidden="true" />
+                <span>Sedang Diproses</span>
+              </span>
+              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                {loading ? '...' : progressCount}
+              </strong>
+            </div>
+
+            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
+              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
+                <FiCheckCircle className="size-3 text-emerald-500" aria-hidden="true" />
+                <span>Tuntas Selesai</span>
+              </span>
+              <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
+                {loading ? '...' : doneCount}
+              </strong>
+            </div>
+
+            <div className="col-span-2 lg:col-span-1 rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-rose-200 flex flex-col justify-between">
+              <span className="text-xs font-semibold text-rose-600 inline-flex items-center gap-1">
+                <FiAlertTriangle className="size-3 text-rose-500" aria-hidden="true" />
+                <span>Perlu Eskalasi</span>
+              </span>
+              <strong className="block text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
+                {loading ? '...' : overdueReports.length}
+              </strong>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Main Content Area */}
+      <section className="w-full px-4 sm:px-8 lg:px-12 pt-10 pb-16 flex-1">
+        <div className="mx-auto max-w-[1280px] space-y-6">
           {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
           {notice && <FeedbackMessage tone="success">{notice}</FeedbackMessage>}
 
+          {/* Overdue Alert Banner on Dashboard */}
+          {activeSection === 'dashboard' && overdueReports.length > 0 && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4.5 shadow-sm">
+              <div className="flex items-center gap-3">
+                <FiAlertTriangle className="size-5 text-rose-500 shrink-0" aria-hidden="true" />
+                <div>
+                  <strong className="block text-xs font-bold text-rose-800">
+                    Perhatian: {overdueReports.length} laporan fasilitas belum tertangani ≥ {REPORT_OVERDUE_AFTER_DAYS} hari
+                  </strong>
+                  <p className="text-[11px] text-rose-700">
+                    Segera lakukan eskalasi kepada tim penanggung jawab sarpras gedung terkait.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigate('/admin/terlambat')}
+                className="inline-flex min-h-[36px] items-center gap-1.5 self-start sm:self-auto rounded-xl bg-rose-600 px-4 py-1.5 text-xs font-bold text-white hover:bg-rose-700 transition cursor-pointer"
+              >
+                <span>Tinjau Sekarang</span>
+                <FiArrowRight className="size-3.5" aria-hidden="true" />
+              </button>
+            </div>
+          )}
+
           {/* Section: Category Management */}
           {activeSection === 'kategori' ? (
-            <div className="rounded-3xl border border-white/10 bg-[#072445]/45 p-6 backdrop-blur-md shadow-xl space-y-6">
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-6">
               <form
                 className="flex flex-col sm:flex-row gap-3"
                 onSubmit={(event) => void addCategory(event)}
@@ -319,27 +389,27 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                   value={newCategory}
                   onChange={(event) => setNewCategory(event.target.value)}
                   placeholder="Nama kategori fasilitas baru (contoh: Sanitasi & Toilet)"
-                  className="h-11 flex-1 rounded-xl border border-white/15 bg-[#031528]/80 px-4 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30"
+                  className="h-12 flex-1 rounded-xl border border-slate-200 bg-slate-50/50 px-4 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition"
                 />
                 <button
                   type="submit"
                   disabled={categoryBusy}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] to-[#2b8ced] px-5 py-2.5 text-xs font-bold text-[#021427] shadow-[0_4px_16px_rgba(58,147,232,0.35)] transition-all hover:brightness-105 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#08315c] hover:bg-[#0c4278] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition disabled:opacity-50 cursor-pointer"
                 >
-                  <FiPlus className="size-4" />
+                  <FiPlus className="size-4" aria-hidden="true" />
                   <span>Tambah Kategori</span>
                 </button>
               </form>
 
-              <div className="space-y-3">
-                <span className="block text-xs font-bold uppercase tracking-wider text-[#60b6ff]">
+              <div className="space-y-3 pt-3">
+                <span className="block text-xs font-bold uppercase tracking-wider text-slate-500">
                   Daftar Kategori Tersedia ({categories.length})
                 </span>
 
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className="flex flex-col sm:flex-row items-center gap-3 rounded-2xl border border-white/10 bg-[#031427]/60 p-3.5 backdrop-blur-sm"
+                    className="flex flex-col sm:flex-row items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3.5"
                   >
                     <input
                       aria-label={`Nama kategori ${category.name}`}
@@ -348,7 +418,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                       onChange={(event) =>
                         setCategoryNames((current) => ({ ...current, [category.id]: event.target.value }))
                       }
-                      className="h-10 w-full flex-1 rounded-xl border border-white/15 bg-[#072445]/50 px-3.5 text-xs text-white focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30"
+                      className="h-11 w-full flex-1 rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-slate-800 focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition"
                     />
 
                     <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
@@ -359,17 +429,18 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                           (categoryNames[category.id] ?? category.name).trim() === category.name
                         }
                         onClick={() => void saveCategory(category)}
-                        className="rounded-xl border border-white/20 bg-white/5 px-3 py-2 text-xs font-semibold text-[#cce5fb] transition hover:bg-white/15 hover:text-white disabled:opacity-40 cursor-pointer"
+                        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition cursor-pointer"
                       >
-                        Simpan
+                        <FiCheck className="size-3.5" aria-hidden="true" />
+                        <span>Simpan</span>
                       </button>
                       <button
                         type="button"
                         disabled={categoryBusy}
                         onClick={() => void removeCategory(category)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 disabled:opacity-40 cursor-pointer"
+                        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-100 disabled:opacity-40 transition cursor-pointer"
                       >
-                        <FiTrash2 className="size-3.5" />
+                        <FiTrash2 className="size-3.5" aria-hidden="true" />
                         <span>Hapus</span>
                       </button>
                     </div>
@@ -377,62 +448,21 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 ))}
 
                 {!loading && categories.length === 0 && (
-                  <p className="text-center text-xs text-[#8cb6dc] py-6">Belum ada kategori yang dibuat.</p>
+                  <p className="text-center text-xs text-slate-400 py-8">Belum ada kategori yang dibuat.</p>
                 )}
               </div>
             </div>
           ) : (
             <>
-              {/* Summary Cards Grid on Dashboard Overview */}
-              {activeSection === 'dashboard' && (
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
-                  <MetricCard
-                    label="Total Aduan"
-                    value={loading ? '—' : reports.length}
-                    description="Seluruh laporan masuk"
-                    icon={<FiFileText />}
-                  />
-                  <MetricCard
-                    label="Belum Diproses"
-                    value={loading ? '—' : openCount}
-                    description="Menunggu penugasan"
-                    icon={<FiClock />}
-                    iconClassName="text-amber-300 border-amber-400/30 from-amber-950/40 to-amber-900/20"
-                  />
-                  <MetricCard
-                    label="Sedang Diproses"
-                    value={loading ? '—' : progressCount}
-                    description="Sedang dikerjakan"
-                    icon={<FiClock />}
-                    iconClassName="text-sky-300 border-sky-400/30 from-sky-950/40 to-sky-900/20"
-                  />
-                  <MetricCard
-                    label="Tuntas Selesai"
-                    value={loading ? '—' : doneCount}
-                    description="Telah diperbaiki"
-                    icon={<FiCheckCircle />}
-                    iconClassName="text-emerald-300 border-emerald-400/30 from-emerald-950/40 to-emerald-900/20"
-                  />
-                  <MetricCard
-                    label="Perlu Eskalasi"
-                    value={loading ? '—' : overdueReports.length}
-                    description={`Belum diproses ≥ ${REPORT_OVERDUE_AFTER_DAYS} hari`}
-                    icon={<FiAlertTriangle />}
-                    iconClassName="text-rose-400 border-rose-500/40 from-rose-950/50 to-rose-900/30"
-                    className="col-span-2 lg:col-span-1 border-rose-500/30 bg-[#200e18]/40"
-                  />
-                </div>
-              )}
-
-              {/* Filters for listings */}
+              {/* Listings Header & Filters */}
               {activeSection !== 'dashboard' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white">
+                      <h2 className="text-xl sm:text-2xl font-extrabold text-[#08315c] tracking-tight">
                         {activeSection === 'terlambat' ? 'Laporan Melebihi Batas Waktu' : 'Katalog Laporan'}
                       </h2>
-                      <p className="text-xs text-[#8cb6dc]">{visibleReports.length} laporan ditampilkan</p>
+                      <p className="text-xs text-slate-500">{visibleReports.length} laporan ditampilkan</p>
                     </div>
                   </div>
 
@@ -449,36 +479,36 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
               {activeSection === 'dashboard' && (
                 <div className="flex items-center justify-between pt-2">
                   <div>
-                    <h2 className="font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white">
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-[#08315c] tracking-tight">
                       Laporan Masuk Terbaru
                     </h2>
-                    <p className="text-xs text-[#8cb6dc]">Kelola dan pantau 5 laporan terkini dari mahasiswa.</p>
+                    <p className="text-xs text-slate-500">Kelola dan pantau 5 laporan terkini dari mahasiswa.</p>
                   </div>
                   <button
                     type="button"
                     onClick={() => onNavigate('/admin/laporan')}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#60b6ff] hover:text-[#93d5ba] transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#08315c] hover:underline transition cursor-pointer"
                   >
                     <span>Buka Semua Laporan</span>
-                    <FiArrowRight className="size-3.5" />
+                    <FiArrowRight className="size-4" aria-hidden="true" />
                   </button>
                 </div>
               )}
 
               {/* Report List */}
               {loading ? (
-                <div className="rounded-2xl border border-white/10 bg-[#072445]/45 p-12 text-center text-xs text-[#8cb6dc] backdrop-blur-md">
-                  Memuat data laporan...
+                <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
+                  Memuat data laporan fasilitas...
                 </div>
               ) : visibleReports.length === 0 ? (
-                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[#072445]/30 p-12 text-center backdrop-blur-md">
-                  <FiCheckCircle className="size-10 text-emerald-400/50 mb-3" />
-                  <h3 className="text-sm font-bold text-white">
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
+                  <FiCheckCircle className="size-10 text-emerald-500 mb-3" aria-hidden="true" />
+                  <h3 className="text-sm font-bold text-slate-800">
                     {activeSection === 'terlambat'
-                      ? 'Hebat! Tidak Ada Laporan yang Perlu Dieskalasi'
+                      ? 'Bagus, Tidak Ada Laporan yang Perlu Dieskalasi'
                       : 'Belum Ada Laporan'}
                   </h3>
-                  <p className="mt-1 text-xs text-[#8cb6dc] max-w-sm">
+                  <p className="mt-1 text-xs text-slate-500 max-w-sm">
                     {activeSection === 'terlambat'
                       ? 'Seluruh laporan tertangani tepat waktu sesuai batas hari yang ditetapkan.'
                       : 'Laporan yang sesuai filter pencarian akan muncul di sini.'}
@@ -510,9 +540,9 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
               )}
             </>
           )}
-        </section>
-      </div>
-    </main>
+        </div>
+      </section>
+    </div>
   )
 }
 export default AdminDashboardPage

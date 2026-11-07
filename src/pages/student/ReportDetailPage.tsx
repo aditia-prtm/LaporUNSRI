@@ -4,9 +4,8 @@ import type { UserProfile } from '../../types/auth'
 import type { Report, ReportComment } from '../../types/report'
 import { addReportComment, deleteReport, getReport, getReportComments, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
-import { ReportStatusBadge } from '../../components/report/ReportStatusBadge'
 import { formatDateTime } from '../../utils/date'
-import { FiArrowLeft, FiEdit3, FiHeart, FiMapPin, FiMessageSquare, FiSend, FiTrash2, FiUser } from 'react-icons/fi'
+import { FiArrowLeft, FiCheck, FiEdit3, FiHeart, FiMapPin, FiMessageSquare, FiSend, FiTrash2, FiUser } from 'react-icons/fi'
 
 type ReportDetailPageProps = {
   profile: UserProfile
@@ -104,234 +103,262 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
     }
   }
 
-  if (loading) {
-    return (
-      <div className="rounded-2xl border border-white/10 bg-[#072445]/45 p-12 text-center text-xs text-[#8cb6dc] backdrop-blur-md">
-        Memuat detail laporan...
-      </div>
-    )
-  }
-
-  if (!report) {
-    return (
-      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-white/15 bg-[#072445]/30 p-12 text-center backdrop-blur-md">
-        <h2 className="text-base font-bold text-white">Laporan Tidak Ditemukan</h2>
-        <p className="mt-1 text-xs text-[#8cb6dc]">
-          Periksa tautan Anda atau kembali ke katalog laporan fasilitas.
-        </p>
-        <button
-          type="button"
-          onClick={() => onNavigate('/mahasiswa/laporan')}
-          className="mt-4 rounded-xl bg-gradient-to-r from-[#60b6ff] to-[#2b8ced] px-4 py-2 text-xs font-bold text-[#021427]"
-        >
-          Kembali ke Daftar Laporan
-        </button>
-      </div>
-    )
-  }
-
-  const isOwner = report.user_id === profile.id
+  const isOwner = report?.user_id === profile.id
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <button
-        type="button"
-        onClick={() => onNavigate('/mahasiswa/laporan')}
-        className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#8cb6dc] hover:text-white transition-colors cursor-pointer"
-      >
-        <FiArrowLeft className="size-3.5" />
-        <span>Semua Laporan</span>
-      </button>
+    <div className="w-full flex flex-col">
+      {/* Navy Top Banner */}
+      <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 py-8 shadow-inner">
+        <div className="mx-auto max-w-[1040px] space-y-3">
+          <button
+            type="button"
+            onClick={() => onNavigate('/mahasiswa/laporan')}
+            className="inline-flex min-h-[38px] items-center gap-2 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
+          >
+            <FiArrowLeft className="size-4" aria-hidden="true" />
+            <span>Kembali ke Semua Laporan</span>
+          </button>
 
-      {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
-
-      {/* Main Report Card */}
-      <article className="rounded-3xl border border-white/10 bg-[#072445]/45 p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-black/20">
-        {/* Topline Status & Meta */}
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[#8cb6dc]">
-          <div className="flex items-center gap-2">
-            <ReportStatusBadge status={report.status} />
-            <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 text-[10px] font-semibold text-[#8fc3ee]">
-              {report.categories?.name ?? 'Lainnya'}
-            </span>
-          </div>
-          <time className="text-xs text-[#8cb6dc]">{formatDateTime(report.created_at)}</time>
+          {report && (
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-full bg-white/10 border border-white/20 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#ffbb00]">
+                  {report.categories?.name ?? 'Umum'}
+                </span>
+                <span className="text-sky-200/80 text-xs">{formatDateTime(report.created_at)}</span>
+              </div>
+              <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                {report.title}
+              </h1>
+            </div>
+          )}
         </div>
+      </section>
 
-        {/* Title */}
-        <h1 className="mt-4 font-['Poppins','Montserrat','Outfit',sans-serif] text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-          {report.title}
-        </h1>
+      {/* Main Content Area */}
+      <section className="w-full px-4 sm:px-8 lg:px-12 py-8">
+        <div className="mx-auto max-w-[1040px] space-y-6">
+          {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
-        {/* Location & Reporter */}
-        <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-[#8cb6dc]">
-          <div className="flex items-center gap-1.5">
-            <FiMapPin className="size-3.5 text-[#60b6ff]" />
-            <span>
-              {report.faculty} · {report.building}
-              {report.room ? ` · ${report.room}` : ''}
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <FiUser className="size-3.5 text-[#60b6ff]" />
-            <span>
-              Pelapor: <strong className="font-semibold text-white">{report.profiles?.full_name ?? 'Mahasiswa'}</strong>
-            </span>
-          </div>
-        </div>
-
-        {/* Attached Photo */}
-        {report.photo_url && (
-          <div className="mt-6 overflow-hidden rounded-2xl border border-white/15 bg-black/40">
-            <img
-              className="max-h-[460px] w-full object-contain"
-              src={report.photo_url}
-              alt={`Foto bukti untuk ${report.title}`}
-            />
-          </div>
-        )}
-
-        {/* Description */}
-        <div className="mt-6 border-t border-b border-white/10 py-5 text-sm leading-relaxed text-[#cce5fb] whitespace-pre-wrap">
-          {report.description}
-        </div>
-
-        {/* Action Controls */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-          {!isOwner ? (
-            <button
-              type="button"
-              disabled={busy}
-              onClick={() => void handleVote()}
-              className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition-all cursor-pointer ${
-                report.voted_by_me
-                  ? 'border-rose-500/40 bg-rose-500/20 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                  : 'border-white/20 bg-white/5 text-[#cce5fb] hover:border-white/40 hover:bg-white/10'
-              }`}
-            >
-              <FiHeart className={`size-4 ${report.voted_by_me ? 'fill-rose-400 text-rose-400' : 'text-rose-400'}`} />
-              <span>Saya juga mengalami masalah ini</span>
-              <b className="ml-1 rounded-full bg-white/15 px-2 py-0.5 text-xs text-white">
-                {report.vote_count}
-              </b>
-            </button>
+          {loading ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-16 text-center text-xs text-slate-500 shadow-sm">
+              Memuat detail laporan...
+            </div>
+          ) : !report ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
+              <h2 className="text-base font-bold text-slate-800">Laporan Tidak Ditemukan</h2>
+              <p className="mt-1 text-xs text-slate-500">
+                Periksa tautan Anda atau kembali ke katalog laporan fasilitas.
+              </p>
+              <button
+                type="button"
+                onClick={() => onNavigate('/mahasiswa/laporan')}
+                className="mt-4 rounded-xl bg-[#08315c] text-white px-5 py-2 text-xs font-bold"
+              >
+                Kembali ke Daftar Laporan
+              </button>
+            </div>
           ) : (
-            <div className="text-xs text-[#8cb6dc]">
-              Didukung oleh <strong className="text-white">{report.vote_count}</strong> sivitas kampus
-            </div>
-          )}
-
-          {isOwner && (
-            <div className="flex items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => onNavigate(`/mahasiswa/laporan/${report.id}/edit`)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-[#cce5fb] transition hover:bg-white/15 hover:text-white cursor-pointer"
-              >
-                <FiEdit3 className="size-3.5" />
-                <span>Ubah Laporan</span>
-              </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => void handleDelete()}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-300 transition hover:bg-rose-500/20 hover:border-rose-500/50 cursor-pointer"
-              >
-                <FiTrash2 className="size-3.5" />
-                <span>Hapus Laporan</span>
-              </button>
-            </div>
-          )}
-        </div>
-      </article>
-
-      {/* Discussion & Follow-up Timeline */}
-      <section className="space-y-4">
-        <div>
-          <h2 className="flex items-center gap-2 font-['Poppins','Montserrat','Outfit',sans-serif] text-lg font-bold text-white">
-            <FiMessageSquare className="size-4 text-[#60b6ff]" />
-            <span>Diskusi & Catatan Tindak Lanjut</span>
-          </h2>
-          <p className="text-xs text-[#8cb6dc]">
-            Informasi tambahan dari mahasiswa maupun catatan perbaikan dari petugas fasilitas.
-          </p>
-        </div>
-
-        {/* Comment input form */}
-        <form
-          className="rounded-2xl border border-white/10 bg-[#072445]/45 p-4 backdrop-blur-md shadow-lg"
-          onSubmit={(event) => void submitComment(event)}
-        >
-          <textarea
-            required
-            rows={3}
-            maxLength={1000}
-            value={message}
-            onChange={(event) => setMessage(event.target.value)}
-            placeholder="Tuliskan komentar, tanggapan, atau informasi perkembangan fasilitas terkait..."
-            className="w-full rounded-xl border border-white/15 bg-[#031528]/80 p-3 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition-all focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 resize-vertical"
-          />
-          <div className="mt-3 flex justify-end">
-            <button
-              type="submit"
-              disabled={busy || !message.trim()}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] to-[#2b8ced] px-4 py-2 text-xs font-bold text-[#021427] shadow-[0_4px_16px_rgba(58,147,232,0.35)] transition-all hover:brightness-105 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <FiSend className="size-3.5" />
-              <span>{busy ? 'Mengirim...' : 'Kirim Komentar'}</span>
-            </button>
-          </div>
-        </form>
-
-        {/* Comment items list */}
-        <div className="space-y-3">
-          {comments.length ? (
-            comments.map((comment) => (
-              <article
-                key={comment.id}
-                className="flex items-start gap-3 rounded-2xl border border-white/10 bg-[#072445]/35 p-4 backdrop-blur-md"
-              >
-                <div className="grid size-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#0c4278] to-[#60b6ff] text-xs font-bold text-white shadow-sm">
-                  {(comment.profiles?.full_name ?? '?').slice(0, 1).toUpperCase()}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <strong className="text-xs font-bold text-white">
-                      {comment.profiles?.full_name ?? 'Pengguna'}
-                    </strong>
-                    <time className="text-[10px] text-[#8cb6dc]">
-                      {formatDateTime(comment.created_at)}
-                    </time>
+            <>
+              {/* Report Main Card */}
+              <article className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-8 shadow-sm space-y-6">
+                {/* Meta details */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600">
+                    <div className="flex items-center gap-1.5">
+                      <FiMapPin className="size-4 text-[#08315c]" aria-hidden="true" />
+                      <span>
+                        {report.faculty} · {report.building}
+                        {report.room ? ` · ${report.room}` : ''}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <FiUser className="size-4 text-slate-400" aria-hidden="true" />
+                      <span>
+                        Pelapor: <strong className="font-semibold text-slate-800">{report.profiles?.full_name ?? 'Mahasiswa'}</strong>
+                      </span>
+                    </div>
                   </div>
-                  <p className="mt-1.5 text-xs leading-relaxed text-[#cce5fb] whitespace-pre-wrap">
-                    {comment.message}
-                  </p>
-                  {comment.photo_url && (
-                    <div className="mt-3">
-                      <a
-                        href={comment.photo_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-block group"
+
+                  <div>
+                    {report.status === 'belum_diproses' ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-3 py-1 text-xs font-semibold text-amber-700">
+                        <span className="size-1.5 rounded-full bg-amber-500" aria-hidden="true" />
+                        <span>Belum diproses</span>
+                      </span>
+                    ) : report.status === 'diproses' ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200/80 px-3 py-1 text-xs font-semibold text-sky-700">
+                        <span className="size-1.5 rounded-full bg-sky-500" aria-hidden="true" />
+                        <span>Diproses</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        <FiCheck className="size-3.5 stroke-[2.5]" aria-hidden="true" />
+                        <span>Selesai</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Attached Photo */}
+                {report.photo_url && (
+                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/5">
+                    <img
+                      className="max-h-[460px] w-full object-contain"
+                      src={report.photo_url}
+                      alt={`Foto bukti untuk ${report.title}`}
+                    />
+                  </div>
+                )}
+
+                {/* Description */}
+                <div className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">
+                  {report.description}
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-5">
+                  {!isOwner ? (
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void handleVote()}
+                      className={`inline-flex min-h-[44px] items-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold transition cursor-pointer ${
+                        report.voted_by_me
+                          ? 'border-rose-400 bg-rose-50 text-rose-600 shadow-sm'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                      }`}
+                    >
+                      <FiHeart
+                        className={`size-4 ${report.voted_by_me ? 'fill-rose-500 text-rose-500' : 'text-rose-500'}`}
+                        aria-hidden="true"
+                      />
+                      <span>Saya juga mengalami kendala ini</span>
+                      <b className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-800">
+                        {report.vote_count}
+                      </b>
+                    </button>
+                  ) : (
+                    <div className="text-xs text-slate-500">
+                      Didukung oleh <strong className="text-slate-800">{report.vote_count}</strong> sivitas kampus
+                    </div>
+                  )}
+
+                  {isOwner && (
+                    <div className="flex items-center gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => onNavigate(`/mahasiswa/laporan/${report.id}/edit`)}
+                        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer"
                       >
-                        <img
-                          src={comment.photo_url}
-                          alt="Foto bukti tindak lanjut"
-                          className="max-h-48 max-w-xs rounded-xl border border-white/15 object-cover transition-transform group-hover:scale-102"
-                        />
-                        <span className="mt-1 block text-[10px] font-semibold text-[#60b6ff]">
-                          Lihat foto bukti resolusi penuh ↗
-                        </span>
-                      </a>
+                        <FiEdit3 className="size-4" aria-hidden="true" />
+                        <span>Ubah Laporan</span>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void handleDelete()}
+                        className="inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-100 transition cursor-pointer"
+                      >
+                        <FiTrash2 className="size-4" aria-hidden="true" />
+                        <span>Hapus Laporan</span>
+                      </button>
                     </div>
                   )}
                 </div>
               </article>
-            ))
-          ) : (
-            <p className="rounded-xl border border-dashed border-white/10 p-6 text-center text-xs text-[#8cb6dc]">
-              Belum ada komentar untuk laporan ini. Berikan informasi pertama jika ada keterangan lanjutan.
-            </p>
+
+              {/* Discussion & Follow-up Timeline */}
+              <section className="space-y-4 pt-2">
+                <div>
+                  <h2 className="flex items-center gap-2 text-lg font-bold text-slate-800">
+                    <FiMessageSquare className="size-5 text-[#08315c]" aria-hidden="true" />
+                    <span>Diskusi & Catatan Tindak Lanjut</span>
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Informasi tambahan dari pelapor maupun pembaruan progres teknisi sarpras.
+                  </p>
+                </div>
+
+                {/* Comment input form */}
+                <form
+                  className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm space-y-3"
+                  onSubmit={(event) => void submitComment(event)}
+                >
+                  <textarea
+                    required
+                    rows={3}
+                    maxLength={1000}
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    placeholder="Tuliskan komentar, tanggapan, atau informasi perkembangan fasilitas terkait..."
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition resize-vertical"
+                  />
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      disabled={busy || !message.trim()}
+                      className="inline-flex min-h-[40px] items-center gap-2 rounded-xl bg-[#08315c] hover:bg-[#0c4278] px-5 py-2 text-xs font-bold text-white shadow-sm transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      <FiSend className="size-4" aria-hidden="true" />
+                      <span>{busy ? 'Mengirim...' : 'Kirim Komentar'}</span>
+                    </button>
+                  </div>
+                </form>
+
+                {/* Comments list */}
+                <div className="space-y-3">
+                  {comments.length ? (
+                    comments.map((comment) => (
+                      <article
+                        key={comment.id}
+                        className="flex items-start gap-3.5 rounded-2xl border border-slate-200/80 bg-white p-4.5 shadow-sm"
+                      >
+                        <div className="grid size-9 shrink-0 place-items-center rounded-full bg-[#08315c] text-xs font-bold text-white shadow-sm">
+                          {(comment.profiles?.full_name ?? '?').slice(0, 1).toUpperCase()}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <strong className="text-xs font-bold text-slate-800">
+                              {comment.profiles?.full_name ?? 'Pengguna'}
+                            </strong>
+                            <time className="text-[10px] text-slate-400">
+                              {formatDateTime(comment.created_at)}
+                            </time>
+                          </div>
+                          <p className="mt-1.5 text-xs leading-relaxed text-slate-700 whitespace-pre-wrap">
+                            {comment.message}
+                          </p>
+                          {comment.photo_url && (
+                            <div className="mt-3">
+                              <a
+                                href={comment.photo_url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-block group"
+                              >
+                                <img
+                                  src={comment.photo_url}
+                                  alt="Foto bukti tindak lanjut"
+                                  className="max-h-52 max-w-sm rounded-xl border border-slate-200 object-cover transition-transform group-hover:scale-102"
+                                />
+                                <span className="mt-1.5 block text-[11px] font-semibold text-[#08315c] hover:underline">
+                                  Buka foto bukti resolusi penuh
+                                </span>
+                              </a>
+                            </div>
+                          )}
+                        </div>
+                      </article>
+                    ))
+                  ) : (
+                    <p className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-xs text-slate-400">
+                      Belum ada komentar untuk laporan ini. Berikan keterangan lanjutan jika ada perkembangan baru.
+                    </p>
+                  )}
+                </div>
+              </section>
+            </>
           )}
         </div>
       </section>

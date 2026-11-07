@@ -31,13 +31,13 @@ export function ReportFilters({
   onSortChange,
 }: ReportFiltersProps) {
   const inputClass =
-    'h-10 w-full rounded-xl border border-white/15 bg-[#031427]/80 px-3.5 text-xs text-white placeholder:text-[#8cb6dc]/50 backdrop-blur-md transition focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25'
+    'h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs text-slate-800 placeholder:text-slate-400 shadow-sm transition focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/15 hover:border-slate-300'
 
   const selectClass =
-    'h-10 w-full rounded-xl border border-white/15 bg-[#031427] px-3 text-xs text-white backdrop-blur-md transition focus:border-[#60b6ff] focus:outline-none focus:ring-2 focus:ring-[#60b6ff]/30 hover:border-white/25 cursor-pointer [&_option]:bg-[#031427] [&_option]:text-white'
+    'h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-xs text-slate-800 shadow-sm transition focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/15 hover:border-slate-300 cursor-pointer'
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3.5 rounded-2xl border border-white/10 bg-[#072445]/45 backdrop-blur-md ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-4 rounded-2xl border border-slate-200/90 bg-white shadow-sm ${className}`}>
       <div className="relative w-full">
         <input
           aria-label="Cari laporan"
@@ -46,7 +46,7 @@ export function ReportFilters({
           placeholder={searchPlaceholder}
           className={`${inputClass} pl-9`}
         />
-        <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#8cb6dc]" />
+        <FiSearch className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400" aria-hidden="true" />
       </div>
 
       {categories && onCategoryChange && (
@@ -93,3 +93,4 @@ export function ReportFilters({
     </div>
   )
 }
+export default ReportFilters
