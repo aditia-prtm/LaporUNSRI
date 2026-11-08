@@ -79,8 +79,9 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
 
   const submitUpdate = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
-    const draft = drafts[report.id]
-    if (!draft?.file || !draft.message.trim()) {
+    const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
+    const draft = drafts[report.id] ?? { status: defaultStatus, message: '', file: null }
+    if (!draft.file || !draft.message.trim()) {
       setError('Setiap tindak lanjut status wajib disertai foto bukti dan catatan penanganan.')
       return
     }
@@ -94,8 +95,9 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
     setError('')
     try {
       const photoUrl = await uploadReportPhoto(draft.file, profile.id)
-      await updateReportStatusWithEvidence(report.id, draft.status, draft.message.trim(), photoUrl)
-      setDrafts((current) => ({ ...current, [report.id]: { status: draft.status, message: '', file: null } }))
+      const nextStatus = draft.status || defaultStatus
+      await updateReportStatusWithEvidence(report.id, nextStatus, draft.message.trim(), photoUrl)
+      setDrafts((current) => ({ ...current, [report.id]: { status: nextStatus, message: '', file: null } }))
       await load()
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Tindak lanjut gagal disimpan.')
@@ -106,17 +108,19 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
 
   const setDraft = (report: Report, patch: Partial<ReportFollowUpDraft>) => {
     setDrafts((current) => {
-      const existing = current[report.id] ?? { status: report.status, message: '', file: null }
+      const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
+      const existing = current[report.id] ?? { status: defaultStatus, message: '', file: null }
       return { ...current, [report.id]: { ...existing, ...patch } }
     })
   }
 
-  const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
+  const { belum_diproses: openCount, diproses: progressCount, menunggu_konfirmasi: waitingCount, selesai: doneCount } = countReportsByStatus(reports)
 
   const queueTabs: { label: string; value: ReportStatus | ''; count: number }[] = [
     { label: 'Semua Aduan', value: '', count: reports.length },
     { label: 'Perlu Ditangani Segera', value: 'belum_diproses', count: openCount },
     { label: 'Sedang Dikerjakan', value: 'diproses', count: progressCount },
+    { label: 'Menunggu Konfirmasi', value: 'menunggu_konfirmasi', count: waitingCount },
     { label: 'Tuntas Selesai', value: 'selesai', count: doneCount },
   ]
 

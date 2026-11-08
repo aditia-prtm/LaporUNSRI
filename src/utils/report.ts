@@ -6,9 +6,11 @@ export type ReportStatusCounts = Record<ReportStatus, number>
 
 export function countReportsByStatus(reports: Report[]): ReportStatusCounts {
   return reports.reduce<ReportStatusCounts>((counts, report) => {
-    counts[report.status] += 1
+    if (report.status in counts) {
+      counts[report.status] += 1
+    }
     return counts
-  }, { belum_diproses: 0, diproses: 0, selesai: 0 })
+  }, { belum_diproses: 0, diproses: 0, menunggu_konfirmasi: 0, selesai: 0 })
 }
 
 export function isReportOverdue(report: Report, now = Date.now()): boolean {

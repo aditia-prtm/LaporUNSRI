@@ -134,3 +134,14 @@ export async function updateReportStatusWithEvidence(
   })
   throwIfError(error)
 }
+
+export async function confirmReportCompletion(
+  reportId: string,
+  feedback?: string,
+): Promise<void> {
+  const { error } = await supabase.rpc('user_confirm_report_completion', {
+    p_report_id: reportId,
+    p_feedback: feedback?.trim() || null,
+  })
+  throwIfError(error)
+}

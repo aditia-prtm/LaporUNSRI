@@ -38,47 +38,96 @@ Kenapa penting:
 --------------------------------------------------
 Satu tempat untuk melapor, memantau, dan memprioritaskan:
 - Laporan dengan judul, deskripsi, foto, dan lokasi.
-- Status terlihat jelas: Belum Diproses > Diproses > Selesai.
+- Status terlihat jelas & transparan: Belum Diproses > Diproses > Menunggu Konfirmasi > Selesai.
 - Dukungan dari mahasiswa lain membuat prioritas naik
   otomatis.
-- Dashboard petugas untuk mengelola semua laporan.
+- Dashboard petugas untuk mengelola dan menindaklanjuti semua laporan dengan bukti foto.
+- Mahasiswa pelapor memiliki hak verifikasi akhir sebelum laporan dinyatakan benar-benar selesai.
 
 
 4. FITUR PEMBEDA (bukan sekadar CRUD)
 --------------------------------------------------
-a. Tombol "Saya juga mengalami"
+a. Alur Status Satu Arah & Konfirmasi Pelapor
+   Status tidak bisa diakali atau dimundurkan oleh siapa pun.
+   Ketika petugas menyelesaikan tugas, laporan tidak langsung
+   selesai melainkan berpindah ke status "Menunggu Konfirmasi".
+   Hanya mahasiswa pelapor yang berhak mengonfirmasi bahwa
+   fasilitas sudah benar-benar berfungsi normal kembali.
+
+b. Tombol "Saya juga mengalami"
    Masalah yang banyak dialami naik prioritas otomatis.
 
-b. Deteksi laporan duplikat
+c. Deteksi laporan duplikat
    Saat mengetik judul/lokasi, sistem menyarankan laporan
    serupa yang sudah ada (pencarian teks di Supabase).
 
-c. Penanda laporan terlambat
+d. Penanda laporan terlambat
    Laporan yang tidak ditanggapi lebih dari X hari muncul
-   di dashboard admin sebagai "perlu eskalasi".
+   di dashboard petugas/admin sebagai "perlu eskalasi".
 
 
 5. ROLE DAN HAK AKSES
 --------------------------------------------------
 MAHASISWA (user)
 - Register, login, logout
-- Buat, lihat, ubah, hapus laporan miliknya
-- Vote laporan orang lain
-- Pantau status laporan
-- Berkomunikasi dengan petugas
+- Buat, lihat, pantau laporan fasilitas kampus
+- Ubah & hapus laporan miliknya (hanya saat status masih Belum Diproses)
+- Vote/dukung laporan pengguna lain
+- Berkomunikasi dan berdiskusi pada kolom komentar tindak lanjut
+- Mengonfirmasi penyelesaian laporan saat petugas selesai memperbaiki
 
 PETUGAS
 - Register, login, logout
-- Mengubah status laporan yang ia pegang (harus disertai bukti foto)
-- Berkomunikasi dengan pelapor
+- Mengubah status laporan yang dipegang: Belum Diproses -> Diproses
+- Menyelesaikan pengerjaan dengan bukti foto & catatan: Diproses -> Menunggu Konfirmasi
+- Berkomunikasi dengan pelapor melalui catatan tindak lanjut
 
 ADMIN 
 - Lihat semua laporan
 - Ubah status dan beri komentar/tindak lanjut
-- Kelola kategori
-- Lihat laporan terlambat dan statistik
+- Kelola kategori fasilitas
+- Lihat laporan terlambat dan statistik sarpras
+
 
 6. RANCANGAN DATABASE
+--------------------------------------------------
+Seluruh berkas query dan skema SQL tersimpan rapi di folder:
+`supabase/migrations/` dan `supabase/full_schema_setup.sql`.
+
+a. Tipe Enum:
+   - user_role: 'mahasiswa', 'petugas', 'admin'
+   - report_status: 'belum_diproses', 'diproses', 'menunggu_konfirmasi', 'selesai'
+
+b. Tabel Utama:
+   1. `profiles`:
+      - id (uuid, PK, references auth.users)
+      - full_name (text), nim_nip (text), role (user_role), created_at (timestamptz)
+   2. `categories`:
+      - id (uuid, PK), name (text, unique), created_at (timestamptz)
+   3. `reports`:
+      - id (uuid, PK)
+      - user_id (uuid, FK ke profiles)
+      - category_id (uuid, FK ke categories)
+      - assigned_officer_id (uuid, FK ke profiles)
+      - title, description, faculty, building, room, photo_url (text)
+      - status (report_status, default 'belum_diproses')
+      - confirmation_requested_at, completed_at (timestamptz)
+      - created_at, updated_at (timestamptz)
+   4. `report_comments`:
+      - id (uuid, PK), report_id (uuid, FK), user_id (uuid, FK)
+      - message (text), photo_url (text), created_at (timestamptz)
+   5. `report_votes`:
+      - id (uuid, PK), report_id (uuid, FK), user_id (uuid, FK)
+      - unique(report_id, user_id), created_at (timestamptz)
+
+c. Triggers & Functions:
+   - `on_auth_user_created`: Otomatis membuat baris di `profiles` saat sign up.
+   - `trg_reports_updated_at`: Otomatis update timestamp `updated_at`.
+   - `trg_enforce_report_status_transition`: Menjaga state machine status satu arah agar tidak dapat dimundurkan atau dilompati.
+
+d. RPC Stored Procedures:
+   - `petugas_update_report_status`: Petugas mengunggah bukti foto dan catatan (status berubah ke 'diproses' atau 'menunggu_konfirmasi').
+   - `user_confirm_report_completion`: Mahasiswa pelapor mengonfirmasi penanganan tuntas (status resmi menjadi 'selesai').
 
 
 7. DAFTAR HALAMAN
@@ -96,7 +145,7 @@ Admin    : Dashboard, Kelola laporan, Kelola kategori,
 - Filter berdasarkan kategori dan status
 - Sorting berdasarkan jumlah vote atau terbaru
 - Pencarian laporan
-- Alur status (Belum Diproses > Diproses > Selesai)
+- Alur status satu arah (Belum Diproses > Diproses > Menunggu Konfirmasi > Selesai) dengan verifikasi konfirmasi penyelesaian oleh pelapor
 - Voting dan deteksi duplikat
 - Penanda laporan terlambat
 

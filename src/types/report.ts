@@ -1,4 +1,4 @@
-export type ReportStatus = 'belum_diproses' | 'diproses' | 'selesai'
+export type ReportStatus = 'belum_diproses' | 'diproses' | 'menunggu_konfirmasi' | 'selesai'
 
 export type Category = { id: string; name: string }
 
@@ -6,6 +6,7 @@ export type Report = {
   id: string
   user_id: string
   category_id: string | null
+  assigned_officer_id: string | null
   title: string
   description: string
   faculty: string
@@ -13,6 +14,8 @@ export type Report = {
   room: string | null
   photo_url: string | null
   status: ReportStatus
+  confirmation_requested_at?: string | null
+  completed_at?: string | null
   created_at: string
   updated_at: string
   categories?: { name: string } | null
