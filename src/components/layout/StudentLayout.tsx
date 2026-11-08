@@ -1,13 +1,13 @@
-import { useState, useRef, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import { Brand } from '../common/Brand'
-import { FiMenu, FiX } from 'react-icons/fi'
+import { MobileBottomNav } from './MobileBottomNav'
 
 type StudentLayoutProps = {
   profile: UserProfile
-  active: 'dashboard' | 'reports' | 'mine' | 'settings'
+  active: 'dashboard' | 'reports' | 'mine' | 'settings' | 'new'
   onNavigate: (path: string) => void
   children: ReactNode
 }
@@ -19,13 +19,11 @@ const navItems = [
 ] as const
 
 export function StudentLayout({ profile, active, onNavigate, children }: StudentLayoutProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
   const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
   const avatarLetter = (profile.full_name || 'M').slice(0, 1).toUpperCase()
 
   const handleNavClick = (path: string) => {
-    setMobileMenuOpen(false)
     onNavigate(path)
   }
 
@@ -131,88 +129,35 @@ export function StudentLayout({ profile, active, onNavigate, children }: Student
             </button>
           </div>
 
-          {/* Mobile Menu Button with Animated Icon */}
+          {/* Mobile Right: User Profile Avatar */}
           <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
               onClick={() => handleNavClick('/mahasiswa/pengaturan')}
               aria-label="Buka Pengaturan Profil & Akun"
-              className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm cursor-pointer"
+              className="flex items-center gap-2 rounded-full py-1 pl-1.5 pr-3 bg-white/10 hover:bg-white/20 transition cursor-pointer border border-white/15"
             >
-              {avatarLetter}
-            </button>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen((open) => !open)}
-              aria-expanded={mobileMenuOpen}
-              aria-label={mobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
-              className="grid size-10 place-items-center rounded-xl bg-white/10 text-white hover:bg-white/20 transition cursor-pointer"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.div
-                  key={mobileMenuOpen ? 'close' : 'menu'}
-                  initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
-                  animate={{ rotate: 0, opacity: 1, scale: 1 }}
-                  exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.14 }}
-                >
-                  {mobileMenuOpen ? <FiX className="size-5" /> : <FiMenu className="size-5" />}
-                </motion.div>
-              </AnimatePresence>
+              <div
+                className="grid size-7 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
+                aria-hidden="true"
+              >
+                {avatarLetter}
+              </div>
+              <span className="text-xs font-semibold text-white max-w-[110px] truncate">
+                {profile.full_name}
+              </span>
             </button>
           </div>
         </div>
-
-        {/* Mobile Dropdown Menu: Container terpisah overflow-hidden agar penutupan mulus tanpa jeda/lompatan */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              key="mobile-nav-menu"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{
-                height: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
-                opacity: { duration: 0.18, ease: 'easeInOut' },
-              }}
-              className="overflow-hidden border-t border-white/10 bg-[#062445] lg:hidden"
-            >
-              <div className="px-4 py-3 space-y-1.5 shadow-2xl">
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('/mahasiswa/pengaturan')}
-                  className="flex min-h-[44px] w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold text-sky-200 border-b border-white/10 hover:bg-white/10 hover:text-white transition cursor-pointer"
-                >
-                  <span className="truncate">{profile.full_name}</span>
-                  <span className="text-[11px] text-[#ffbb00] font-bold">Pengaturan Akun</span>
-                </button>
-                {navItems.map((item) => {
-                  const isActive = active === item.id
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleNavClick(item.path)}
-                      className={`flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold transition cursor-pointer ${
-                        isActive
-                          ? 'bg-white text-[#08315c]'
-                          : 'text-white/80 hover:bg-white/10 hover:text-white'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  )
-                })}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
 
-      {/* Main View Container */}
-      <main className="flex-1 w-full">
+      {/* Main View Container (pb-24 ensures mobile content is never hidden behind bottom nav) */}
+      <main className="flex-1 w-full pb-24 lg:pb-0">
         {children}
       </main>
+
+      {/* Mobile Fixed Bottom Navigation */}
+      <MobileBottomNav active={active} onNavigate={onNavigate} />
     </div>
   )
 }
