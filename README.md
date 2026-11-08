@@ -15,14 +15,28 @@ Perintah yang tersedia:
 - `npm run lint` menjalankan ESLint.
 - `npm run preview` menyajikan build produksi secara lokal.
 
-## Konfigurasi Supabase
+## Konfigurasi Supabase & Database
 
-Isi `VITE_SUPABASE_URL` dan `VITE_SUPABASE_PUBLISHABLE_KEY` dengan URL proyek dan publishable/anon key dari Supabase. Variabel berawalan `VITE_` disertakan dalam aplikasi browser; jangan menaruh service role key atau rahasia server di dalamnya.
+Aplikasi memerlukan project Supabase baru dengan konfigurasi skema, trigger, fungsi RPC, dan storage bucket.
 
-Aplikasi memerlukan autentikasi Supabase dan tabel `profiles`, `reports`, `categories`, `report_votes`, serta `report_comments`. Foto laporan memakai storage bucket `report-photos`. Pastikan RLS, relasi, dan fungsi database untuk mutasi status sudah dikonfigurasi pada proyek Supabase.
+1. **Panduan Lengkap Setup:**
+   Ikuti langkah demi langkah di berkas [docs/Panduan_Setup_Database_Supabase_Baru.docx](./docs/Panduan_Setup_Database_Supabase_Baru.docx).
 
-## Struktur dan kontribusi
+2. **Eksekusi SQL Migration:**
+   - Jalankan skrip penuh [supabase/full_schema_setup.sql](./supabase/full_schema_setup.sql) pada SQL Editor Supabase.
+   - Atau jalankan secara bertahap dari folder [supabase/migrations/](./supabase/migrations/).
 
-Susunan folder, batas antar lapisan, serta aturan refactor dijelaskan di [ARCHITECTURE.md](./ARCHITECTURE.md). Ringkasan tujuan dan fitur produk ada di [PROJECT.md](./PROJECT.md).
+3. **Konfigurasi Environment Variable (`.env`):**
+   Salin `.env.example` menjadi `.env` dan isi kredensial project:
+   ```env
+   VITE_SUPABASE_URL=https://xxxxxxxxxxxxxxxx.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_xxxx... (atau VITE_SUPABASE_ANON_KEY)
+   ```
 
-Sebelum mengubah struktur, ikuti panduan arsitektur dan perbarui dokumentasi yang terdampak. Jangan menambahkan rahasia atau data pengguna ke repository.
+Aplikasi menggunakan autentikasi Supabase, 5 tabel relasional (`profiles`, `categories`, `reports`, `report_comments`, `report_votes`), storage bucket publik `report-photos`, trigger transisi status satu arah, serta RPC `petugas_update_report_status` dan `user_confirm_report_completion`.
+
+## Struktur dan Kontribusi
+
+- Susunan folder, arsitektur data, batas antar lapisan, serta aturan refactor dijelaskan di [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md).
+- Gambaran produk, masalah, solusi, dan spesifikasi fitur ada di [docs/PROJECT.md](./docs/PROJECT.md).
+- **Panduan AI Agent:** Aturan wajib bagi AI coding agent (membaca skema `supabase/` sebelum membuat fitur baru, menyimpan query migrasi, aturan status satu arah, dll) tercantum di [AGENTS.md](./AGENTS.md).

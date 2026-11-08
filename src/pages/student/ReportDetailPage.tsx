@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportComment } from '../../types/report'
-import { addReportComment, deleteReport, getReport, getReportComments, toggleReportVote } from '../../services/reportService'
+import {
+  addReportComment,
+  confirmReportCompletion,
+  deleteReport,
+  getReport,
+  getReportComments,
+  toggleReportVote,
+} from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { ReportDetailSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { formatDateTime } from '../../utils/date'
@@ -25,6 +32,9 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [confirming, setConfirming] = useState(false)
+  const [feedbackNote, setFeedbackNote] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   const load = async () => {
     setLoading(true)
@@ -37,6 +47,23 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
       setError(cause instanceof Error ? cause.message : 'Laporan gagal dimuat.')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleConfirmCompletion = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!report) return
+    setConfirming(true)
+    setError('')
+    try {
+      await confirmReportCompletion(report.id, feedbackNote)
+      setSuccessMessage('Terima kasih! Laporan Anda telah berhasil dikonfirmasi selesai.')
+      setFeedbackNote('')
+      await load()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Konfirmasi penyelesaian gagal disimpan.')
+    } finally {
+      setConfirming(false)
     }
   }
 
@@ -145,6 +172,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
       <section className="w-full px-4 sm:px-8 lg:px-12 py-8">
         <div className="mx-auto max-w-[1040px] space-y-6">
           {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
+          {successMessage && <FeedbackMessage tone="success">{successMessage}</FeedbackMessage>}
 
           {loading ? (
             <ReportDetailSkeleton />
@@ -194,6 +222,11 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200/80 px-3 py-1 text-xs font-semibold text-sky-700">
                         <span className="size-1.5 rounded-full bg-sky-500" aria-hidden="true" />
                         <span>Diproses</span>
+                      </span>
+                    ) : report.status === 'menunggu_konfirmasi' ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 px-3 py-1 text-xs font-semibold text-indigo-700">
+                        <span className="size-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
+                        <span>Menunggu Konfirmasi</span>
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 text-xs font-semibold text-emerald-700">
@@ -248,7 +281,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
                     </div>
                   )}
 
-                  {isOwner && (
+                  {isOwner && report.status === 'belum_diproses' && (
                     <div className="flex items-center gap-2.5">
                       <button
                         type="button"
@@ -271,6 +304,65 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
                   )}
                 </div>
               </article>
+
+              {/* Reporter Confirmation Card */}
+              {report.status === 'menunggu_konfirmasi' && isOwner && (
+                <section className="rounded-3xl border border-indigo-200 bg-indigo-50/60 p-6 sm:p-7 shadow-sm space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm">
+                      <FiCheck className="size-6 stroke-[3]" aria-hidden="true" />
+                    </div>
+                    <div>
+                      <h2 className="text-base sm:text-lg font-bold text-slate-900">
+                        Konfirmasi Penyelesaian Fasilitas
+                      </h2>
+                      <p className="mt-1 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                        Petugas telah menyelesaikan perbaikan dan memperbarui laporan ini. Mohon verifikasi apakah fasilitas di lokasi telah berfungsi dengan baik sebelum laporan resmi ditutup.
+                      </p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={(e) => void handleConfirmCompletion(e)} className="space-y-3 pt-2">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      <span className="mb-1 block text-[11px] text-slate-500">
+                        Catatan atau Ulasan Singkat (Opsional)
+                      </span>
+                      <textarea
+                        rows={2}
+                        maxLength={500}
+                        value={feedbackNote}
+                        onChange={(e) => setFeedbackNote(e.target.value)}
+                        placeholder="Contoh: AC sudah dingin kembali dan berfungsi normal..."
+                        className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-600/15 transition resize-vertical"
+                      />
+                    </label>
+
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                      <p className="text-[11px] text-slate-500">
+                        Setelah dikonfirmasi, status laporan akan berubah menjadi <strong>Selesai</strong> dan tidak dapat diubah kembali.
+                      </p>
+                      <button
+                        type="submit"
+                        disabled={confirming}
+                        className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                      >
+                        <FiCheck className="size-4 stroke-[3]" aria-hidden="true" />
+                        <span>{confirming ? 'Menyimpan...' : 'Ya, Fasilitas Sudah Benar-Benar Selesai'}</span>
+                      </button>
+                    </div>
+                  </form>
+                </section>
+              )}
+
+              {/* Waiting Confirmation Banner for other users */}
+              {report.status === 'menunggu_konfirmasi' && !isOwner && (
+                <div className="rounded-2xl border border-indigo-200 bg-indigo-50/50 p-5 text-xs text-indigo-900 flex items-center gap-3">
+                  <FiCheck className="size-5 text-indigo-600 shrink-0 stroke-[2.5]" aria-hidden="true" />
+                  <span>
+                    Petugas telah menyatakan perbaikan fasilitas ini selesai. Laporan saat ini sedang menunggu konfirmasi akhir dari mahasiswa pelapor.
+                  </span>
+                </div>
+              )}
 
               {/* Discussion & Follow-up Timeline */}
               <section className="space-y-4 pt-2">

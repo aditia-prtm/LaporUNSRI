@@ -182,6 +182,11 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
                           <span className="size-1.5 rounded-full bg-sky-500" aria-hidden="true" />
                           <span>Diproses</span>
                         </span>
+                      ) : report.status === 'menunggu_konfirmasi' ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
+                          <span className="size-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
+                          <span>Menunggu Konfirmasi</span>
+                        </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                           <FiCheck className="size-3 stroke-[2.5]" aria-hidden="true" />

@@ -211,6 +211,17 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
               </button>
               <button
                 type="button"
+                onClick={() => setStatusFilter('menunggu_konfirmasi')}
+                className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition cursor-pointer ${
+                  statusFilter === 'menunggu_konfirmasi'
+                    ? 'bg-[#08315c] text-white shadow-sm'
+                    : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
+                }`}
+              >
+                Menunggu Konfirmasi
+              </button>
+              <button
+                type="button"
                 onClick={() => setStatusFilter('selesai')}
                 className={`min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition cursor-pointer ${
                   statusFilter === 'selesai'
@@ -282,6 +293,11 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200/80 px-3 py-1 text-xs font-semibold text-sky-700">
                               <span className="size-1.5 rounded-full bg-sky-500" aria-hidden="true" />
                               <span>Diproses</span>
+                            </span>
+                          ) : report.status === 'menunggu_konfirmasi' ? (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 px-3 py-1 text-xs font-semibold text-indigo-700">
+                              <span className="size-1.5 rounded-full bg-indigo-500" aria-hidden="true" />
+                              <span>Menunggu Konfirmasi</span>
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200/80 px-3 py-1 text-xs font-semibold text-emerald-700">

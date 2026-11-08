@@ -12,15 +12,18 @@ import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUp
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
 import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
-import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiLogOut, FiTool } from 'react-icons/fi'
+import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiTool } from 'react-icons/fi'
 
-type Props = { profile: UserProfile; onSignOut: () => void }
+type Props = {
+  profile: UserProfile
+  onNavigate?: (path: string) => void
+}
 
 function loadOfficerReports(userId: string) {
   return getReports(userId)
 }
 
-export function OfficerDashboardPage({ profile, onSignOut }: Props) {
+export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -79,8 +82,9 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
 
   const submitUpdate = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
-    const draft = drafts[report.id]
-    if (!draft?.file || !draft.message.trim()) {
+    const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
+    const draft = drafts[report.id] ?? { status: defaultStatus, message: '', file: null }
+    if (!draft.file || !draft.message.trim()) {
       setError('Setiap tindak lanjut status wajib disertai foto bukti dan catatan penanganan.')
       return
     }
@@ -94,8 +98,9 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
     setError('')
     try {
       const photoUrl = await uploadReportPhoto(draft.file, profile.id)
-      await updateReportStatusWithEvidence(report.id, draft.status, draft.message.trim(), photoUrl)
-      setDrafts((current) => ({ ...current, [report.id]: { status: draft.status, message: '', file: null } }))
+      const nextStatus = draft.status || defaultStatus
+      await updateReportStatusWithEvidence(report.id, nextStatus, draft.message.trim(), photoUrl)
+      setDrafts((current) => ({ ...current, [report.id]: { status: nextStatus, message: '', file: null } }))
       await load()
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Tindak lanjut gagal disimpan.')
@@ -106,17 +111,19 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
 
   const setDraft = (report: Report, patch: Partial<ReportFollowUpDraft>) => {
     setDrafts((current) => {
-      const existing = current[report.id] ?? { status: report.status, message: '', file: null }
+      const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
+      const existing = current[report.id] ?? { status: defaultStatus, message: '', file: null }
       return { ...current, [report.id]: { ...existing, ...patch } }
     })
   }
 
-  const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
+  const { belum_diproses: openCount, diproses: progressCount, menunggu_konfirmasi: waitingCount, selesai: doneCount } = countReportsByStatus(reports)
 
   const queueTabs: { label: string; value: ReportStatus | ''; count: number }[] = [
     { label: 'Semua Aduan', value: '', count: reports.length },
     { label: 'Perlu Ditangani Segera', value: 'belum_diproses', count: openCount },
     { label: 'Sedang Dikerjakan', value: 'diproses', count: progressCount },
+    { label: 'Menunggu Konfirmasi', value: 'menunggu_konfirmasi', count: waitingCount },
     { label: 'Tuntas Selesai', value: 'selesai', count: doneCount },
   ]
 
@@ -177,28 +184,26 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
             })}
           </nav>
 
-          {/* Right: Officer Profile & Logout */}
+          {/* Right: Officer Profile (Navigates to Settings) */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onNavigate?.('/petugas/pengaturan')}
+              title="Buka Pengaturan Profil & Akun"
+              className="flex items-center gap-2.5 rounded-full py-1.5 pl-2 pr-4 bg-white/5 hover:bg-white/15 border border-white/10 transition cursor-pointer select-none group"
+            >
               <div
-                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
+                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none group-hover:scale-105 transition-transform"
                 aria-hidden="true"
               >
                 {avatarLetter}
               </div>
-              <div className="hidden sm:block text-right">
-                <span className="block text-xs font-bold text-white max-w-[160px] truncate">{profile.full_name}</span>
+              <div className="hidden sm:block text-left">
+                <span className="block text-xs font-bold text-white max-w-[160px] truncate group-hover:text-[#ffbb00] transition-colors">
+                  {profile.full_name}
+                </span>
                 <span className="block text-[10px] text-[#ffbb00]">Petugas Sarpras</span>
               </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={onSignOut}
-              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
-            >
-              <FiLogOut className="size-3.5" aria-hidden="true" />
-              <span className="hidden sm:inline">Keluar</span>
             </button>
           </div>
         </div>

@@ -6,6 +6,9 @@ Dokumen ini menjadi acuan untuk perubahan dan refactor seluruh proyek: kode apli
 
 ```text
 public/                         # Aset statis yang disajikan apa adanya
+supabase/                       # Skema database, trigger, RPC, RLS, dan berkas migrasi Supabase
+├── full_schema_setup.sql       # Skrip lengkap siap eksekusi sekaligus di Supabase SQL Editor
+└── migrations/                 # Skrip migrasi terpisah berurutan (01_..., 02_..., dst.)
 src/
 ├── assets/                     # Aset visual yang diimpor oleh aplikasi
 ├── components/
@@ -15,6 +18,7 @@ src/
 │   └── report/                 # Komponen UI yang khusus untuk laporan
 ├── pages/
 │   ├── auth/                   # Halaman autentikasi
+│   ├── common/                 # Halaman bersama (Settings/Pengaturan profil)
 │   ├── public/                 # Halaman publik
 │   ├── student/                # Halaman mahasiswa
 │   ├── officer/                # Halaman petugas
@@ -82,3 +86,34 @@ Route → Page → Hook/utility → Service → Supabase
 ```
 
 Komponen tidak memanggil Supabase. Service mengembalikan data bertipe atau melempar error yang dapat ditampilkan halaman. Mutasi yang mengubah status harus melewati operasi database yang memeriksa role; validasi klien bukan pengganti RLS.
+
+## Konvensi dan Tata Kelola Database (Supabase)
+
+Lapisan database adalah sumber kebenaran (*single source of truth*) untuk integritas data dan hak akses. Setiap developer atau AI agent yang memodifikasi sistem wajib mematuhi aturan berikut:
+
+### 1. Membaca Skema Database
+Sebelum mengerjakan fitur yang berinteraksi dengan database:
+- **Wajib membaca berkas di folder `supabase/migrations/` dan `supabase/full_schema_setup.sql`.**
+- Jangan pernah mengasumsikan kolom, relasi, tipe enum, atau trigger sebelum memeriksa berkas SQL tersebut.
+
+### 2. Disiplin Pembaruan Skema & Penyimpanan Query
+- Ketika ada query DDL/DML baru (misalnya tabel baru, kolom baru, enum baru, perubahan RLS, atau stored procedure baru):
+  1. Catat perubahan dalam berkas migrasi terpisah di `supabase/migrations/` dengan urutan nomor berikutnya, contoh: `07_nama_fitur_baru.sql`.
+  2. Perbarui berkas `supabase/full_schema_setup.sql` agar skrip setup penuh tetap mutakhir dan dapat dijalankan langsung di project Supabase baru.
+  3. Selaraskan tipe TypeScript di `src/types/` dan operasi di `src/services/`.
+
+### 3. Siklus Hidup Status Laporan (State Machine Satu Arah)
+Alur status laporan diatur secara kaku oleh trigger database PostgreSQL (`trg_enforce_report_status_transition`):
+```text
+belum_diproses ➔ diproses ➔ menunggu_konfirmasi ➔ selesai
+```
+- **Satu Arah (Irreversible):** Status tidak dapat dimundurkan ke fase sebelumnya.
+- **Tindak Lanjut Petugas:** Saat petugas menyelesaikan pekerjaan dan mengirim bukti penanganan melalui RPC `petugas_update_report_status`, status laporan dialihkan ke `menunggu_konfirmasi`, bukan langsung `selesai`.
+- **Verifikasi Pelapor:** Status hanya dapat beralih ke `selesai` jika mahasiswa pembuat laporan mengonfirmasi melalui RPC `user_confirm_report_completion(p_report_id, p_feedback)`.
+- **Status Selesai Final:** Laporan berstatus `selesai` terkunci dan tidak dapat diubah statusnya lagi.
+- **Proteksi Edit/Hapus:** Pelapor hanya diizinkan mengubah detail atau menghapus laporan saat status masih `belum_diproses`.
+
+### 4. Row Level Security (RLS) & Storage
+- Setiap tabel wajib mengaktifkan RLS (`ENABLE ROW LEVEL SECURITY`).
+- Perubahan status wajib melalui fungsi RPC dengan `SECURITY DEFINER` yang memvalidasi role pemanggil dari tabel `public.profiles`.
+- Unggahan foto laporan dan bukti tindak lanjut disimpan di Supabase Storage bucket `report-photos` (Public Bucket). Path berkas mengikuti konvensi `{user_id}/{uuid}.{ext}`.
