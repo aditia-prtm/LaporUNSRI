@@ -1,102 +1,153 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Brand } from '../../components/common/Brand'
 import { FiArrowLeft, FiCompass, FiHome } from 'react-icons/fi'
+import { Brand } from '../../components/common/Brand'
+import mascotImg from '../../assets/dashboard/mascot-2.png'
+import kampusUnsriDesktop from '../../assets/home/kampus-unsri-transparan.png'
+import awan1 from '../../assets/home/awan-1.png'
+import awan2 from '../../assets/home/awan-2.png'
 
 export function NotFoundPage() {
   const navigate = useNavigate()
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col justify-between overflow-hidden bg-[#020b17] font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] text-white">
-      {/* Ambient Atmospheric Lighting */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_35%,rgba(55,155,245,0.22)_0%,rgba(2,11,23,0)_75%)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -left-20 top-1/4 size-[400px] rounded-full bg-[#105292]/20 blur-[130px]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -right-20 bottom-1/4 size-[400px] rounded-full bg-[#4899e8]/15 blur-[130px]"
-        aria-hidden="true"
-      />
+    <div className="relative flex min-h-screen w-full flex-col justify-between overflow-hidden bg-[#08315c] font-['Poppins','Montserrat',sans-serif] text-white select-none">
+      {/* Background Campus Atmosphere: Clouds & University Silhouette */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden" aria-hidden="true">
+        {/* Soft Radial Ambient Lighting */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_30%,rgba(16,82,146,0.5)_0%,rgba(8,49,92,0)_80%)]" />
+
+        {/* Ambient Floating Clouds */}
+        <img
+          src={awan1}
+          alt=""
+          className="absolute -left-20 top-12 h-44 sm:h-64 opacity-25 object-contain"
+        />
+        <img
+          src={awan2}
+          alt=""
+          className="absolute -right-20 top-24 h-48 sm:h-72 opacity-20 object-contain"
+        />
+
+        {/* UNSRI Campus Silhouette along bottom horizon */}
+        <div className="absolute inset-x-0 bottom-0 h-44 sm:h-64 lg:h-80 opacity-20 pointer-events-none">
+          <img
+            src={kampusUnsriDesktop}
+            alt="Siluet Kampus UNSRI"
+            className="h-full w-full object-cover object-bottom"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#08315c] via-transparent to-transparent" />
+        </div>
+      </div>
 
       {/* Top Navbar */}
-      <header className="relative z-10 w-full border-b border-white/10 bg-[#031830]/80 backdrop-blur-md">
+      <header className="relative z-10 w-full border-b border-white/10 bg-[#08315c]/85 backdrop-blur-md">
         <div className="mx-auto flex h-18 max-w-[1280px] items-center justify-between px-6 sm:px-10">
           <Brand onClick={() => navigate('/')} />
           <button
             type="button"
             onClick={() => navigate('/')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-xs font-semibold text-[#cce5fb] backdrop-blur transition hover:bg-white/15 hover:text-white"
+            className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 hover:bg-white/20 px-4 py-2 text-xs font-semibold text-white backdrop-blur transition cursor-pointer"
           >
             <FiArrowLeft className="size-3.5" aria-hidden="true" />
-            <span>Beranda</span>
+            <span>Ke Beranda</span>
           </button>
         </div>
       </header>
 
       {/* Main 404 Stage */}
-      <main className="relative z-10 mx-auto flex flex-1 flex-col items-center justify-center px-6 py-12 text-center max-w-[620px]">
+      <main className="relative z-10 mx-auto flex flex-1 flex-col items-center justify-center px-4 py-10 sm:py-16 text-center max-w-[800px]">
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
-          {/* Glowing 404 Badge */}
-          <div className="relative inline-flex items-center gap-2 rounded-full border border-[#60b6ff]/30 bg-[#60b6ff]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-[#8fc3ee] backdrop-blur-md shadow-[0_0_20px_rgba(96,182,255,0.2)]">
-            <FiCompass className="size-4 animate-spin text-[#60b6ff] [animation-duration:12s]" />
-            <span>Error 404 · Halaman Hilang</span>
+          {/* Mascot with Speech Bubble */}
+          <div className="relative mb-6 flex flex-col items-center">
+            {/* Friendly Speech Bubble */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="relative mb-3 rounded-2xl bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-[#08315c] shadow-lg shadow-black/20"
+            >
+              <span>Waduh, sepertinya kamu tersesat di luar area kampus! 🧭</span>
+              {/* Speech bubble bottom pointer tail */}
+              <div
+                className="absolute left-1/2 -bottom-2 -translate-x-1/2 size-0 border-x-8 border-x-transparent border-t-8 border-t-white"
+                aria-hidden="true"
+              />
+            </motion.div>
+
+            {/* Mascot Image */}
+            <motion.img
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.4 }}
+              src={mascotImg}
+              alt="Maskot LaporUNSRI"
+              className="h-32 sm:h-44 w-auto object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
+            />
           </div>
 
-          <div className="relative my-4">
-            <h1 className="select-none font-['Poppins','Montserrat','Outfit',sans-serif] text-[clamp(80px,14vw,140px)] font-black leading-none tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-[#8cb6dc] to-[#105292] drop-shadow-[0_10px_35px_rgba(16,82,146,0.5)]">
-              404
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#ffbb00]/30 bg-[#ffbb00]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ffbb00] backdrop-blur-md">
+            <FiCompass className="size-4 animate-spin [animation-duration:12s]" />
+            <span>Galat 404 · Halaman Tidak Ditemukan</span>
+          </div>
+
+          {/* Giant Number 404 */}
+          <div className="relative my-2 sm:my-3">
+            <h1 className="select-none font-black text-[clamp(72px,13vw,120px)] leading-none tracking-tight text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
+              4<span className="text-[#ffbb00]">0</span>4
             </h1>
           </div>
 
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white">
-            Ups! Halaman yang Anda cari{' '}
-            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-semibold text-[#ffbb00]">
+          {/* Heading */}
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white max-w-lg leading-snug">
+            Ups! Halaman yang kamu tuju{' '}
+            <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00]">
               tidak ditemukan
             </span>
           </h2>
 
-          <p className="mt-3 text-xs sm:text-sm leading-relaxed text-[#a4c1db] max-w-[480px]">
-            Tautan yang Anda tuju mungkin sudah kedaluwarsa, dipindahkan, atau alamat URL yang Anda masukkan kurang tepat. Silakan kembali ke beranda atau masuk ke akun Anda.
+          {/* Description */}
+          <p className="mt-3 text-xs sm:text-sm leading-relaxed text-sky-100/90 max-w-md">
+            Tautan yang kamu tuju mungkin sudah dipindahkan, dihapus, atau alamat URL yang dimasukkan kurang tepat. Silakan kembali ke beranda atau akses dashboard pelaporan fasilitas.
           </p>
 
-          {/* Action CTAs */}
+          {/* Action CTAs Matching Project Brand Style */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#60b6ff] via-[#48a6ff] to-[#2b8ced] px-5 py-2.5 text-xs sm:text-sm font-bold text-[#021427] shadow-[0_4px_20px_rgba(58,147,232,0.4)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(58,147,232,0.6)] hover:brightness-105 active:translate-y-0 cursor-pointer"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-2xl bg-[#ffbb00] hover:bg-[#ffc824] px-6 py-3 text-xs sm:text-sm font-bold text-[#08315c] shadow-lg shadow-black/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <FiHome className="size-4" aria-hidden="true" />
               <span>Kembali ke Beranda</span>
             </button>
             <button
               type="button"
-              onClick={() => navigate('/auth')}
-              className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 text-xs sm:text-sm font-semibold text-[#cce5fb] backdrop-blur-md transition-all duration-200 hover:bg-white/15 hover:border-white/35 hover:text-white hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              onClick={() => navigate('/mahasiswa')}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-2xl border border-white/25 bg-white/10 hover:bg-white/20 px-6 py-3 text-xs sm:text-sm font-semibold text-white backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
-              <span>Portal Masuk Akun</span>
+              <FiArrowLeft className="size-4" aria-hidden="true" />
+              <span>Portal Dashboard</span>
             </button>
           </div>
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full border-t border-white/10 bg-[#031326]/60 py-4 text-center text-xs text-[#8cb6dc]">
+      {/* Footer Matching Project Theme */}
+      <footer className="relative z-10 w-full border-t border-white/10 bg-[#062444]/70 py-4 text-center text-xs text-sky-100/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-[1280px] flex-col sm:flex-row items-center justify-between px-6 sm:px-10 gap-2">
           <span>© {new Date().getFullYear()} LaporUNSRI · Universitas Sriwijaya</span>
-          <span className="text-[11px] text-[#60b6ff]">Sistem Aspirasi & Pelaporan Fasilitas Kampus</span>
+          <span className="text-[11px] text-[#ffbb00] font-medium">Sistem Aspirasi & Pelaporan Fasilitas Kampus</span>
         </div>
       </footer>
     </div>
   )
 }
+
 export default NotFoundPage
