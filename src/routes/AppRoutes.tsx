@@ -13,6 +13,7 @@ const ReportsPage = lazy(() => import('../pages/student/ReportsPage').then((modu
 const StudentDashboardPage = lazy(() => import('../pages/student/StudentDashboardPage').then((module) => ({ default: module.StudentDashboardPage })))
 const OfficerDashboardPage = lazy(() => import('../pages/officer/OfficerDashboardPage').then((module) => ({ default: module.OfficerDashboardPage })))
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then((module) => ({ default: module.AdminDashboardPage })))
+const SettingsPage = lazy(() => import('../pages/common/SettingsPage').then((module) => ({ default: module.SettingsPage })))
 
 function LandingRoute() {
   const navigate = useNavigate()
@@ -31,6 +32,23 @@ function AuthRoute({ kind }: { kind: 'user' | 'officer' }) {
 }
 
 function OfficerLayoutRoute() {
+  const { profile, loading } = useAuth()
+  const navigate = useNavigate()
+  if (!loading && (!profile || profile.role !== 'petugas')) return <Navigate to="/petugas" replace />
+  return (
+    <>
+      <LoadingScreen isLoading={loading} />
+      {profile && (
+        <OfficerDashboardPage
+          profile={profile}
+          onNavigate={navigate}
+        />
+      )}
+    </>
+  )
+}
+
+function OfficerSettingsRoute() {
   const { profile, loading, signOut } = useAuth()
   const navigate = useNavigate()
   if (!loading && (!profile || profile.role !== 'petugas')) return <Navigate to="/petugas" replace />
@@ -45,7 +63,13 @@ function OfficerLayoutRoute() {
   return (
     <>
       <LoadingScreen isLoading={loading} />
-      {profile && <OfficerDashboardPage profile={profile} onSignOut={() => void handleSignOut()} />}
+      {profile && (
+        <SettingsPage
+          profile={profile}
+          onNavigate={navigate}
+          onSignOut={() => void handleSignOut()}
+        />
+      )}
     </>
   )
 }
@@ -76,7 +100,7 @@ function AdminLayoutRoute() {
 }
 
 function StudentLayoutRoute() {
-  const { profile, loading, signOut } = useAuth()
+  const { profile, loading } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -88,22 +112,15 @@ function StudentLayoutRoute() {
     ? 'dashboard'
     : location.pathname === '/mahasiswa/laporan-saya'
       ? 'mine'
-      : 'reports'
-
-  const handleSignOut = async () => {
-    try {
-      await signOut()
-      navigate('/auth', { replace: true })
-    } catch {
-      // Leave the page open if Supabase cannot complete sign-out.
-    }
-  }
+      : location.pathname === '/mahasiswa/pengaturan'
+        ? 'settings'
+        : 'reports'
 
   return (
     <>
       <LoadingScreen isLoading={loading} />
       {profile && (
-        <StudentLayout profile={profile} active={active} onNavigate={navigate} onSignOut={() => void handleSignOut()}>
+        <StudentLayout profile={profile} active={active} onNavigate={navigate}>
           <Outlet context={profile} />
         </StudentLayout>
       )}
@@ -113,6 +130,20 @@ function StudentLayoutRoute() {
 
 function useStudentPage() {
   return { profile: useOutletContext<UserProfile>(), onNavigate: useNavigate() }
+}
+
+function StudentSettingsRoute() {
+  const { profile, onNavigate } = useStudentPage()
+  const { signOut } = useAuth()
+  const handleSignOut = async () => {
+    try {
+      await signOut()
+      onNavigate('/auth', { replace: true })
+    } catch {
+      // Leave the page open if Supabase cannot complete sign-out.
+    }
+  }
+  return <SettingsPage profile={profile} onNavigate={onNavigate} onSignOut={() => void handleSignOut()} />
 }
 
 function StudentDashboardRoute() {
@@ -158,6 +189,7 @@ export function AppRoutes() {
         {/* Public authentication entry for officers; only work pages are guarded. */}
         <Route path="/petugas" element={<AuthRoute kind="officer" />} />
         <Route path="/petugas/dashboard" element={<OfficerLayoutRoute />} />
+        <Route path="/petugas/pengaturan" element={<OfficerSettingsRoute />} />
         <Route path="/admin/*" element={<AdminLayoutRoute />} />
         <Route path="/mahasiswa" element={<StudentLayoutRoute />}>
           <Route index element={<StudentDashboardRoute />} />
@@ -166,6 +198,7 @@ export function AppRoutes() {
           <Route path="laporan/baru" element={<NewReportRoute />} />
           <Route path="laporan/:reportId/edit" element={<EditReportRoute />} />
           <Route path="laporan/:reportId" element={<ReportDetailRoute />} />
+          <Route path="pengaturan" element={<StudentSettingsRoute />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -53,8 +53,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setProfile(null)
   }
 
+  const refreshProfile = async () => {
+    if (!profile?.id) return
+    try {
+      const updated = await getProfile(profile.id)
+      setProfile(updated)
+    } catch {
+      // Biarkan profile tetap ada jika query refresh gagal
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ profile, loading, signOut }}>
+    <AuthContext.Provider value={{ profile, loading, signOut, refreshProfile }}>
       {children}
     </AuthContext.Provider>
   )

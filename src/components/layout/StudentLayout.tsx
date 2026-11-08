@@ -3,13 +3,12 @@ import type { ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import { Brand } from '../common/Brand'
-import { FiLogOut, FiMenu, FiX } from 'react-icons/fi'
+import { FiMenu, FiX } from 'react-icons/fi'
 
 type StudentLayoutProps = {
   profile: UserProfile
-  active: 'dashboard' | 'reports' | 'mine'
+  active: 'dashboard' | 'reports' | 'mine' | 'settings'
   onNavigate: (path: string) => void
-  onSignOut: () => void
   children: ReactNode
 }
 
@@ -19,7 +18,7 @@ const navItems = [
   { id: 'mine', label: 'Laporan Saya', path: '/mahasiswa/laporan-saya' },
 ] as const
 
-export function StudentLayout({ profile, active, onNavigate, onSignOut, children }: StudentLayoutProps) {
+export function StudentLayout({ profile, active, onNavigate, children }: StudentLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
   const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
@@ -106,38 +105,40 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
             })}
           </nav>
 
-          {/* Right: User Profile & Logout (Desktop) */}
+          {/* Right: User Profile (Navigates to Settings) */}
           <div className="hidden lg:flex items-center gap-4">
-            <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => handleNavClick('/mahasiswa/pengaturan')}
+              title="Buka Pengaturan Profil & Akun"
+              className={`flex items-center gap-2.5 rounded-full py-1.5 pl-2 pr-4 transition cursor-pointer border select-none ${
+                active === 'settings'
+                  ? 'bg-white/20 border-[#ffbb00]'
+                  : 'bg-white/5 hover:bg-white/15 border-white/10'
+              }`}
+            >
               <div
                 className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
                 aria-hidden="true"
               >
                 {avatarLetter}
               </div>
-              <span className="text-xs font-semibold text-white max-w-[180px] truncate">
+              <span className="text-xs font-semibold text-white max-w-[170px] truncate hover:text-[#ffbb00] transition-colors">
                 {profile.full_name}
               </span>
-            </div>
-
-            <button
-              type="button"
-              onClick={onSignOut}
-              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
-            >
-              <FiLogOut className="size-3.5" aria-hidden="true" />
-              <span>Keluar</span>
             </button>
           </div>
 
           {/* Mobile Menu Button with Animated Icon */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div
-              className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm"
-              aria-hidden="true"
+            <button
+              type="button"
+              onClick={() => handleNavClick('/mahasiswa/pengaturan')}
+              aria-label="Buka Pengaturan Profil & Akun"
+              className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm cursor-pointer"
             >
               {avatarLetter}
-            </div>
+            </button>
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
@@ -175,9 +176,14 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
               className="overflow-hidden border-t border-white/10 bg-[#062445] lg:hidden"
             >
               <div className="px-4 py-3 space-y-1.5 shadow-2xl">
-                <div className="px-3 py-2 text-xs font-semibold text-sky-200 border-b border-white/10">
-                  {profile.full_name}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('/mahasiswa/pengaturan')}
+                  className="flex min-h-[44px] w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold text-sky-200 border-b border-white/10 hover:bg-white/10 hover:text-white transition cursor-pointer"
+                >
+                  <span className="truncate">{profile.full_name}</span>
+                  <span className="text-[11px] text-[#ffbb00] font-bold">Pengaturan Akun</span>
+                </button>
                 {navItems.map((item) => {
                   const isActive = active === item.id
                   return (
@@ -195,14 +201,6 @@ export function StudentLayout({ profile, active, onNavigate, onSignOut, children
                     </button>
                   )
                 })}
-                <button
-                  type="button"
-                  onClick={onSignOut}
-                  className="flex min-h-[44px] w-full items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-rose-300 hover:bg-rose-500/10 transition cursor-pointer"
-                >
-                  <FiLogOut className="size-4" aria-hidden="true" />
-                  <span>Keluar Akun</span>
-                </button>
               </div>
             </motion.div>
           )}

@@ -134,10 +134,11 @@ d. RPC Stored Procedures:
 --------------------------------------------------
 Publik   : Landing page (CTA "Laporkan Masalah"),
            Login, Register, 404
-Mahasiswa: Daftar laporan (filter, sorting, pencarian),
-           Detail laporan, Buat laporan, Laporan saya
+Mahasiswa: Ringkasan dashboard, Daftar laporan (filter, sorting, pencarian),
+           Detail laporan, Buat laporan, Laporan saya, Pengaturan profil (Settings & Logout)
+Petugas  : Dashboard antrean aduan, Detail tindak lanjut laporan, Pengaturan profil
 Admin    : Dashboard, Kelola laporan, Kelola kategori,
-           Laporan terlambat
+           Laporan terlambat, Pengaturan profil
 
 
 8. OPERASI TAMBAHAN (di luar CRUD)

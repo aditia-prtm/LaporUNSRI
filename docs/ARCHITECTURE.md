@@ -18,6 +18,7 @@ src/
 │   └── report/                 # Komponen UI yang khusus untuk laporan
 ├── pages/
 │   ├── auth/                   # Halaman autentikasi
+│   ├── common/                 # Halaman bersama (Settings/Pengaturan profil)
 │   ├── public/                 # Halaman publik
 │   ├── student/                # Halaman mahasiswa
 │   ├── officer/                # Halaman petugas

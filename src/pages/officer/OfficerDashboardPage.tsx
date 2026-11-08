@@ -12,15 +12,18 @@ import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUp
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
 import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
-import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiLogOut, FiTool } from 'react-icons/fi'
+import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiTool } from 'react-icons/fi'
 
-type Props = { profile: UserProfile; onSignOut: () => void }
+type Props = {
+  profile: UserProfile
+  onNavigate?: (path: string) => void
+}
 
 function loadOfficerReports(userId: string) {
   return getReports(userId)
 }
 
-export function OfficerDashboardPage({ profile, onSignOut }: Props) {
+export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   const [reports, setReports] = useState<Report[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -181,28 +184,26 @@ export function OfficerDashboardPage({ profile, onSignOut }: Props) {
             })}
           </nav>
 
-          {/* Right: Officer Profile & Logout */}
+          {/* Right: Officer Profile (Navigates to Settings) */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onNavigate?.('/petugas/pengaturan')}
+              title="Buka Pengaturan Profil & Akun"
+              className="flex items-center gap-2.5 rounded-full py-1.5 pl-2 pr-4 bg-white/5 hover:bg-white/15 border border-white/10 transition cursor-pointer select-none group"
+            >
               <div
-                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none"
+                className="grid size-8 place-items-center rounded-full bg-[#ffbb00] text-xs font-bold text-[#08315c] shadow-sm select-none group-hover:scale-105 transition-transform"
                 aria-hidden="true"
               >
                 {avatarLetter}
               </div>
-              <div className="hidden sm:block text-right">
-                <span className="block text-xs font-bold text-white max-w-[160px] truncate">{profile.full_name}</span>
+              <div className="hidden sm:block text-left">
+                <span className="block text-xs font-bold text-white max-w-[160px] truncate group-hover:text-[#ffbb00] transition-colors">
+                  {profile.full_name}
+                </span>
                 <span className="block text-[10px] text-[#ffbb00]">Petugas Sarpras</span>
               </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={onSignOut}
-              className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
-            >
-              <FiLogOut className="size-3.5" aria-hidden="true" />
-              <span className="hidden sm:inline">Keluar</span>
             </button>
           </div>
         </div>
