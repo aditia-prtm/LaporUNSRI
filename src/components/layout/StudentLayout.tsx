@@ -40,6 +40,8 @@ export function StudentLayout({ profile, active, onNavigate, children }: Student
           left: activeBtn.offsetLeft,
           width: activeBtn.offsetWidth,
         })
+      } else {
+        setPillStyle(null)
       }
     }
     updatePill()
