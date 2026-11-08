@@ -43,6 +43,8 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
           left: activeBtn.offsetLeft,
           width: activeBtn.offsetWidth,
         })
+      } else {
+        setPillStyle(null)
       }
     }
     updatePill()

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BiMenu, BiX } from 'react-icons/bi'
+import { FiMenu, FiX } from 'react-icons/fi'
 import { Brand } from '../common/Brand'
 
 type LandingNavbarProps = {
@@ -82,8 +82,8 @@ export function LandingNavbar({
   return (
     <header
       className={`fixed inset-x-0 top-0 z-[100] w-full transition-all duration-300 ${
-        isScrolled || isOverContent
-          ? 'bg-[#08315c]/85 backdrop-blur-md border-b border-white/15 shadow-md shadow-black/20'
+        isScrolled || isOverContent || menuOpen
+          ? 'bg-[#08315c]/90 backdrop-blur-md border-b border-white/15 shadow-md shadow-black/20'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
@@ -131,7 +131,7 @@ export function LandingNavbar({
         <div className="flex items-center gap-3">
           <button
             type="button"
-            className={`rounded-2xl px-5 py-2 text-xs font-bold transition active:scale-[0.98] cursor-pointer shadow-sm ${
+            className={`hidden sm:inline-flex rounded-2xl px-5 py-2 text-xs font-bold transition active:scale-[0.98] cursor-pointer shadow-sm ${
               isScrolled || isOverContent
                 ? 'bg-[#ffbb00] hover:bg-[#f0b000] text-slate-950 font-bold shadow-md shadow-black/20'
                 : 'border border-white/35 bg-white/15 hover:bg-white/25 text-white backdrop-blur-md'
@@ -140,44 +140,69 @@ export function LandingNavbar({
           >
             Masuk
           </button>
+
+          {/* Mobile Menu Button with Animated Rotating Icon (matching dashboard) */}
           <button
             type="button"
-            className="flex md:hidden size-9 items-center justify-center rounded-lg text-white hover:bg-white/15 transition cursor-pointer"
-            aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
-            aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
+            className="grid md:hidden size-10 place-items-center rounded-xl bg-white/10 text-white hover:bg-white/20 transition cursor-pointer"
           >
-            {menuOpen ? <BiX size={26} /> : <BiMenu size={26} />}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={menuOpen ? 'close' : 'menu'}
+                initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.14 }}
+              >
+                {menuOpen ? <FiX className="size-5" /> : <FiMenu className="size-5" />}
+              </motion.div>
+            </AnimatePresence>
           </button>
         </div>
+      </div>
 
-        {/* Mobile Dropdown Menu with Smooth Animation */}
-        <AnimatePresence>
-          {menuOpen && (
-            <motion.nav
-              id="landing-navigation-menu"
-              key="landing-mobile-menu"
-              initial={{ opacity: 0, scale: 0.95, y: -6 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -6 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden absolute right-6 top-full mt-2 z-50 min-w-[210px] rounded-2xl border border-white/20 bg-[#08315c]/95 backdrop-blur-xl p-2 shadow-2xl"
-              aria-label="Navigasi mobile"
-            >
+      {/* Mobile Dropdown Menu: Accordion full-width overflow-hidden yang sama persis seperti di dashboard */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="landing-mobile-nav-menu"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              height: { duration: 0.22, ease: [0.16, 1, 0.3, 1] },
+              opacity: { duration: 0.18, ease: 'easeInOut' },
+            }}
+            className="overflow-hidden border-t border-white/10 bg-[#062445]/95 backdrop-blur-xl md:hidden"
+          >
+            <div className="px-6 py-3 space-y-1.5 shadow-2xl">
               {menuItems.map((item) => (
                 <button
                   key={item.action}
-                  className="block w-full rounded-lg px-3.5 py-2 text-left text-xs font-semibold text-white/90 hover:bg-white/15 hover:text-white transition cursor-pointer"
                   type="button"
                   onClick={() => handleMenuAction(item.action)}
+                  className="flex min-h-[44px] w-full items-center rounded-xl px-3.5 py-2.5 text-xs font-bold text-white/90 hover:bg-white/10 hover:text-white transition cursor-pointer"
                 >
                   {item.label}
                 </button>
               ))}
-            </motion.nav>
-          )}
-        </AnimatePresence>
-      </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false)
+                  onNavigate('/auth')
+                }}
+                className="flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[#ffbb00] hover:bg-[#f0b000] px-4 py-2.5 text-xs font-bold text-slate-950 transition cursor-pointer shadow-md mt-2"
+              >
+                Masuk ke LaporUNSRI
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   )
 }

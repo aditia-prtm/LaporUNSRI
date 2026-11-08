@@ -114,7 +114,9 @@ function StudentLayoutRoute() {
       ? 'mine'
       : location.pathname === '/mahasiswa/pengaturan'
         ? 'settings'
-        : 'reports'
+        : location.pathname === '/mahasiswa/laporan/baru'
+          ? 'new'
+          : 'reports'
 
   return (
     <>
