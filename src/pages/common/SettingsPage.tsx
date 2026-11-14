@@ -112,7 +112,7 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
   }
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="min-h-screen w-full bg-[#f4f7fb] text-slate-800 font-['Poppins','Montserrat','Outfit',system-ui,sans-serif] antialiased flex flex-col">
       {/* Navy Top Banner */}
       <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 py-8 shadow-inner">
         <div className="mx-auto max-w-[880px] space-y-3">
@@ -122,7 +122,13 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
             className="inline-flex min-h-[38px] items-center gap-2 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
           >
             <FiArrowLeft className="size-4" aria-hidden="true" />
-            <span>Kembali ke Beranda</span>
+            <span>
+              {profile.role === 'petugas'
+                ? 'Kembali ke Dashboard Petugas'
+                : profile.role === 'admin'
+                  ? 'Kembali ke Panel Admin'
+                  : 'Kembali ke Beranda'}
+            </span>
           </button>
 
           <div>
@@ -140,7 +146,7 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
       </section>
 
       {/* Main Form Area */}
-      <section className="w-full px-4 sm:px-8 lg:px-12 py-8">
+      <section className="w-full flex-1 px-4 sm:px-8 lg:px-12 py-8 bg-[#f4f7fb]">
         <div className="mx-auto max-w-[880px] space-y-7">
           {/* Overview Profile Card */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-sm">
