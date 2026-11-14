@@ -137,10 +137,33 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
     })
   }
 
+  const handleTakeAssignment = async (report: Report) => {
+    setBusyId(report.id)
+    setError('')
+    setNotice('')
+    try {
+      await updateReportStatusWithEvidence(
+        report.id,
+        'diproses',
+        `Laporan telah diambil dan mulai ditindaklanjuti oleh admin (${profile.full_name}).`,
+        null
+      )
+      setNotice('Laporan berhasil ditindaklanjuti dan status kini berubah menjadi Diproses.')
+      await loadData()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Gagal menindaklanjuti laporan.')
+    } finally {
+      setBusyId('')
+    }
+  }
+
   const saveFollowUp = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
-    const draft = drafts[report.id] ?? { status: report.status, message: '', file: null }
-    if (!draft.message.trim()) return
+    const draft = drafts[report.id] ?? { status: 'menunggu_konfirmasi', message: '', file: null }
+    if (!draft.message.trim()) {
+      setError('Catatan hasil penanganan wajib diisi.')
+      return
+    }
     const fileError = draft.file ? validateImageFile(draft.file, FOLLOW_UP_PHOTO_MAX_BYTES) : null
     if (fileError) {
       setError(fileError)
@@ -151,9 +174,9 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
     setNotice('')
     try {
       const photoUrl = draft.file ? await uploadReportPhoto(draft.file, profile.id) : null
-      await updateReportStatusWithEvidence(report.id, draft.status, draft.message.trim(), photoUrl)
-      setDrafts((current) => ({ ...current, [report.id]: { ...draft, message: '', file: null } }))
-      setNotice('Status dan catatan tindak lanjut berhasil disimpan.')
+      await updateReportStatusWithEvidence(report.id, 'menunggu_konfirmasi', draft.message.trim(), photoUrl)
+      setDrafts((current) => ({ ...current, [report.id]: { status: 'menunggu_konfirmasi', message: '', file: null } }))
+      setNotice('Penanganan berhasil disimpan dan diajukan untuk konfirmasi pelapor.')
       await loadData()
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Tindak lanjut gagal disimpan.')
@@ -599,10 +622,11 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                           draft={draft}
                           busy={busyId === report.id}
                           photoRequired={false}
-                          submitLabel="Simpan Tindak Lanjut"
+                          submitLabel="Selesaikan & Minta Konfirmasi Pelapor"
                           overdueDays={isReportOverdue(report) ? ageInDays : undefined}
                           onDraftChange={(patch) => setDraft(report, patch)}
                           onSubmit={(event) => void saveFollowUp(event, report)}
+                          onTakeAssignment={(rep) => void handleTakeAssignment(rep)}
                         />
                       )
                     }

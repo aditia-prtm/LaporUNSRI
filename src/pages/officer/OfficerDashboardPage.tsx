@@ -86,12 +86,29 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
     [reports]
   )
 
+  const handleTakeAssignment = async (report: Report) => {
+    setBusyId(report.id)
+    setError('')
+    try {
+      await updateReportStatusWithEvidence(
+        report.id,
+        'diproses',
+        `Laporan telah diambil oleh petugas (${profile.full_name}) dan mulai ditindaklanjuti.`,
+        null
+      )
+      await load()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Gagal mengambil penugasan laporan.')
+    } finally {
+      setBusyId('')
+    }
+  }
+
   const submitUpdate = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
-    const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
-    const draft = drafts[report.id] ?? { status: defaultStatus, message: '', file: null }
+    const draft = drafts[report.id] ?? { status: 'menunggu_konfirmasi', message: '', file: null }
     if (!draft.file || !draft.message.trim()) {
-      setError('Setiap tindak lanjut status wajib disertai foto bukti dan catatan penanganan.')
+      setError('Untuk menyelesaikan penanganan, wajib menyertakan foto bukti hasil perbaikan dan catatan penanganan.')
       return
     }
     const fileError = validateImageFile(draft.file, FOLLOW_UP_PHOTO_MAX_BYTES)
@@ -104,12 +121,11 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
     setError('')
     try {
       const photoUrl = await uploadReportPhoto(draft.file, profile.id)
-      const nextStatus = draft.status || defaultStatus
-      await updateReportStatusWithEvidence(report.id, nextStatus, draft.message.trim(), photoUrl)
-      setDrafts((current) => ({ ...current, [report.id]: { status: nextStatus, message: '', file: null } }))
+      await updateReportStatusWithEvidence(report.id, 'menunggu_konfirmasi', draft.message.trim(), photoUrl)
+      setDrafts((current) => ({ ...current, [report.id]: { status: 'menunggu_konfirmasi', message: '', file: null } }))
       await load()
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Tindak lanjut gagal disimpan.')
+      setError(cause instanceof Error ? cause.message : 'Penyelesaian penanganan gagal disimpan.')
     } finally {
       setBusyId('')
     }
@@ -117,7 +133,7 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
 
   const setDraft = (report: Report, patch: Partial<ReportFollowUpDraft>) => {
     setDrafts((current) => {
-      const defaultStatus: ReportStatus = report.status === 'belum_diproses' ? 'diproses' : 'menunggu_konfirmasi'
+      const defaultStatus: ReportStatus = 'menunggu_konfirmasi'
       const existing = current[report.id] ?? { status: defaultStatus, message: '', file: null }
       return { ...current, [report.id]: { ...existing, ...patch } }
     })
@@ -368,9 +384,10 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
                     draft={draft}
                     busy={busyId === report.id}
                     photoRequired
-                    submitLabel="Simpan Tindak Lanjut & Bukti"
+                    submitLabel="Selesaikan Penanganan & Minta Konfirmasi"
                     onDraftChange={(patch) => setDraft(report, patch)}
                     onSubmit={(event) => void submitUpdate(event, report)}
+                    onTakeAssignment={(rep) => void handleTakeAssignment(rep)}
                   />
                 )
               })}
