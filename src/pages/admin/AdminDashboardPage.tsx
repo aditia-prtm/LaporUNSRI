@@ -30,6 +30,7 @@ import {
   FiFolder,
   FiGrid,
   FiLogOut,
+  FiMapPin,
   FiPlus,
   FiShield,
   FiTrash2,
@@ -115,6 +116,10 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   }, [profile.id])
 
   const overdueReports = useMemo(() => reports.filter(isReportOverdue), [reports])
+  const withCoordinatesCount = useMemo(
+    () => reports.filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number').length,
+    [reports]
+  )
   const visibleReports = useMemo(
     () =>
       filterReports(reports, {
@@ -132,10 +137,33 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
     })
   }
 
+  const handleTakeAssignment = async (report: Report) => {
+    setBusyId(report.id)
+    setError('')
+    setNotice('')
+    try {
+      await updateReportStatusWithEvidence(
+        report.id,
+        'diproses',
+        `Laporan telah diambil dan mulai ditindaklanjuti oleh admin (${profile.full_name}).`,
+        null
+      )
+      setNotice('Laporan berhasil ditindaklanjuti dan status kini berubah menjadi Diproses.')
+      await loadData()
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Gagal menindaklanjuti laporan.')
+    } finally {
+      setBusyId('')
+    }
+  }
+
   const saveFollowUp = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
-    const draft = drafts[report.id] ?? { status: report.status, message: '', file: null }
-    if (!draft.message.trim()) return
+    const draft = drafts[report.id] ?? { status: 'menunggu_konfirmasi', message: '', file: null }
+    if (!draft.message.trim()) {
+      setError('Catatan hasil penanganan wajib diisi.')
+      return
+    }
     const fileError = draft.file ? validateImageFile(draft.file, FOLLOW_UP_PHOTO_MAX_BYTES) : null
     if (fileError) {
       setError(fileError)
@@ -146,9 +174,9 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
     setNotice('')
     try {
       const photoUrl = draft.file ? await uploadReportPhoto(draft.file, profile.id) : null
-      await updateReportStatusWithEvidence(report.id, draft.status, draft.message.trim(), photoUrl)
-      setDrafts((current) => ({ ...current, [report.id]: { ...draft, message: '', file: null } }))
-      setNotice('Status dan catatan tindak lanjut berhasil disimpan.')
+      await updateReportStatusWithEvidence(report.id, 'menunggu_konfirmasi', draft.message.trim(), photoUrl)
+      setDrafts((current) => ({ ...current, [report.id]: { status: 'menunggu_konfirmasi', message: '', file: null } }))
+      setNotice('Penanganan berhasil disimpan dan diajukan untuk konfirmasi pelapor.')
       await loadData()
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Tindak lanjut gagal disimpan.')
@@ -324,6 +352,17 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 ? `Laporan yang belum tertangani selama ${REPORT_OVERDUE_AFTER_DAYS} hari atau lebih dan memerlukan tindakan segera.`
                 : 'Pantau seluruh aktivitas pelaporan fasilitas, rekam jejak teknisi, dan performa penanganan kampus.'}
           </p>
+
+          {activeSection !== 'kategori' && reports.length > 0 && (
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs text-sky-200">
+                <FiMapPin className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
+                <span>
+                  <strong>{withCoordinatesCount}</strong> dari {reports.length} laporan dilengkapi titik koordinat peta
+                </span>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 
@@ -583,10 +622,11 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                           draft={draft}
                           busy={busyId === report.id}
                           photoRequired={false}
-                          submitLabel="Simpan Tindak Lanjut"
+                          submitLabel="Selesaikan & Minta Konfirmasi Pelapor"
                           overdueDays={isReportOverdue(report) ? ageInDays : undefined}
                           onDraftChange={(patch) => setDraft(report, patch)}
                           onSubmit={(event) => void saveFollowUp(event, report)}
+                          onTakeAssignment={(rep) => void handleTakeAssignment(rep)}
                         />
                       )
                     }

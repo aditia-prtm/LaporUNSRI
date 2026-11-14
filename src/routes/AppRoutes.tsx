@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Outlet, Route, Routes, useLocation, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { StudentLayout } from '../components/layout/StudentLayout'
 import { LoadingScreen } from '../components/common/LoadingScreen'
+import { Brand } from '../components/common/Brand'
 import { useAuth } from '../hooks/useAuth'
 import type { UserProfile } from '../types/auth'
 
@@ -64,11 +65,30 @@ function OfficerSettingsRoute() {
     <>
       <LoadingScreen isLoading={loading} />
       {profile && (
-        <SettingsPage
-          profile={profile}
-          onNavigate={navigate}
-          onSignOut={() => void handleSignOut()}
-        />
+        <div className="min-h-screen w-full bg-[#f4f7fb] flex flex-col font-['Poppins','Montserrat','Outfit',system-ui,sans-serif]">
+          {/* Top Navbar Petugas */}
+          <header className="sticky top-0 z-40 w-full bg-[#08315c] border-b border-white/10 shadow-md">
+            <div className="mx-auto flex h-18 w-full max-w-[1280px] items-center justify-between px-4 sm:px-8 lg:px-12">
+              <Brand
+                showSubtitle={false}
+                onClick={() => navigate('/petugas/dashboard')}
+                className="text-white"
+              />
+              <button
+                type="button"
+                onClick={() => navigate('/petugas/dashboard')}
+                className="rounded-full px-4 py-1.5 text-xs font-bold bg-white/10 text-white hover:bg-white/20 border border-white/10 transition cursor-pointer"
+              >
+                Kembali ke Dashboard
+              </button>
+            </div>
+          </header>
+          <SettingsPage
+            profile={profile}
+            onNavigate={navigate}
+            onSignOut={() => void handleSignOut()}
+          />
+        </div>
       )}
     </>
   )

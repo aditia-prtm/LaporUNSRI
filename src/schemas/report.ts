@@ -10,6 +10,17 @@ export function validateReportInput(input: ReportInput): string | null {
   if (input.description.trim().length < 10) return 'Deskripsi laporan minimal 10 karakter.'
   if (!input.faculty.trim()) return 'Fakultas wajib diisi.'
   if (!input.building.trim()) return 'Gedung wajib diisi.'
+  if (input.latitude != null || input.longitude != null) {
+    if (input.latitude == null || input.longitude == null) {
+      return 'Koordinat lokasi tidak lengkap (harus memiliki latitude dan longitude).'
+    }
+    if (isNaN(input.latitude) || input.latitude < -90 || input.latitude > 90) {
+      return 'Latitude tidak valid (harus di antara -90 dan 90).'
+    }
+    if (isNaN(input.longitude) || input.longitude < -180 || input.longitude > 180) {
+      return 'Longitude tidak valid (harus di antara -180 dan 180).'
+    }
+  }
   return null
 }
 

@@ -13,6 +13,8 @@ export type Report = {
   building: string
   room: string | null
   photo_url: string | null
+  latitude?: number | null
+  longitude?: number | null
   status: ReportStatus
   confirmation_requested_at?: string | null
   completed_at?: string | null
@@ -32,6 +34,8 @@ export type ReportInput = {
   building: string
   room?: string
   photo_url?: string | null
+  latitude?: number | null
+  longitude?: number | null
 }
 
 export type ReportComment = {

@@ -14,6 +14,7 @@ import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { ReportDetailSkeleton, Skeleton } from '../../components/common/Skeleton'
 import { formatDateTime } from '../../utils/date'
 import { FiArrowLeft, FiCheck, FiEdit3, FiHeart, FiMapPin, FiMessageSquare, FiSend, FiTrash2, FiUser } from 'react-icons/fi'
+import { LocationViewerMap } from '../../components/report/LocationViewerMap'
 
 type ReportDetailPageProps = {
   profile: UserProfile
@@ -252,6 +253,27 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
                 <div className="text-sm leading-relaxed text-slate-700 whitespace-pre-wrap">
                   {report.description}
                 </div>
+
+                {/* Location Map if coordinates are present */}
+                {typeof report.latitude === 'number' && typeof report.longitude === 'number' && (
+                  <div className="space-y-2.5 pt-4 border-t border-slate-100">
+                    <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+                      <span className="flex items-center gap-1.5">
+                        <FiMapPin className="size-4 text-[#08315c]" aria-hidden="true" />
+                        <span>Titik Lokasi Kerusakan pada Peta</span>
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {report.faculty} · {report.building}
+                      </span>
+                    </div>
+                    <LocationViewerMap
+                      latitude={report.latitude}
+                      longitude={report.longitude}
+                      title={report.title}
+                      locationName={`${report.faculty} · ${report.building}${report.room ? ` · ${report.room}` : ''}`}
+                    />
+                  </div>
+                )}
 
                 {/* Actions */}
                 <div className="flex flex-wrap items-center justify-between gap-4 border-t border-slate-100 pt-5">

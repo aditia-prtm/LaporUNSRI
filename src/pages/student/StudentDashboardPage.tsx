@@ -274,7 +274,12 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
 
                         {/* Lokasi */}
                         <td className="py-4 px-5 sm:px-6 text-slate-600 whitespace-nowrap">
-                          {report.faculty} · {report.building}
+                          <div>{report.faculty} · {report.building}</div>
+                          {typeof report.latitude === 'number' && typeof report.longitude === 'number' && (
+                            <span className="inline-block mt-0.5 text-[10px] text-sky-700 font-medium">
+                              📍 Peta Tersemat
+                            </span>
+                          )}
                         </td>
 
                         {/* Tanggal */}
