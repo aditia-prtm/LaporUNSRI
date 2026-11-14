@@ -1,6 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
-import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
@@ -31,26 +30,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   const [status, setStatus] = useState<ReportStatus | ''>('')
   const [busyId, setBusyId] = useState('')
   const [drafts, setDrafts] = useState<Record<string, ReportFollowUpDraft>>({})
-  const navRef = useRef<HTMLElement>(null)
-  const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
-
-  useLayoutEffect(() => {
-    const updatePill = () => {
-      if (!navRef.current) return
-      const activeBtn = navRef.current.querySelector<HTMLButtonElement>(`[data-status="${status}"]`)
-      if (activeBtn) {
-        setPillStyle({
-          left: activeBtn.offsetLeft,
-          width: activeBtn.offsetWidth,
-        })
-      } else {
-        setPillStyle(null)
-      }
-    }
-    updatePill()
-    window.addEventListener('resize', updatePill)
-    return () => window.removeEventListener('resize', updatePill)
-  }, [status])
 
   const load = async () => {
     setError('')
@@ -164,47 +143,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
               className="text-white"
             />
           </div>
-
-          {/* Center Tabs (Desktop) */}
-          <nav ref={navRef} className="relative hidden lg:flex items-center gap-1.5 bg-[#062445]/60 p-1.5 rounded-full border border-white/10" aria-label="Antrean Tugas Petugas">
-            {pillStyle && (
-              <motion.div
-                className="absolute rounded-full bg-white shadow-sm z-0 pointer-events-none"
-                style={{ top: 6, bottom: 6 }}
-                initial={false}
-                animate={{
-                  left: pillStyle.left,
-                  width: pillStyle.width,
-                }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 420,
-                  damping: 32,
-                }}
-              />
-            )}
-            {queueTabs.map((tab) => {
-              const isActive = status === tab.value
-              return (
-                <button
-                  key={tab.label}
-                  data-status={tab.value}
-                  type="button"
-                  onClick={() => setStatus(tab.value)}
-                  className={`relative z-10 min-h-[38px] rounded-full px-4 py-1.5 text-xs font-bold transition-colors duration-200 cursor-pointer flex items-center gap-2 select-none ${
-                    isActive
-                      ? 'text-[#08315c]'
-                      : 'text-white/80 hover:text-white'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${isActive ? 'bg-[#08315c] text-white' : 'bg-white/15 text-sky-200'}`}>
-                    {loading ? '...' : tab.count}
-                  </span>
-                </button>
-              )
-            })}
-          </nav>
 
           {/* Right: Officer Profile (Navigates to Settings) */}
           <div className="flex items-center gap-4">
@@ -325,22 +263,34 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
               </p>
             </div>
 
-            {/* Mobile Queue Filter Buttons */}
-            <div className="flex flex-wrap gap-1.5 lg:hidden" role="tablist">
-              {queueTabs.map((tab) => (
-                <button
-                  key={tab.label}
-                  type="button"
-                  onClick={() => setStatus(tab.value)}
-                  className={`rounded-full px-3 py-1 text-xs font-bold transition ${
-                    status === tab.value
-                      ? 'bg-[#08315c] text-white'
-                      : 'bg-white border border-slate-200 text-slate-600'
-                  }`}
-                >
-                  {tab.label} ({loading ? '...' : tab.count})
-                </button>
-              ))}
+            {/* Queue Filter Buttons (Tampil di semua perangkat) */}
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2" role="tablist" aria-label="Filter Antrean Laporan">
+              {queueTabs.map((tab) => {
+                const isActive = status === tab.value
+                return (
+                  <button
+                    key={tab.label}
+                    type="button"
+                    onClick={() => setStatus(tab.value)}
+                    className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all shadow-2xs cursor-pointer select-none ${
+                      isActive
+                        ? 'bg-[#08315c] text-white shadow-sm ring-2 ring-[#08315c]/25'
+                        : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300'
+                    }`}
+                  >
+                    <span>{tab.label}</span>
+                    <span
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {loading ? '...' : tab.count}
+                    </span>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
