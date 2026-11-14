@@ -30,6 +30,7 @@ import {
   FiFolder,
   FiGrid,
   FiLogOut,
+  FiMapPin,
   FiPlus,
   FiShield,
   FiTrash2,
@@ -115,6 +116,10 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   }, [profile.id])
 
   const overdueReports = useMemo(() => reports.filter(isReportOverdue), [reports])
+  const withCoordinatesCount = useMemo(
+    () => reports.filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number').length,
+    [reports]
+  )
   const visibleReports = useMemo(
     () =>
       filterReports(reports, {
@@ -324,6 +329,17 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                 ? `Laporan yang belum tertangani selama ${REPORT_OVERDUE_AFTER_DAYS} hari atau lebih dan memerlukan tindakan segera.`
                 : 'Pantau seluruh aktivitas pelaporan fasilitas, rekam jejak teknisi, dan performa penanganan kampus.'}
           </p>
+
+          {activeSection !== 'kategori' && reports.length > 0 && (
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs text-sky-200">
+                <FiMapPin className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
+                <span>
+                  <strong>{withCoordinatesCount}</strong> dari {reports.length} laporan dilengkapi titik koordinat peta
+                </span>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 

@@ -218,12 +218,19 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
                     </p>
 
                     {/* Location */}
-                    <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500">
-                      <FiMapPin className="size-3.5 text-[#08315c] shrink-0" aria-hidden="true" />
-                      <span>
-                        {report.faculty} · {report.building}
-                        {report.room ? ` · ${report.room}` : ''}
-                      </span>
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                      <div className="flex items-center gap-1.5">
+                        <FiMapPin className="size-3.5 text-[#08315c] shrink-0" aria-hidden="true" />
+                        <span>
+                          {report.faculty} · {report.building}
+                          {report.room ? ` · ${report.room}` : ''}
+                        </span>
+                      </div>
+                      {typeof report.latitude === 'number' && typeof report.longitude === 'number' && (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-sky-50 border border-sky-200/80 px-2 py-0.5 text-[10px] font-semibold text-sky-800">
+                          Titik Peta Tersedia
+                        </span>
+                      )}
                     </div>
 
                     {/* Card Footer */}

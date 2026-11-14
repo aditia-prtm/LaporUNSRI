@@ -6,7 +6,8 @@ import { createReport, getCategories, getReport, updateReport, uploadReportPhoto
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { FormSkeleton } from '../../components/common/Skeleton'
 import { REPORT_PHOTO_MAX_BYTES, validateImageFile, validateReportInput } from '../../schemas/report'
-import { FiArrowLeft, FiCamera, FiCheck, FiX } from 'react-icons/fi'
+import { FiArrowLeft, FiCamera, FiCheck, FiMapPin, FiX } from 'react-icons/fi'
+import { LocationPickerMap } from '../../components/report/LocationPickerMap'
 
 type ReportFormPageProps = {
   profile: UserProfile
@@ -22,6 +23,8 @@ const emptyForm: ReportInput = {
   building: '',
   room: '',
   photo_url: null,
+  latitude: null,
+  longitude: null,
 }
 
 export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPageProps) {
@@ -51,6 +54,8 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
           building: report.building,
           room: report.room ?? '',
           photo_url: report.photo_url,
+          latitude: report.latitude ?? null,
+          longitude: report.longitude ?? null,
         })
       } catch (cause) {
         if (active) setError(cause instanceof Error ? cause.message : 'Data laporan gagal dimuat.')
@@ -79,7 +84,13 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
     setBusy(true)
     try {
       const photoUrl = file ? await uploadReportPhoto(file, profile.id) : form.photo_url
-      const payload: ReportInput = { ...form, room: form.room || '', photo_url: photoUrl }
+      const payload: ReportInput = {
+        ...form,
+        room: form.room || '',
+        photo_url: photoUrl,
+        latitude: form.latitude ?? null,
+        longitude: form.longitude ?? null,
+      }
       if (reportId) {
         await updateReport(reportId, payload)
         onNavigate(`/mahasiswa/laporan/${reportId}`)
@@ -228,6 +239,30 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                     className={inputClass}
                   />
                 </label>
+
+                {/* Tandai Titik Lokasi Peta (Leaflet) */}
+                <div className="flex flex-col gap-2 sm:col-span-2 pt-2 border-t border-slate-100">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                      <FiMapPin className="size-4 text-[#08315c]" aria-hidden="true" />
+                      <span>Titik Lokasi Real pada Peta</span>
+                    </span>
+                    <span className="text-[10px] text-slate-400">Opsional · Leaflet GPS</span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    Tandai lokasi spesifik di peta kampus agar petugas teknisi dapat menuju titik masalah dengan cepat dan akurat.
+                  </p>
+                  <LocationPickerMap
+                    value={{ latitude: form.latitude, longitude: form.longitude }}
+                    onChange={(coords) => {
+                      setForm((current) => ({
+                        ...current,
+                        latitude: coords?.latitude ?? null,
+                        longitude: coords?.longitude ?? null,
+                      }))
+                    }}
+                  />
+                </div>
 
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-700">

@@ -30,17 +30,25 @@ export function LoadingScreen({
   useEffect(() => {
     if (!isLoading) {
       // 1. Sembunyikan konten logo & spinner
-      setContentVisible(false)
+      const contentTimer = window.setTimeout(() => {
+        setContentVisible(false)
+      }, 0)
 
       // 2. Beri jeda halus sebelum background memudar
-      const timer = window.setTimeout(() => {
+      const bgTimer = window.setTimeout(() => {
         setBgVisible(false)
       }, 180)
 
-      return () => window.clearTimeout(timer)
+      return () => {
+        window.clearTimeout(contentTimer)
+        window.clearTimeout(bgTimer)
+      }
     } else {
-      setContentVisible(true)
-      setBgVisible(true)
+      const resetTimer = window.setTimeout(() => {
+        setContentVisible(true)
+        setBgVisible(true)
+      }, 0)
+      return () => window.clearTimeout(resetTimer)
     }
   }, [isLoading])
 

@@ -12,7 +12,7 @@ import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUp
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
 import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
-import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiTool } from 'react-icons/fi'
+import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiMapPin, FiTool } from 'react-icons/fi'
 
 type Props = {
   profile: UserProfile
@@ -81,6 +81,10 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   }, [profile.id])
 
   const visibleReports = useMemo(() => filterReports(reports, { search, status }), [reports, search, status])
+  const withCoordinatesCount = useMemo(
+    () => reports.filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number').length,
+    [reports]
+  )
 
   const submitUpdate = async (event: FormEvent<HTMLFormElement>, report: Report) => {
     event.preventDefault()
@@ -229,6 +233,17 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
           <p className="mt-2 text-xs sm:text-sm text-sky-100/90 max-w-2xl leading-relaxed">
             Tinjau seluruh aduan kerusakan dari mahasiswa dan sivitas akademika UNSRI. Setiap pembaruan status wajib menyertakan foto dokumentasi penanganan nyata di lapangan.
           </p>
+
+          {reports.length > 0 && (
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs text-sky-200">
+                <FiMapPin className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
+                <span>
+                  <strong>{withCoordinatesCount}</strong> dari {reports.length} laporan tersemat titik peta Leaflet
+                </span>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 

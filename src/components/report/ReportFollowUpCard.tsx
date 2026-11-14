@@ -1,7 +1,18 @@
+import { useState } from 'react'
 import type { FormEvent } from 'react'
 import type { Report, ReportStatus } from '../../types/report'
 import { formatDate } from '../../utils/date'
-import { FiAlertTriangle, FiArrowUpRight, FiCamera, FiCheck, FiMapPin, FiUser } from 'react-icons/fi'
+import {
+  FiAlertTriangle,
+  FiArrowUpRight,
+  FiCamera,
+  FiCheck,
+  FiCopy,
+  FiMap,
+  FiMapPin,
+  FiUser,
+} from 'react-icons/fi'
+import { LocationViewerMap } from './LocationViewerMap'
 
 export type ReportFollowUpDraft = {
   status: ReportStatus
@@ -30,6 +41,22 @@ export function ReportFollowUpCard({
   onDraftChange,
   onSubmit,
 }: ReportFollowUpCardProps) {
+  const [showMap, setShowMap] = useState(true)
+  const [copiedCoords, setCopiedCoords] = useState(false)
+
+  const hasCoordinates = typeof report.latitude === 'number' && typeof report.longitude === 'number'
+
+  const handleCopyCoords = async () => {
+    if (!hasCoordinates) return
+    try {
+      await navigator.clipboard.writeText(`${report.latitude?.toFixed(6)}, ${report.longitude?.toFixed(6)}`)
+      setCopiedCoords(true)
+      setTimeout(() => setCopiedCoords(false), 2000)
+    } catch {
+      // fallback
+    }
+  }
+
   return (
     <article className="group relative grid grid-cols-1 lg:grid-cols-[1fr_minmax(300px,380px)] gap-6 rounded-2xl sm:rounded-3xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-sm transition-all duration-200 hover:border-[#08315c]/40 hover:shadow-md">
       {/* Left: Report Overview */}
@@ -79,15 +106,93 @@ export function ReportFollowUpCard({
             {report.description}
           </p>
 
-          <div className="mt-4 flex items-center gap-1.5 text-xs text-slate-500">
-            <FiMapPin className="size-3.5 text-[#08315c]" aria-hidden="true" />
-            <span>
-              {report.faculty} · {report.building}
-              {report.room ? ` · ${report.room}` : ''}
-            </span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-500">
+            <div className="flex items-center gap-1.5">
+              <FiMapPin className="size-3.5 text-[#08315c]" aria-hidden="true" />
+              <span>
+                {report.faculty} · {report.building}
+                {report.room ? ` · ${report.room}` : ''}
+              </span>
+            </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500">
+          {/* Titik Lokasi Peta & Koordinat */}
+          {hasCoordinates ? (
+            <div className="mt-3.5 rounded-2xl border border-slate-200/90 bg-slate-50/70 p-3.5 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#08315c]">
+                  <FiMapPin className="size-4 text-[#ffbb00] shrink-0" aria-hidden="true" />
+                  <span>Titik Lokasi Kerusakan (Peta Leaflet)</span>
+                </div>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setShowMap((prev) => !prev)}
+                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+                    title={showMap ? 'Sembunyikan tampilan peta' : 'Tampilkan peta interaktif'}
+                  >
+                    <FiMap className="size-3 text-[#08315c]" aria-hidden="true" />
+                    <span>{showMap ? 'Sembunyikan Peta' : 'Buka Peta'}</span>
+                  </button>
+
+                  <a
+                    href={`https://www.google.com/maps?q=${report.latitude},${report.longitude}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 rounded-lg bg-[#08315c] px-2.5 py-1 text-[11px] font-bold text-white hover:bg-[#0c4278] transition"
+                    title="Buka rute navigasi di Google Maps"
+                  >
+                    <span>Google Maps</span>
+                    <FiArrowUpRight className="size-3" aria-hidden="true" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Readout koordinat presisi */}
+              <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white border border-slate-200/80 px-3 py-1.5 text-xs">
+                <span className="font-mono text-slate-700 font-semibold">
+                  Lat: {report.latitude?.toFixed(6)}, Lng: {report.longitude?.toFixed(6)}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void handleCopyCoords()}
+                  className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-500 hover:text-[#08315c] transition cursor-pointer"
+                >
+                  {copiedCoords ? (
+                    <>
+                      <FiCheck className="size-3 text-emerald-600 stroke-[3]" aria-hidden="true" />
+                      <span className="text-emerald-700 font-bold">Tersalin!</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiCopy className="size-3 text-slate-400" aria-hidden="true" />
+                      <span>Salin Koordinat</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Render Peta Interaktif Leaflet jika showMap aktif */}
+              {showMap && (
+                <LocationViewerMap
+                  latitude={report.latitude!}
+                  longitude={report.longitude!}
+                  title={report.title}
+                  locationName={`${report.faculty} · ${report.building}${report.room ? ` · ${report.room}` : ''}`}
+                  mapHeight="h-52 sm:h-56"
+                  showBottomBar={false}
+                />
+              )}
+            </div>
+          ) : (
+            <div className="mt-3 flex items-center gap-2 rounded-xl bg-slate-50 border border-slate-200/70 px-3 py-2 text-xs text-slate-400">
+              <FiMapPin className="size-3.5 text-slate-300 shrink-0" aria-hidden="true" />
+              <span>Koordinat peta tidak ditandai pada laporan ini</span>
+            </div>
+          )}
+
+          <div className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-500">
             <FiUser className="size-3 text-slate-400" aria-hidden="true" />
             <span>
               Pelapor: <strong className="text-slate-700 font-semibold">{report.profiles?.full_name ?? 'Mahasiswa'}</strong> · Dukungan {report.vote_count}
@@ -96,16 +201,32 @@ export function ReportFollowUpCard({
         </div>
 
         {report.photo_url && (
-          <div className="mt-4 pt-3 border-t border-slate-100">
+          <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-3">
             <a
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#08315c] hover:underline transition-colors"
               href={report.photo_url}
               target="_blank"
               rel="noreferrer"
+              className="group/photo relative block size-16 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
+              title="Klik untuk memperbesar foto bukti"
             >
-              <span>Buka foto bukti laporan</span>
-              <FiArrowUpRight className="size-3.5" aria-hidden="true" />
+              <img
+                src={report.photo_url}
+                alt="Foto bukti kerusakan"
+                className="size-full object-cover transition-transform group-hover/photo:scale-110"
+              />
             </a>
+            <div className="flex flex-col gap-0.5">
+              <a
+                className="inline-flex items-center gap-1 text-xs font-semibold text-[#08315c] hover:underline transition-colors"
+                href={report.photo_url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Foto Bukti Kerusakan</span>
+                <FiArrowUpRight className="size-3.5" aria-hidden="true" />
+              </a>
+              <span className="text-[11px] text-slate-400">Klik thumbnail untuk melihat ukuran penuh</span>
+            </div>
           </div>
         )}
       </div>
