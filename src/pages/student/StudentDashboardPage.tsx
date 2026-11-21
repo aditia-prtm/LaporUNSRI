@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
-import { getReports } from '../../services/reportService'
+import { getCachedReports, getReports } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { Skeleton, TableSkeleton } from '../../components/common/Skeleton'
 import { countReportsByStatus } from '../../utils/report'
@@ -21,8 +21,9 @@ function getFirstName(fullName: string) {
 }
 
 export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPageProps) {
-  const [reports, setReports] = useState<Report[]>([])
-  const [loading, setLoading] = useState(true)
+  const cached = getCachedReports(profile.id)
+  const [reports, setReports] = useState<Report[]>(() => cached ?? [])
+  const [loading, setLoading] = useState(() => !cached)
   const [error, setError] = useState('')
   const [statusFilter, setStatusFilter] = useState<ReportStatus | ''>('')
 

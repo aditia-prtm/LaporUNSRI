@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
-import { getCategories, getReports, toggleReportVote } from '../../services/reportService'
+import { getCachedCategories, getCachedReports, getCategories, getReports, toggleReportVote } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { ReportCardSkeleton } from '../../components/common/Skeleton'
 import { ReportFilters } from '../../components/report/ReportFilters'
@@ -20,18 +20,20 @@ function loadReportsPageData(userId: string, mineOnly: boolean) {
 }
 
 export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPageProps) {
-  const [reports, setReports] = useState<Report[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
+  const initialCached = getCachedReports(profile.id, mineOnly)
+  const initialCategories = getCachedCategories()
+  const [reports, setReports] = useState<Report[]>(() => initialCached ?? [])
+  const [categories, setCategories] = useState<Category[]>(() => initialCategories ?? [])
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<ReportStatus | ''>('')
   const [category, setCategory] = useState('')
   const [sort, setSort] = useState<'newest' | 'votes'>('newest')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => !initialCached)
   const [error, setError] = useState('')
   const [votingId, setVotingId] = useState('')
 
-  const loadData = async () => {
-    setLoading(true)
+  const loadData = async (silent = false) => {
+    if (!silent) setLoading(true)
     setError('')
     try {
       const [nextReports, nextCategories] = await loadReportsPageData(profile.id, mineOnly)
@@ -40,7 +42,7 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Laporan gagal dimuat.')
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
   }
 
@@ -79,7 +81,7 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
     setError('')
     try {
       await toggleReportVote(report.id, profile.id, report.voted_by_me)
-      await loadData()
+      await loadData(true)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Dukungan gagal disimpan.')
     } finally {

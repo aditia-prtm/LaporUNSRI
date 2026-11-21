@@ -5,7 +5,8 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
-import { ReportCardSkeleton, Skeleton } from '../../components/common/Skeleton'
+import { ReportCardSkeleton } from '../../components/common/Skeleton'
+import { AdminStatusRingCard } from '../../components/admin/AdminStatusRingCard'
 import { ReportFilters } from '../../components/report/ReportFilters'
 import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
 import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUpCard'
@@ -14,6 +15,8 @@ import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/repo
 import {
   createCategory,
   deleteCategory,
+  getCachedCategories,
+  getCachedReports,
   getCategories,
   getReports,
   renameCategory,
@@ -25,7 +28,6 @@ import {
   FiArrowRight,
   FiCheck,
   FiCheckCircle,
-  FiClock,
   FiFileText,
   FiFolder,
   FiGrid,
@@ -51,9 +53,11 @@ const navigation = [
 ]
 
 export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: Props) {
-  const [reports, setReports] = useState<Report[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
+  const cachedReports = getCachedReports(profile.id)
+  const cachedCategories = getCachedCategories()
+  const [reports, setReports] = useState<Report[]>(() => cachedReports ?? [])
+  const [categories, setCategories] = useState<Category[]>(() => cachedCategories ?? [])
+  const [loading, setLoading] = useState(() => !cachedReports)
   const [busyId, setBusyId] = useState('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -239,7 +243,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
     }
   }
 
-  const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
+  const { belum_diproses: openCount, diproses: progressCount, menunggu_konfirmasi: waitingConfirmCount, selesai: doneCount } = countReportsByStatus(reports)
   const avatarLetter = (profile.full_name || 'A').slice(0, 1).toUpperCase()
 
   return (
@@ -366,76 +370,21 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
         </div>
       </section>
 
-      {/* Floating Metric Cards on Dashboard Section */}
+      {/* Floating Status Ring Card on Dashboard Section */}
       {activeSection === 'dashboard' && (
         <section className="-mt-12 sm:-mt-14 relative z-10 w-full px-4 sm:px-8 lg:px-12">
-          <div className="mx-auto max-w-[1280px] grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
-            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
-              <span className="text-xs font-semibold text-slate-500">Total Aduan</span>
-              {loading ? (
-                <Skeleton className="h-8 w-12 mt-2" />
-              ) : (
-                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                  {reports.length}
-                </strong>
-              )}
-            </div>
-
-            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
-              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
-                <FiClock className="size-3 text-amber-500" aria-hidden="true" />
-                <span>Belum Diproses</span>
-              </span>
-              {loading ? (
-                <Skeleton className="h-8 w-12 mt-2" />
-              ) : (
-                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                  {openCount}
-                </strong>
-              )}
-            </div>
-
-            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
-              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
-                <FiClock className="size-3 text-sky-500" aria-hidden="true" />
-                <span>Sedang Diproses</span>
-              </span>
-              {loading ? (
-                <Skeleton className="h-8 w-12 mt-2" />
-              ) : (
-                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                  {progressCount}
-                </strong>
-              )}
-            </div>
-
-            <div className="rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col justify-between">
-              <span className="text-xs font-semibold text-slate-500 inline-flex items-center gap-1">
-                <FiCheckCircle className="size-3 text-emerald-500" aria-hidden="true" />
-                <span>Tuntas Selesai</span>
-              </span>
-              {loading ? (
-                <Skeleton className="h-8 w-12 mt-2" />
-              ) : (
-                <strong className="block text-2xl sm:text-3xl font-extrabold text-[#08315c] mt-2">
-                  {doneCount}
-                </strong>
-              )}
-            </div>
-
-            <div className="col-span-2 lg:col-span-1 rounded-2xl sm:rounded-3xl bg-white p-5 shadow-xl shadow-slate-900/5 border border-rose-200 flex flex-col justify-between">
-              <span className="text-xs font-semibold text-rose-600 inline-flex items-center gap-1">
-                <FiAlertTriangle className="size-3 text-rose-500" aria-hidden="true" />
-                <span>Perlu Eskalasi</span>
-              </span>
-              {loading ? (
-                <Skeleton className="h-8 w-12 mt-2" />
-              ) : (
-                <strong className="block text-2xl sm:text-3xl font-extrabold text-rose-600 mt-2">
-                  {overdueReports.length}
-                </strong>
-              )}
-            </div>
+          <div className="mx-auto max-w-[1280px]">
+            <AdminStatusRingCard
+              total={reports.length}
+              openCount={openCount}
+              progressCount={progressCount}
+              waitingConfirmCount={waitingConfirmCount}
+              doneCount={doneCount}
+              overdueCount={overdueReports.length}
+              loading={loading}
+              onSelectStatus={(st) => setStatus(st)}
+              onSelectSection={(sec) => onNavigate(`/admin/${sec}`)}
+            />
           </div>
         </section>
       )}

@@ -10,7 +10,7 @@ import { ReportFollowUpCard } from '../../components/report/ReportFollowUpCard'
 import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUpCard'
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
-import { getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
+import { getCachedReports, getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
 import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiMapPin, FiTool } from 'react-icons/fi'
 
 type Props = {
@@ -23,8 +23,9 @@ function loadOfficerReports(userId: string) {
 }
 
 export function OfficerDashboardPage({ profile, onNavigate }: Props) {
-  const [reports, setReports] = useState<Report[]>([])
-  const [loading, setLoading] = useState(true)
+  const cached = getCachedReports(profile.id)
+  const [reports, setReports] = useState<Report[]>(() => cached ?? [])
+  const [loading, setLoading] = useState(() => !cached)
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<ReportStatus | ''>('')
