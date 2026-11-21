@@ -119,15 +119,7 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
     })
   }
 
-  const { belum_diproses: openCount, diproses: progressCount, menunggu_konfirmasi: waitingCount, selesai: doneCount } = countReportsByStatus(reports)
-
-  const queueTabs: { label: string; value: ReportStatus | ''; count: number }[] = [
-    { label: 'Semua Aduan', value: '', count: reports.length },
-    { label: 'Perlu Ditangani Segera', value: 'belum_diproses', count: openCount },
-    { label: 'Sedang Dikerjakan', value: 'diproses', count: progressCount },
-    { label: 'Menunggu Konfirmasi', value: 'menunggu_konfirmasi', count: waitingCount },
-    { label: 'Tuntas Selesai', value: 'selesai', count: doneCount },
-  ]
+  const { belum_diproses: openCount, diproses: progressCount, selesai: doneCount } = countReportsByStatus(reports)
 
   const avatarLetter = (profile.full_name || 'P').slice(0, 1).toUpperCase()
 
@@ -254,45 +246,13 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
         <div className="mx-auto max-w-[1280px] space-y-6">
           {error && <FeedbackMessage tone="error">{error}</FeedbackMessage>}
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold text-[#08315c] tracking-tight">
-                Daftar Penugasan Fasilitas
-              </h2>
-              <p className="text-xs text-slate-500">
-                {visibleReports.length} laporan siap ditindaklanjuti dan diperbarui statusnya
-              </p>
-            </div>
-
-            {/* Queue Filter Buttons (Tampil di semua perangkat) */}
-            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2" role="tablist" aria-label="Filter Antrean Laporan">
-              {queueTabs.map((tab) => {
-                const isActive = status === tab.value
-                return (
-                  <button
-                    key={tab.label}
-                    type="button"
-                    onClick={() => setStatus(tab.value)}
-                    className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all shadow-2xs cursor-pointer select-none ${
-                      isActive
-                        ? 'bg-[#08315c] text-white shadow-sm ring-2 ring-[#08315c]/25'
-                        : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 hover:border-slate-300'
-                    }`}
-                  >
-                    <span>{tab.label}</span>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-bold transition-colors ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}
-                    >
-                      {loading ? '...' : tab.count}
-                    </span>
-                  </button>
-                )
-              })}
-            </div>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#08315c] tracking-tight">
+              Daftar Penugasan Fasilitas
+            </h2>
+            <p className="text-xs text-slate-500">
+              {visibleReports.length} laporan siap ditindaklanjuti dan diperbarui statusnya
+            </p>
           </div>
 
           {/* Filter Component */}
