@@ -74,10 +74,6 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
 
   useEffect(() => {
     let active = true
-    const currentCached = getCachedReport(reportId)
-    if (!currentCached) {
-      setLoading(true)
-    }
     void loadReportDetail(reportId, profile.id)
       .then(([nextReport, nextComments]) => {
         if (!active) return

@@ -48,10 +48,6 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
 
   useEffect(() => {
     let active = true
-    const cached = getCachedReports(profile.id, mineOnly)
-    if (!cached) {
-      setLoading(true)
-    }
     void loadReportsPageData(profile.id, mineOnly)
       .then(([nextReports, nextCategories]) => {
         if (!active) return

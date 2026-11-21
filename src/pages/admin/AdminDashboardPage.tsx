@@ -102,10 +102,6 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
 
   useEffect(() => {
     let active = true
-    const currentCached = getCachedReports(profile.id)
-    if (!currentCached) {
-      setLoading(true)
-    }
     void loadAdminDashboardData(profile.id)
       .then(([nextReports, nextCategories]) => {
         if (!active) return

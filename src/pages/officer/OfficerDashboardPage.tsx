@@ -45,10 +45,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
 
   useEffect(() => {
     let active = true
-    const currentCached = getCachedReports(profile.id)
-    if (!currentCached) {
-      setLoading(true)
-    }
     void loadOfficerReports(profile.id)
       .then((nextReports) => {
         if (active) setReports(nextReports)

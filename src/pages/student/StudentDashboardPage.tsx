@@ -29,10 +29,6 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
 
   useEffect(() => {
     let active = true
-    const currentCached = getCachedReports(profile.id)
-    if (!currentCached) {
-      setLoading(true)
-    }
     void getReports(profile.id)
       .then((data) => {
         if (active) setReports(data)

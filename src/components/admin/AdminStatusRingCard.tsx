@@ -201,6 +201,11 @@ export function AdminStatusRingCard({
                 <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">
                   Total Aduan
                 </span>
+                {total > 0 && (
+                  <span className="mt-1.5 inline-block text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                    {percentDone}% Selesai
+                  </span>
+                )}
               </div>
             </div>
           )}
