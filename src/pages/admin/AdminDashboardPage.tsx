@@ -5,6 +5,7 @@ import type { UserProfile } from '../../types/auth'
 import type { Category, Report, ReportStatus } from '../../types/report'
 import { Brand } from '../../components/common/Brand'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { LogoutModal } from '../../components/common/LogoutModal'
 import { ReportCardSkeleton } from '../../components/common/Skeleton'
 import { AdminStatusRingCard } from '../../components/admin/AdminStatusRingCard'
 import { ReportFilters } from '../../components/report/ReportFilters'
@@ -67,6 +68,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
   const [newCategory, setNewCategory] = useState('')
   const [categoryNames, setCategoryNames] = useState<Record<string, string>>({})
   const [categoryBusy, setCategoryBusy] = useState(false)
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const activeSection = navigation.some((item) => item.id === section) ? section : 'dashboard'
   const navRef = useRef<HTMLElement>(null)
   const [pillStyle, setPillStyle] = useState<{ left: number; width: number } | null>(null)
@@ -321,7 +323,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
 
             <button
               type="button"
-              onClick={onSignOut}
+              onClick={() => setShowLogoutModal(true)}
               className="inline-flex min-h-[38px] items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold text-sky-200 hover:text-white transition cursor-pointer"
             >
               <FiLogOut className="size-3.5" aria-hidden="true" />
@@ -586,6 +588,14 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
           )}
         </div>
       </section>
+
+      {/* Modal Khusus Konfirmasi Logout Admin */}
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={onSignOut}
+        userName={profile.full_name}
+      />
     </div>
   )
 }

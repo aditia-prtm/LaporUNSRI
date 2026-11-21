@@ -11,33 +11,33 @@ type FaqItem = {
 const faqs: FaqItem[] = [
   {
     id: 'faq-1',
-    question: 'Apakah saya bisa melapor secara anonim tanpa menampilkan identitas?',
+    question: 'Apakah saya bisa membuat laporan tanpa akun atau secara anonim?',
     answer:
-      'Tentu saja bisa. Anda dapat mengaktifkan opsi "Lapor Anonim" saat mengisi formulir. Nama dan informasi profil Anda tidak akan dipublikasikan kepada mahasiswa lain maupun publik demi kenyamanan dan perlindungan privasi Anda.',
+      'Tidak bisa. Untuk menjaga keabsahan aduan, mencegah laporan fiktif, serta menjamin akuntabilitas penanganan, setiap pelapor wajib masuk menggunakan akun mahasiswa Universitas Sriwijaya yang terdaftar. Data akun juga diperlukan agar Anda dapat memantau perkembangan perbaikan serta melakukan verifikasi konfirmasi penyelesaian setelah fasilitas selesai ditangani di lapangan.',
   },
   {
     id: 'faq-2',
     question: 'Fasilitas kampus apa saja yang dapat dilaporkan melalui sistem ini?',
     answer:
-      'Seluruh fasilitas fisik dan infrastruktur penunjang di lingkungan Universitas Sriwijaya, antara lain ruang kuliah, proyektor/audio, pendingin ruangan (AC), toilet & sanitasi, trotoar & jalan kampus, penerangan jalan umum, hotspot WiFi, serta fasilitas gedung serbaguna.',
+      'Seluruh fasilitas fisik dan infrastruktur penunjang di lingkungan Universitas Sriwijaya, antara lain pendingin ruangan (AC) & ventilasi, proyektor & audio, kelistrikan & stopkontak, toilet & sanitasi, trotoar & jalan kampus, penerangan jalan, hotspot WiFi, serta fasilitas ruang kuliah dan gedung serbaguna.',
   },
   {
     id: 'faq-3',
-    question: 'Berapa lama waktu yang dibutuhkan hingga laporan diverifikasi dan ditangani?',
+    question: 'Bagaimana jika laporan belum ditindaklanjuti dalam waktu lama?',
     answer:
-      'Verifikasi awal oleh tim sarana dan prasarana dilakukan maksimal dalam 1x24 jam kerja. Durasi penanganan fisik di lapangan bervariasi bergantung pada tingkat keparahan kerusakan dan ketersediaan suku cadang teknis, namun perkembangan statusnya selalu diinformasikan.',
+      'Sistem LaporUNSRI menerapkan mekanisme pengawasan otomatis. Apabila laporan berstatus "Belum Diproses" melebihi 7 hari tanpa penanganan, sistem secara otomatis menandainya sebagai "Perlu Eskalasi" di dashboard administrator kampus untuk segera dievaluasi dan ditangani secara prioritas.',
   },
   {
     id: 'faq-4',
-    question: 'Bagaimana cara memantau progres perbaikan laporan yang telah saya kirim?',
+    question: 'Bagaimana alur dan pemantauan progres penanganan laporan saya?',
     answer:
-      'Setelah masuk ke akun mahasiswa, buka menu "Laporan Saya". Setiap laporan dilengkapi linimasa tahapan status (Terkirim → Diproses → Dikerjakan → Selesai) lengkap dengan tanggal pembaruan dan catatan langsung dari petugas penanggung jawab.',
+      'Perkembangan dapat dipantau langsung di menu "Laporan Saya" dengan alur resmi satu arah: Belum Diproses ➔ Diproses ➔ Menunggu Konfirmasi ➔ Selesai. Ketika petugas menyelesaikan perbaikan disertai foto bukti, status berpindah ke "Menunggu Konfirmasi". Laporan baru resmi berstatus "Selesai" setelah Anda selaku pelapor memverifikasi dan mengonfirmasi hasil pekerjaan.',
   },
   {
     id: 'faq-5',
-    question: 'Siapa pihak yang bertanggung jawab menindaklanjuti laporan perbaikan fasilitas?',
+    question: 'Apakah mahasiswa lain dapat melihat dan mendukung laporan saya?',
     answer:
-      'Laporan ditindaklanjuti secara berjenjang oleh tim Sarana dan Prasarana (Sarpras) fakultas atau universitas serta unit teknisi lapangan Universitas Sriwijaya yang berwenang.',
+      'Ya. Seluruh laporan fasilitas yang masuk akan tampil pada Katalog Aspirasi Kampus. Mahasiswa lain dapat memberikan dukungan (upvote) untuk menandakan bahwa kendala fasilitas tersebut dirasakan bersama dan membutuhkan percepatan penanganan.',
   },
 ]
 
