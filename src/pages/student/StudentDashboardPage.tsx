@@ -91,7 +91,7 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
           <div className="hidden lg:flex items-center justify-end gap-3 sm:gap-4 select-none">
             {/* Speech Bubble with pointer */}
             <div className="relative rounded-2xl bg-white px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm font-semibold text-[#08315c] shadow-lg max-w-[240px] sm:max-w-[270px] leading-snug">
-              <span>Halo, {firstName}! Ada yang bisa dilaporkan hari ini?</span>
+              <span>Halo, {firstName}! Ada yang bisa dibantu hari ini?</span>
               {/* Right tail pointer pointing to mascot */}
               <div
                 className="absolute -right-2 top-1/2 -translate-y-1/2 size-0 border-y-8 border-y-transparent border-l-8 border-l-white"
