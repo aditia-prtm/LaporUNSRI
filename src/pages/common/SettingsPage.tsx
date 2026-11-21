@@ -4,6 +4,7 @@ import type { UserProfile } from '../../types/auth'
 import { updateProfile, updatePassword } from '../../services/authService'
 import { useAuth } from '../../hooks/useAuth'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
+import { LogoutModal } from '../../components/common/LogoutModal'
 import { formatDateTime } from '../../utils/date'
 import {
   FiArrowLeft,
@@ -42,8 +43,9 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
   const [passwordSuccess, setPasswordSuccess] = useState('')
   const [passwordError, setPasswordError] = useState('')
 
-  // State Sign Out Confirmation
+  // State Sign Out Confirmation Modal
   const [signingOut, setSigningOut] = useState(false)
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
 
   const defaultBackPath =
     profile.role === 'petugas'
@@ -105,10 +107,12 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
   }
 
   const handleSignOutClick = () => {
-    if (window.confirm('Apakah Anda yakin ingin keluar dari akun LaporUNSRI?')) {
-      setSigningOut(true)
-      onSignOut()
-    }
+    setShowLogoutModal(true)
+  }
+
+  const handleConfirmSignOut = () => {
+    setSigningOut(true)
+    onSignOut()
   }
 
   return (
@@ -375,6 +379,15 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
           </article>
         </div>
       </section>
+
+      {/* Modal Khusus Konfirmasi Logout */}
+      <LogoutModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={handleConfirmSignOut}
+        loading={signingOut}
+        userName={profile.full_name}
+      />
     </div>
   )
 }
