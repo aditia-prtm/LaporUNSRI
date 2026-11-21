@@ -18,30 +18,30 @@ const steps = [
   {
     number: '01',
     title: 'Unggah Kendala',
-    tag: 'Cepat & Fleksibel',
+    tag: 'Terpetakan Jelas',
     description:
-      'Tuliskan permasalahan fasilitas di lingkungan kampus UNSRI secara detail. Lampirkan foto bukti fisik dan tentukan lokasi gedung, lantai, hingga ruangan secara spesifik.',
+      'Tuliskan permasalahan fasilitas di lingkungan kampus UNSRI secara detail. Lampirkan foto bukti fisik dan sematkan titik lokasi presisi menggunakan peta interaktif kampus.',
   },
   {
     number: '02',
     title: 'Verifikasi Petugas',
-    tag: 'Maks. 24 Jam',
+    tag: 'Tinjauan Awal',
     description:
-      'Tim penanggung jawab sarana & prasarana memvalidasi keluhan, mengukur urgensi bahaya, lalu mendisposisikan laporan ke unit teknisi terkait secara akurat.',
+      'Tim sarana dan prasarana memvalidasi keabsahan keluhan, mengevaluasi urgensi kendala, dan mengubah status laporan menjadi sedang diproses oleh teknisi.',
   },
   {
     number: '03',
     title: 'Penanganan Lapangan',
     tag: 'Aksi Nyata',
     description:
-      'Teknisi lapangan diterjunkan langsung ke lokasi kerusakan untuk inspeksi fisik, perbaikan sarana, atau penggantian suku cadang yang mengalami kendala.',
+      'Teknisi lapangan terjun langsung untuk memperbaiki kerusakan dan mengunggah dokumentasi foto bukti hasil pengerjaan nyata di lokasi.',
   },
   {
     number: '04',
-    title: 'Selesai & Transparan',
-    tag: 'Terbuka Untuk Semua',
+    title: 'Konfirmasi & Tuntas',
+    tag: 'Verifikasi Pelapor',
     description:
-      'Hasil perbaikan diunggah lengkap dengan dokumentasi foto akhir. Seluruh sivitas akademika dapat memverifikasi dan melihat riwayat fasilitas kampus yang telah tuntas diperbaiki.',
+      'Laporan masuk ke tahap Menunggu Konfirmasi. Anda sebagai mahasiswa pelapor memverifikasi hasil perbaikan di lokasi dan memberikan konfirmasi akhir agar laporan berstatus tuntas selesai.',
   },
 ]
 
