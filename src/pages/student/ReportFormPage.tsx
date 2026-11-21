@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import type { UserProfile } from '../../types/auth'
 import type { Category, ReportInput } from '../../types/report'
-import { createReport, getCategories, getReport, updateReport, uploadReportPhoto } from '../../services/reportService'
+import { createReport, getCachedCategories, getCachedReport, getCategories, getReport, updateReport, uploadReportPhoto } from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { FormSkeleton } from '../../components/common/Skeleton'
 import { REPORT_PHOTO_MAX_BYTES, validateImageFile, validateReportInput } from '../../schemas/report'
@@ -29,10 +29,26 @@ const emptyForm: ReportInput = {
 
 export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPageProps) {
   const editing = Boolean(reportId)
-  const [form, setForm] = useState<ReportInput>(emptyForm)
-  const [categories, setCategories] = useState<Category[]>([])
+  const cachedReport = reportId ? getCachedReport(reportId) : null
+  const [form, setForm] = useState<ReportInput>(() => {
+    if (cachedReport) {
+      return {
+        title: cachedReport.title,
+        description: cachedReport.description,
+        category_id: cachedReport.category_id ?? '',
+        faculty: cachedReport.faculty,
+        building: cachedReport.building,
+        room: cachedReport.room ?? '',
+        photo_url: cachedReport.photo_url,
+        latitude: cachedReport.latitude ?? null,
+        longitude: cachedReport.longitude ?? null,
+      }
+    }
+    return emptyForm
+  })
+  const [categories, setCategories] = useState<Category[]>(() => getCachedCategories() ?? [])
   const [file, setFile] = useState<File | null>(null)
-  const [loading, setLoading] = useState(editing)
+  const [loading, setLoading] = useState(() => editing && !cachedReport)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 

@@ -6,6 +6,8 @@ import {
   addReportComment,
   confirmReportCompletion,
   deleteReport,
+  getCachedReport,
+  getCachedReportComments,
   getReport,
   getReportComments,
   toggleReportVote,
@@ -27,18 +29,20 @@ function loadReportDetail(reportId: string, userId: string) {
 }
 
 export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetailPageProps) {
-  const [report, setReport] = useState<Report | null>(null)
-  const [comments, setComments] = useState<ReportComment[]>([])
+  const cachedReport = getCachedReport(reportId)
+  const cachedComments = getCachedReportComments(reportId)
+  const [report, setReport] = useState<Report | null>(() => cachedReport)
+  const [comments, setComments] = useState<ReportComment[]>(() => cachedComments ?? [])
   const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => !cachedReport)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
   const [confirming, setConfirming] = useState(false)
   const [feedbackNote, setFeedbackNote] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
-  const load = async () => {
-    setLoading(true)
+  const load = async (silent = false) => {
+    if (!silent) setLoading(true)
     setError('')
     try {
       const [nextReport, nextComments] = await loadReportDetail(reportId, profile.id)
@@ -47,7 +51,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Laporan gagal dimuat.')
     } finally {
-      setLoading(false)
+      if (!silent) setLoading(false)
     }
   }
 
@@ -60,7 +64,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
       await confirmReportCompletion(report.id, feedbackNote)
       setSuccessMessage('Terima kasih! Laporan Anda telah berhasil dikonfirmasi selesai.')
       setFeedbackNote('')
-      await load()
+      await load(true)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Konfirmasi penyelesaian gagal disimpan.')
     } finally {
@@ -70,6 +74,10 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
 
   useEffect(() => {
     let active = true
+    const currentCached = getCachedReport(reportId)
+    if (!currentCached) {
+      setLoading(true)
+    }
     void loadReportDetail(reportId, profile.id)
       .then(([nextReport, nextComments]) => {
         if (!active) return
@@ -95,7 +103,7 @@ export function ReportDetailPage({ profile, reportId, onNavigate }: ReportDetail
     try {
       await addReportComment(reportId, profile.id, message.trim())
       setMessage('')
-      await load()
+      await load(true)
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Komentar gagal dikirim.')
     } finally {

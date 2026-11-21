@@ -14,6 +14,8 @@ import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/repo
 import {
   createCategory,
   deleteCategory,
+  getCachedCategories,
+  getCachedReports,
   getCategories,
   getReports,
   renameCategory,
@@ -51,9 +53,11 @@ const navigation = [
 ]
 
 export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: Props) {
-  const [reports, setReports] = useState<Report[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [loading, setLoading] = useState(true)
+  const cachedReports = getCachedReports(profile.id)
+  const cachedCategories = getCachedCategories()
+  const [reports, setReports] = useState<Report[]>(() => cachedReports ?? [])
+  const [categories, setCategories] = useState<Category[]>(() => cachedCategories ?? [])
+  const [loading, setLoading] = useState(() => !cachedReports)
   const [busyId, setBusyId] = useState('')
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
@@ -98,6 +102,10 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
 
   useEffect(() => {
     let active = true
+    const currentCached = getCachedReports(profile.id)
+    if (!currentCached) {
+      setLoading(true)
+    }
     void loadAdminDashboardData(profile.id)
       .then(([nextReports, nextCategories]) => {
         if (!active) return
