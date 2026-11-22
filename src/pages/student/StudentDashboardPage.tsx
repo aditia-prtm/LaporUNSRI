@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import type { UserProfile } from '../../types/auth'
 import type { Report, ReportStatus } from '../../types/report'
 import { getCachedReports, getReports } from '../../services/reportService'
@@ -6,7 +7,7 @@ import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { Skeleton, TableSkeleton } from '../../components/common/Skeleton'
 import { countReportsByStatus } from '../../utils/report'
 import { formatDate } from '../../utils/date'
-import mascotImg from '../../assets/dashboard/mascot-2.png'
+import mascotBubbleImg from '../../assets/dashboard/bubble.png'
 import { FiArrowRight, FiCheck, FiHeart, FiPlus } from 'react-icons/fi'
 
 type StudentDashboardPageProps = { profile: UserProfile; onNavigate: (path: string) => void }
@@ -87,26 +88,20 @@ export function StudentDashboardPage({ profile, onNavigate }: StudentDashboardPa
             </button>
           </div>
 
-          {/* Right Speech Bubble & Mascot */}
-          <div className="hidden lg:flex items-center justify-end gap-3 sm:gap-4 select-none">
-            {/* Speech Bubble with pointer */}
-            <div className="relative rounded-2xl bg-white px-4 py-3 sm:px-5 sm:py-3.5 text-xs sm:text-sm font-semibold text-[#08315c] shadow-lg max-w-[240px] sm:max-w-[270px] leading-snug">
-              <span>Halo, {firstName}! Ada yang bisa dibantu hari ini?</span>
-              {/* Right tail pointer pointing to mascot */}
-              <div
-                className="absolute -right-2 top-1/2 -translate-y-1/2 size-0 border-y-8 border-y-transparent border-l-8 border-l-white"
-                aria-hidden="true"
-              />
-            </div>
-
-            {/* Mascot Image */}
-            <div className="relative shrink-0">
+          {/* Right Mascot with Bubble Message Image */}
+          <div className="hidden lg:flex items-center justify-end select-none">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="relative shrink-0"
+            >
               <img
-                src={mascotImg}
-                alt="Maskot Mamang Sarpras melambai"
-                className="h-28 sm:h-36 lg:h-40 w-auto object-contain drop-shadow-2xl"
+                src={mascotBubbleImg}
+                alt="Maskot Mamang Sarpras dengan pesan"
+                className="h-44 sm:h-48 lg:h-56 w-auto object-contain drop-shadow-[0_16px_28px_rgba(0,0,0,0.25)]"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
