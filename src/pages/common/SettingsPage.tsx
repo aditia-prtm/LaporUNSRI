@@ -136,9 +136,6 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
           </button>
 
           <div>
-            <span className="rounded-full bg-white/10 border border-white/20 px-3 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#ffbb00]">
-              Akun & Privasi
-            </span>
             <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               Pengaturan Profil
             </h1>
@@ -162,16 +159,6 @@ export function SettingsPage({ profile, onNavigate, onSignOut }: SettingsPagePro
                 <h2 className="text-lg sm:text-xl font-bold text-slate-900 truncate">
                   {fullName || profile.full_name}
                 </h2>
-                <span className="inline-flex items-center gap-1 rounded-full bg-sky-50 border border-sky-200 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-700">
-                  <FiShield className="size-3" />
-                  <span>
-                    {profile.role === 'petugas'
-                      ? 'Petugas Sarpras'
-                      : profile.role === 'admin'
-                        ? 'Administrator'
-                        : 'Mahasiswa UNSRI'}
-                  </span>
-                </span>
               </div>
               <p className="text-xs text-slate-500">
                 {profile.email ?? 'Akun Terautentikasi'} · {nimNip ? `NIM/NIP: ${nimNip}` : 'NIM/NIP belum diisi'}

@@ -80,7 +80,7 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
   }
 
   return (
-    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Poppins','Montserrat','Outfit',system-ui,-apple-system,sans-serif] text-white select-none" aria-label="Hero Section LaporUNSRI">
+    <section className="relative flex hero-viewport-height h-full w-full flex-col justify-start overflow-hidden bg-[linear-gradient(180deg,#031830_0%,#052345_20%,#08315c_40%,#0c4278_62%,#105292_82%,#135da3_100%)] font-['Poppins','Montserrat','Outfit',system-ui,-apple-system,sans-serif] text-white" aria-label="Hero Section LaporUNSRI">
       {/* Ambient Atmospheric Lighting */}
       <div className="absolute inset-0 pointer-events-none z-[1] bg-[radial-gradient(ellipse_95%_55%_at_50%_55%,rgba(55,155,245,0.32)_0%,rgba(5,32,62,0)_75%)]" aria-hidden="true" />
 
@@ -88,7 +88,7 @@ export function HeroSection({ onScrollDown, onScrollToSteps, onStartReport }: He
       <div className="relative z-50 pointer-events-none flex h-[50svh] min-h-[320px] w-full flex-col pt-[86px] lg:pt-[150px] box-border max-lg:h-[54svh] max-lg:min-h-0 max-lg:pt-[90px] max-sm:h-[60svh] max-sm:min-h-0 max-sm:pt-[112px]">
         {/* Hero Center Content (Balanced and centered dynamically in the sky) */}
         <motion.div
-          className="pointer-events-auto flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2 text-center max-md:px-4.5 max-sm:px-4 max-sm:translate-y-3"
+          className="pointer-events-auto select-text flex flex-1 flex-col items-center justify-center w-full max-w-[880px] mx-auto px-6 py-2 text-center max-md:px-4.5 max-sm:px-4 max-sm:translate-y-3"
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
