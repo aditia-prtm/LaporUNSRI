@@ -1,25 +1,52 @@
+import { z } from 'zod'
 import type { ReportInput } from '../types/report'
 
 export const REPORT_PHOTO_MAX_BYTES = 5 * 1024 * 1024
 export const FOLLOW_UP_PHOTO_MAX_BYTES = 8 * 1024 * 1024
 
+export const reportInputSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, 'Judul laporan wajib diisi.')
+    .max(120, 'Judul laporan maksimal 120 karakter.'),
+  category_id: z
+    .string()
+    .min(1, 'Pilih kategori fasilitas.'),
+  description: z
+    .string()
+    .trim()
+    .min(10, 'Deskripsi laporan minimal 10 karakter.'),
+  faculty: z
+    .string()
+    .trim()
+    .min(1, 'Fakultas wajib diisi.'),
+  building: z
+    .string()
+    .trim()
+    .min(1, 'Gedung wajib diisi.'),
+  room: z.string().optional(),
+  photo_url: z.string().nullable().optional(),
+  latitude: z
+    .number()
+    .min(-90, 'Latitude tidak valid (-90 s/d 90).')
+    .max(90, 'Latitude tidak valid (-90 s/d 90).')
+    .nullable()
+    .optional(),
+  longitude: z
+    .number()
+    .min(-180, 'Longitude tidak valid (-180 s/d 180).')
+    .max(180, 'Longitude tidak valid (-180 s/d 180).')
+    .nullable()
+    .optional(),
+})
+
+export type ReportInputFormData = z.infer<typeof reportInputSchema>
+
 export function validateReportInput(input: ReportInput): string | null {
-  if (!input.title.trim()) return 'Judul laporan wajib diisi.'
-  if (input.title.trim().length > 120) return 'Judul laporan maksimal 120 karakter.'
-  if (!input.category_id) return 'Pilih kategori laporan.'
-  if (input.description.trim().length < 10) return 'Deskripsi laporan minimal 10 karakter.'
-  if (!input.faculty.trim()) return 'Fakultas wajib diisi.'
-  if (!input.building.trim()) return 'Gedung wajib diisi.'
-  if (input.latitude != null || input.longitude != null) {
-    if (input.latitude == null || input.longitude == null) {
-      return 'Koordinat lokasi tidak lengkap (harus memiliki latitude dan longitude).'
-    }
-    if (isNaN(input.latitude) || input.latitude < -90 || input.latitude > 90) {
-      return 'Latitude tidak valid (harus di antara -90 dan 90).'
-    }
-    if (isNaN(input.longitude) || input.longitude < -180 || input.longitude > 180) {
-      return 'Longitude tidak valid (harus di antara -180 dan 180).'
-    }
+  const result = reportInputSchema.safeParse(input)
+  if (!result.success) {
+    return result.error.issues[0]?.message ?? 'Validasi laporan gagal.'
   }
   return null
 }

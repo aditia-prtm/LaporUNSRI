@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { AuthLayout } from '../../components/layout/AuthLayout'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { PasswordField } from '../../components/common/PasswordField'
@@ -7,6 +8,11 @@ import { useAuth } from '../../hooks/useAuth'
 import { getProfile, loginUser, registerUser } from '../../services/authService'
 import { isSupabaseConfigured } from '../../lib/supabaseClient'
 import type { AuthPageKind, UserRole } from '../../types/auth'
+import {
+  loginSchema,
+  registerSchema,
+  type AuthFormData,
+} from '../../schemas/auth'
 
 type AuthPageProps = {
   kind: AuthPageKind
@@ -25,15 +31,28 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
   const officerPage = kind === 'officer'
   const { profile, loading, signOut } = useAuth()
   const [mode, setMode] = useState<AuthMode>('login')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [fullName, setFullName] = useState('')
-  const [nimNip, setNimNip] = useState('')
   const [notice, setNotice] = useState('')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const [roleRejected, setRoleRejected] = useState(false)
+
+  // React Hook Form dengan Zod (validasi dievaluasi saat submit formulir)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<AuthFormData>({
+    resolver: zodResolver(mode === 'login' ? loginSchema : registerSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      email: '',
+      password: '',
+      fullName: '',
+      nimNip: '',
+    },
+  })
 
   useEffect(() => {
     if (loading || busy || roleRejected || !profile) return
@@ -46,15 +65,26 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
     onNavigate(destination)
   }, [loading, busy, roleRejected, profile, onNavigate])
 
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleModeChange = (newMode: AuthMode) => {
+    setMode(newMode)
+    setError('')
+    setNotice('')
+    reset({
+      email: '',
+      password: '',
+      fullName: '',
+      nimNip: '',
+    })
+  }
+
+  const onFormSubmit = async (data: AuthFormData) => {
     setError('')
     setNotice('')
     setRoleRejected(false)
 
     if (!isSupabaseConfigured) {
       setError(
-        'Supabase belum dikonfigurasi. Periksa VITE_SUPABASE_URL dan VITE_SUPABASE_PUBLISHABLE_KEY di file .env.',
+        'Supabase belum dikonfigurasi. Periksa VITE_SUPABASE_URL dan VITE_SUPABASE_PUBLISHABLE_KEY di file .env.'
       )
       return
     }
@@ -63,16 +93,21 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
     try {
       if (mode === 'register') {
         const role = officerPage ? 'petugas' : 'mahasiswa'
-        await registerUser(email, password, fullName, role, nimNip)
-        setNotice(
-          `Pendaftaran berhasil dikirim. Buka tautan konfirmasi yang kami kirim ke ${email} untuk mengaktifkan akun.`,
+        await registerUser(
+          data.email,
+          data.password,
+          data.fullName ?? '',
+          role,
+          data.nimNip ?? ''
         )
-        setMode('login')
-        setPassword('')
+        setNotice(
+          `Pendaftaran berhasil dikirim. Buka tautan konfirmasi yang kami kirim ke ${data.email} untuk mengaktifkan akun.`
+        )
+        handleModeChange('login')
         return
       }
 
-      const { user } = await loginUser(email, password)
+      const { user } = await loginUser(data.email, data.password)
       if (!user) throw new Error('Sesi login tidak ditemukan. Silakan coba lagi.')
 
       const nextProfile = await getProfile(user.id)
@@ -80,7 +115,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
         setRoleRejected(true)
         await signOut()
         throw new Error(
-          'Halaman ini khusus akun petugas. Gunakan halaman login pengguna untuk akun mahasiswa atau admin.',
+          'Halaman ini khusus akun petugas. Gunakan halaman login pengguna untuk akun mahasiswa atau admin.'
         )
       }
       if (!officerPage && nextProfile.role === 'petugas') {
@@ -102,7 +137,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
 
   return (
     <AuthLayout officerPage={officerPage} onNavigate={onNavigate}>
-      {/* Heading & Subtitle exactly matching reference */}
+      {/* Heading & Subtitle */}
       <div className="mb-6">
         <h2 className="text-2xl sm:text-[28px] font-bold text-white tracking-tight">
           {loading
@@ -148,7 +183,11 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
           Mengarahkan ke dashboard {roleLabel(profile.role)}...
         </div>
       ) : (
-        <form className="space-y-4" onSubmit={(event) => void submit(event)}>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => void handleSubmit(onFormSubmit)(event)}
+          noValidate
+        >
           {mode === 'register' && (
             <>
               <label className="flex flex-col gap-1.5">
@@ -158,11 +197,19 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                 <input
                   required
                   autoComplete="name"
-                  value={fullName}
-                  onChange={(event) => setFullName(event.target.value)}
+                  {...register('fullName')}
                   placeholder="Nama kamu"
-                  className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
+                  className={`h-12 w-full rounded-xl border bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:outline-none transition ${
+                    errors.fullName
+                      ? 'border-rose-400/80 focus:border-rose-400 focus:ring-2 focus:ring-rose-400/25'
+                      : 'border-white/20 focus:border-[#ffbb00] focus:ring-2 focus:ring-[#ffbb00]/25'
+                  }`}
                 />
+                {errors.fullName && (
+                  <span className="text-[11px] font-medium text-rose-300 mt-0.5 flex items-center gap-1">
+                    <span>•</span> {errors.fullName.message}
+                  </span>
+                )}
               </label>
 
               <label className="flex flex-col gap-1.5">
@@ -174,8 +221,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                 </div>
                 <input
                   autoComplete="off"
-                  value={nimNip}
-                  onChange={(event) => setNimNip(event.target.value)}
+                  {...register('nimNip')}
                   placeholder={officerPage ? 'Nomor Induk Pegawai' : 'Nomor Induk Mahasiswa'}
                   className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
                 />
@@ -183,6 +229,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
             </>
           )}
 
+          {/* Email Field */}
           <label className="flex flex-col gap-1.5">
             <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
               Email
@@ -191,20 +238,29 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
               required
               type="email"
               autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="contoh@email.com"
-              className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
+              {...register('email')}
+              placeholder="contoh@mhs.unsri.ac.id"
+              className={`h-12 w-full rounded-xl border bg-white/10 px-4 text-sm text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:outline-none transition ${
+                errors.email
+                  ? 'border-rose-400/80 focus:border-rose-400 focus:ring-2 focus:ring-rose-400/25'
+                  : 'border-white/20 focus:border-[#ffbb00] focus:ring-2 focus:ring-[#ffbb00]/25'
+              }`}
             />
+            {errors.email && (
+              <span className="text-[11px] font-medium text-rose-300 mt-0.5 flex items-center gap-1">
+                <span>•</span> {errors.email.message}
+              </span>
+            )}
           </label>
 
+          {/* Password Field */}
           <div>
             <PasswordField
-              value={password}
-              onChange={setPassword}
               mode={mode}
               visible={showPassword}
               onToggleVisibility={() => setShowPassword((visible) => !visible)}
+              registration={register('password')}
+              error={errors.password?.message}
             />
             {mode === 'login' && (
               <div className="mt-2 flex justify-end">
@@ -227,7 +283,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
             {busy ? 'Memproses...' : mode === 'login' ? 'Masuk' : 'Daftar Sekarang'}
           </button>
 
-          {/* Mode Switcher matching screenshot exactly */}
+          {/* Mode Switcher */}
           {!officerPage && (
             <div className="mt-4 text-center text-xs sm:text-sm text-sky-100/80">
               {mode === 'login' ? (
@@ -235,11 +291,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                   Belum punya akun?{' '}
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('register')
-                      setError('')
-                      setNotice('')
-                    }}
+                    onClick={() => handleModeChange('register')}
                     className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                   >
                     Daftar sekarang
@@ -250,11 +302,7 @@ export function AuthPage({ kind, onNavigate }: AuthPageProps) {
                   Sudah punya akun?{' '}
                   <button
                     type="button"
-                    onClick={() => {
-                      setMode('login')
-                      setError('')
-                      setNotice('')
-                    }}
+                    onClick={() => handleModeChange('login')}
                     className="font-semibold text-[#ffbb00] hover:underline cursor-pointer"
                   >
                     Masuk

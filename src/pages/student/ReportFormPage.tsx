@@ -1,11 +1,25 @@
 import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import type { UserProfile } from '../../types/auth'
 import type { Category, ReportInput } from '../../types/report'
-import { createReport, getCachedCategories, getCachedReport, getCategories, getReport, updateReport, uploadReportPhoto } from '../../services/reportService'
+import {
+  createReport,
+  getCachedCategories,
+  getCachedReport,
+  getCategories,
+  getReport,
+  updateReport,
+  uploadReportPhoto,
+} from '../../services/reportService'
 import { FeedbackMessage } from '../../components/common/FeedbackMessage'
 import { FormSkeleton } from '../../components/common/Skeleton'
-import { REPORT_PHOTO_MAX_BYTES, validateImageFile, validateReportInput } from '../../schemas/report'
+import {
+  REPORT_PHOTO_MAX_BYTES,
+  reportInputSchema,
+  validateImageFile,
+  type ReportInputFormData,
+} from '../../schemas/report'
 import { FiArrowLeft, FiCamera, FiCheck, FiMapPin, FiX } from 'react-icons/fi'
 import { LocationPickerMap } from '../../components/report/LocationPickerMap'
 
@@ -15,42 +29,42 @@ type ReportFormPageProps = {
   onNavigate: (path: string) => void
 }
 
-const emptyForm: ReportInput = {
-  title: '',
-  description: '',
-  category_id: '',
-  faculty: '',
-  building: '',
-  room: '',
-  photo_url: null,
-  latitude: null,
-  longitude: null,
-}
-
 export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPageProps) {
   const editing = Boolean(reportId)
   const cachedReport = reportId ? getCachedReport(reportId) : null
-  const [form, setForm] = useState<ReportInput>(() => {
-    if (cachedReport) {
-      return {
-        title: cachedReport.title,
-        description: cachedReport.description,
-        category_id: cachedReport.category_id ?? '',
-        faculty: cachedReport.faculty,
-        building: cachedReport.building,
-        room: cachedReport.room ?? '',
-        photo_url: cachedReport.photo_url,
-        latitude: cachedReport.latitude ?? null,
-        longitude: cachedReport.longitude ?? null,
-      }
-    }
-    return emptyForm
-  })
+
   const [categories, setCategories] = useState<Category[]>(() => getCachedCategories() ?? [])
   const [file, setFile] = useState<File | null>(null)
+  const [currentPhotoUrl, setCurrentPhotoUrl] = useState<string | null>(() => cachedReport?.photo_url ?? null)
   const [loading, setLoading] = useState(() => editing && !cachedReport)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<ReportInputFormData>({
+    resolver: zodResolver(reportInputSchema),
+    mode: 'onSubmit',
+    defaultValues: {
+      title: cachedReport?.title ?? '',
+      description: cachedReport?.description ?? '',
+      category_id: cachedReport?.category_id ?? '',
+      faculty: cachedReport?.faculty ?? '',
+      building: cachedReport?.building ?? '',
+      room: cachedReport?.room ?? '',
+      photo_url: cachedReport?.photo_url ?? null,
+      latitude: cachedReport?.latitude ?? null,
+      longitude: cachedReport?.longitude ?? null,
+    },
+  })
+
+  const watchLatitude = useWatch({ control, name: 'latitude' })
+  const watchLongitude = useWatch({ control, name: 'longitude' })
 
   useEffect(() => {
     let active = true
@@ -62,7 +76,8 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
         if (!editing || !reportId) return
         const report = await getReport(reportId, profile.id)
         if (report.user_id !== profile.id) throw new Error('Anda hanya dapat mengubah laporan milik sendiri.')
-        setForm({
+        setCurrentPhotoUrl(report.photo_url)
+        reset({
           title: report.title,
           description: report.description,
           category_id: report.category_id ?? '',
@@ -83,29 +98,27 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
     return () => {
       active = false
     }
-  }, [editing, reportId, profile.id])
+  }, [editing, reportId, profile.id, reset])
 
-  const setField = (field: keyof ReportInput, value: string) => {
-    setForm((current) => ({ ...current, [field]: value }))
-  }
-
-  const submit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const onFormSubmit = async (data: ReportInputFormData) => {
     setError('')
-    const validationError = validateReportInput(form) ?? (file ? validateImageFile(file, REPORT_PHOTO_MAX_BYTES) : null)
-    if (validationError) {
-      setError(validationError)
-      return
+    if (file) {
+      const fileError = validateImageFile(file, REPORT_PHOTO_MAX_BYTES)
+      if (fileError) {
+        setError(fileError)
+        return
+      }
     }
+
     setBusy(true)
     try {
-      const photoUrl = file ? await uploadReportPhoto(file, profile.id) : form.photo_url
+      const photoUrl = file ? await uploadReportPhoto(file, profile.id) : currentPhotoUrl
       const payload: ReportInput = {
-        ...form,
-        room: form.room || '',
+        ...data,
+        room: data.room || '',
         photo_url: photoUrl,
-        latitude: form.latitude ?? null,
-        longitude: form.longitude ?? null,
+        latitude: data.latitude ?? null,
+        longitude: data.longitude ?? null,
       }
       if (reportId) {
         await updateReport(reportId, payload)
@@ -121,11 +134,19 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
     }
   }
 
-  const inputClass =
-    'h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition'
+  const inputClass = (hasError?: boolean) =>
+    `h-12 w-full rounded-xl border bg-white px-4 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none transition ${
+      hasError
+        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-400/20'
+        : 'border-slate-200 focus:border-[#08315c] focus:ring-2 focus:ring-[#08315c]/20'
+    }`
 
-  const selectClass =
-    'h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-xs sm:text-sm text-slate-800 focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition cursor-pointer'
+  const selectClass = (hasError?: boolean) =>
+    `h-12 w-full rounded-xl border bg-white px-4 text-xs sm:text-sm text-slate-800 focus:outline-none transition cursor-pointer ${
+      hasError
+        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-400/20'
+        : 'border-slate-200 focus:border-[#08315c] focus:ring-2 focus:ring-[#08315c]/20'
+    }`
 
   return (
     <div className="w-full flex flex-col">
@@ -166,9 +187,11 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
           ) : (
             <form
               className="space-y-6 rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-sm"
-              onSubmit={(event) => void submit(event)}
+              onSubmit={(event) => void handleSubmit(onFormSubmit)(event)}
+              noValidate
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {/* Judul Laporan */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700 sm:col-span-2">
                   <span>
                     Judul Laporan <span className="text-rose-500">*</span>
@@ -176,22 +199,26 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                   <input
                     required
                     maxLength={120}
-                    value={form.title}
-                    onChange={(event) => setField('title', event.target.value)}
+                    {...register('title')}
                     placeholder="Contoh: AC Ruang Kelas 203 Mati dan Bocor Air"
-                    className={inputClass}
+                    className={inputClass(Boolean(errors.title))}
                   />
+                  {errors.title && (
+                    <span className="text-[11px] font-medium text-rose-500 mt-0.5">
+                      • {errors.title.message}
+                    </span>
+                  )}
                 </label>
 
+                {/* Kategori Kerusakan */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700 sm:col-span-2">
                   <span>
                     Kategori Kerusakan <span className="text-rose-500">*</span>
                   </span>
                   <select
                     required
-                    value={form.category_id}
-                    onChange={(event) => setField('category_id', event.target.value)}
-                    className={selectClass}
+                    {...register('category_id')}
+                    className={selectClass(Boolean(errors.category_id))}
                   >
                     <option value="">Pilih Kategori Fasilitas</option>
                     {categories.map((item) => (
@@ -200,8 +227,14 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                       </option>
                     ))}
                   </select>
+                  {errors.category_id && (
+                    <span className="text-[11px] font-medium text-rose-500 mt-0.5">
+                      • {errors.category_id.message}
+                    </span>
+                  )}
                 </label>
 
+                {/* Deskripsi Masalah */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700 sm:col-span-2">
                   <span>
                     Deskripsi Masalah <span className="text-rose-500">*</span>
@@ -210,49 +243,67 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                     required
                     minLength={10}
                     rows={4}
-                    value={form.description}
-                    onChange={(event) => setField('description', event.target.value)}
+                    {...register('description')}
                     placeholder="Jelaskan secara rinci kronologi masalah, tingkat keparahan, serta dampaknya pada kegiatan perkuliahan..."
-                    className="w-full rounded-xl border border-slate-200 bg-white p-4 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#08315c] focus:outline-none focus:ring-2 focus:ring-[#08315c]/20 transition resize-vertical"
+                    className={`w-full rounded-xl border bg-white p-4 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none transition resize-vertical ${
+                      errors.description
+                        ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-400/20'
+                        : 'border-slate-200 focus:border-[#08315c] focus:ring-2 focus:ring-[#08315c]/20'
+                    }`}
                   />
+                  {errors.description && (
+                    <span className="text-[11px] font-medium text-rose-500 mt-0.5">
+                      • {errors.description.message}
+                    </span>
+                  )}
                 </label>
 
+                {/* Fakultas */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700">
                   <span>
                     Fakultas <span className="text-rose-500">*</span>
                   </span>
                   <input
                     required
-                    value={form.faculty}
-                    onChange={(event) => setField('faculty', event.target.value)}
+                    {...register('faculty')}
                     placeholder="Contoh: Fakultas Ilmu Komputer"
-                    className={inputClass}
+                    className={inputClass(Boolean(errors.faculty))}
                   />
+                  {errors.faculty && (
+                    <span className="text-[11px] font-medium text-rose-500 mt-0.5">
+                      • {errors.faculty.message}
+                    </span>
+                  )}
                 </label>
 
+                {/* Nama Gedung */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700">
                   <span>
                     Nama Gedung <span className="text-rose-500">*</span>
                   </span>
                   <input
                     required
-                    value={form.building}
-                    onChange={(event) => setField('building', event.target.value)}
+                    {...register('building')}
                     placeholder="Contoh: Gedung Pengajaran Lt. 2"
-                    className={inputClass}
+                    className={inputClass(Boolean(errors.building))}
                   />
+                  {errors.building && (
+                    <span className="text-[11px] font-medium text-rose-500 mt-0.5">
+                      • {errors.building.message}
+                    </span>
+                  )}
                 </label>
 
+                {/* Ruang / Detail Lokasi */}
                 <label className="flex flex-col gap-1.5 text-xs font-semibold text-slate-700 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <span>Ruang / Detail Lokasi</span>
                     <span className="text-[10px] text-slate-400">Opsional</span>
                   </div>
                   <input
-                    value={form.room ?? ''}
-                    onChange={(event) => setField('room', event.target.value)}
+                    {...register('room')}
                     placeholder="Contoh: Lab Komputer Jaringan Ruang 2.4"
-                    className={inputClass}
+                    className={inputClass()}
                   />
                 </label>
 
@@ -269,17 +320,15 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                     Tandai lokasi spesifik di peta kampus agar petugas teknisi dapat menuju titik masalah dengan cepat dan akurat.
                   </p>
                   <LocationPickerMap
-                    value={{ latitude: form.latitude, longitude: form.longitude }}
+                    value={{ latitude: watchLatitude, longitude: watchLongitude }}
                     onChange={(coords) => {
-                      setForm((current) => ({
-                        ...current,
-                        latitude: coords?.latitude ?? null,
-                        longitude: coords?.longitude ?? null,
-                      }))
+                      setValue('latitude', coords?.latitude ?? null, { shouldValidate: true })
+                      setValue('longitude', coords?.longitude ?? null, { shouldValidate: true })
                     }}
                   />
                 </div>
 
+                {/* Foto Bukti Kerusakan */}
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
                     <span className="flex items-center gap-1.5">
@@ -297,11 +346,11 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
                       className="w-full text-xs text-slate-600 file:mr-3 file:rounded-xl file:border-0 file:bg-[#08315c] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white file:cursor-pointer hover:file:bg-[#0c4278]"
                     />
 
-                    {form.photo_url && !file && (
+                    {currentPhotoUrl && !file && (
                       <div className="mt-3 flex items-center gap-3">
                         <img
                           className="size-16 rounded-xl object-cover border border-slate-200"
-                          src={form.photo_url}
+                          src={currentPhotoUrl}
                           alt="Foto saat ini"
                         />
                         <span className="text-xs text-slate-500">Foto bukti yang tersimpan saat ini</span>
@@ -338,4 +387,5 @@ export function ReportFormPage({ profile, reportId, onNavigate }: ReportFormPage
     </div>
   )
 }
+
 export default ReportFormPage
