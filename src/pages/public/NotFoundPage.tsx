@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FiArrowLeft, FiCompass, FiHome } from 'react-icons/fi'
+import { FiArrowLeft, FiHome } from 'react-icons/fi'
 import { Brand } from '../../components/common/Brand'
 import mascotImg from '../../assets/home/mascot.png'
 import kampusUnsriDesktop from '../../assets/home/kampus-unsri-transparan.png'
@@ -63,40 +63,6 @@ export function NotFoundPage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
-          {/* Mascot with Speech Bubble */}
-          <div className="relative mb-6 flex flex-col items-center">
-            {/* Friendly Speech Bubble */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="relative mb-3 rounded-2xl bg-white px-4 py-2 text-xs sm:text-sm font-semibold text-[#08315c] shadow-lg shadow-black/20"
-            >
-              <span>Waduh, sepertinya kamu tersesat di luar area kampus! 🧭</span>
-              {/* Speech bubble bottom pointer tail */}
-              <div
-                className="absolute left-1/2 -bottom-2 -translate-x-1/2 size-0 border-x-8 border-x-transparent border-t-8 border-t-white"
-                aria-hidden="true"
-              />
-            </motion.div>
-
-            {/* Mascot Image */}
-            <motion.img
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.4 }}
-              src={mascotImg}
-              alt="Maskot LaporUNSRI"
-              className="h-32 sm:h-44 w-auto object-contain filter drop-shadow-[0_12px_24px_rgba(0,0,0,0.35)]"
-            />
-          </div>
-
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#ffbb00]/30 bg-[#ffbb00]/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#ffbb00] backdrop-blur-md">
-            <FiCompass className="size-4 animate-spin [animation-duration:12s]" />
-            <span>Galat 404 · Halaman Tidak Ditemukan</span>
-          </div>
-
           {/* Giant Number 404 */}
           <div className="relative my-2 sm:my-3">
             <h1 className="select-none font-black text-[clamp(72px,13vw,120px)] leading-none tracking-tight text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]">
