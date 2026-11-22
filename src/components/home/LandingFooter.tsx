@@ -25,7 +25,7 @@ export function LandingFooter({
         <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-center sm:text-left">
           <Brand
             onClick={onScrollToTop}
-            subtitle="Layanan Aspirasi Sarana & Prasarana"
+            subtitle="Layanan Aspirasi Kampus"
           />
           <div className="hidden sm:block h-5 w-px bg-white/15" aria-hidden="true" />
           <p className="m-0 text-xs text-sky-200/60">

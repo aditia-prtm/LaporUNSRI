@@ -11,7 +11,7 @@ import type { ReportFollowUpDraft } from '../../components/report/ReportFollowUp
 import { countReportsByStatus, filterReports } from '../../utils/report'
 import { FOLLOW_UP_PHOTO_MAX_BYTES, validateImageFile } from '../../schemas/report'
 import { getCachedReports, getReports, updateReportStatusWithEvidence, uploadReportPhoto } from '../../services/reportService'
-import { FiAlertCircle, FiCheck, FiClock, FiInbox, FiMapPin, FiTool } from 'react-icons/fi'
+import { FiAlertCircle, FiCheck, FiClock, FiInbox } from 'react-icons/fi'
 
 type Props = {
   profile: UserProfile
@@ -61,10 +61,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   }, [profile.id])
 
   const visibleReports = useMemo(() => filterReports(reports, { search, status }), [reports, search, status])
-  const withCoordinatesCount = useMemo(
-    () => reports.filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number').length,
-    [reports]
-  )
 
   const handleTakeAssignment = async (report: Report) => {
     setBusyId(report.id)
@@ -165,11 +161,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
       {/* Blue Hero Header Zone */}
       <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 pt-8 pb-20 sm:pb-24 shadow-inner">
         <div className="mx-auto max-w-[1280px]">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffbb00]">
-            <FiTool className="size-3" aria-hidden="true" />
-            <span>Ruang Kerja Petugas Sarpras</span>
-          </div>
-
           <h1 className="mt-3 text-3xl sm:text-4xl lg:text-[40px] font-bold tracking-tight text-white leading-[1.15]">
             Halo, {profile.full_name}{' '}
             <span className="font-['Instrument_Serif','Playfair_Display',Georgia,serif] italic font-normal text-[#ffbb00]">
@@ -180,17 +171,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
           <p className="mt-2 text-xs sm:text-sm text-sky-100/90 max-w-2xl leading-relaxed">
             Tinjau seluruh aduan kerusakan dari mahasiswa dan sivitas akademika UNSRI. Setiap pembaruan status wajib menyertakan foto dokumentasi penanganan nyata di lapangan.
           </p>
-
-          {reports.length > 0 && (
-            <div className="mt-3.5 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 border border-white/20 px-3 py-1 text-xs text-sky-200">
-                <FiMapPin className="size-3.5 text-[#ffbb00]" aria-hidden="true" />
-                <span>
-                  <strong>{withCoordinatesCount}</strong> dari {reports.length} laporan tersemat titik peta Leaflet
-                </span>
-              </span>
-            </div>
-          )}
         </div>
       </section>
 

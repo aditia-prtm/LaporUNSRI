@@ -35,7 +35,6 @@ import {
   FiLogOut,
   FiMapPin,
   FiPlus,
-  FiShield,
   FiTrash2,
 } from 'react-icons/fi'
 
@@ -336,11 +335,6 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
       {/* Blue Hero Header Zone */}
       <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 pt-8 pb-20 sm:pb-24 shadow-inner">
         <div className="mx-auto max-w-[1280px]">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffbb00]">
-            <FiShield className="size-3" aria-hidden="true" />
-            <span>Panel Manajemen UNSRI</span>
-          </div>
-
           <h1 className="mt-3 text-3xl sm:text-4xl lg:text-[40px] font-bold tracking-tight text-white leading-[1.15]">
             {activeSection === 'kategori'
               ? 'Kelola Kategori Laporan'

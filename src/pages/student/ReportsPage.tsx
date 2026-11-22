@@ -95,10 +95,6 @@ export function ReportsPage({ profile, mineOnly = false, onNavigate }: ReportsPa
       <section className="w-full bg-[#08315c] text-white px-4 sm:px-8 lg:px-12 py-8 shadow-inner">
         <div className="mx-auto max-w-[1280px] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[#ffbb00]">
-              <span className="size-1.5 rounded-full bg-[#ffbb00]" aria-hidden="true" />
-              <span>{mineOnly ? 'Histori Laporan Saya' : 'Katalog Aspirasi Kampus'}</span>
-            </div>
             <h1 className="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
               {mineOnly ? 'Laporan Saya' : 'Semua Laporan Fasilitas'}
             </h1>
