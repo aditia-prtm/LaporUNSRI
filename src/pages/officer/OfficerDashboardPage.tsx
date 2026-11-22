@@ -61,10 +61,6 @@ export function OfficerDashboardPage({ profile, onNavigate }: Props) {
   }, [profile.id])
 
   const visibleReports = useMemo(() => filterReports(reports, { search, status }), [reports, search, status])
-  const withCoordinatesCount = useMemo(
-    () => reports.filter((r) => typeof r.latitude === 'number' && typeof r.longitude === 'number').length,
-    [reports]
-  )
 
   const handleTakeAssignment = async (report: Report) => {
     setBusyId(report.id)
