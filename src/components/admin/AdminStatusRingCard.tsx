@@ -121,49 +121,49 @@ export function AdminStatusRingCard({
   ]
 
   return (
-    <div className="rounded-3xl bg-white p-5 sm:p-7 lg:p-8 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col gap-6">
+    <div className="rounded-2xl sm:rounded-3xl bg-white p-4 sm:p-6 lg:p-7 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col gap-4 sm:gap-6">
       {/* Header Ringkasan & Alert Eskalasi */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 border-b border-slate-100 pb-3.5 sm:pb-4">
         <div>
-          <h2 className="text-base sm:text-lg font-bold tracking-tight text-[#08315c] flex items-center gap-2">
+          <h2 className="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-[#08315c] flex items-center gap-2">
             <span>Ringkasan & Distribusi Penanganan Aduan</span>
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
             Proporsi tindak lanjut dan status terkini seluruh aduan fasilitas kampus.
           </p>
         </div>
 
         {/* Eskalasi Pill */}
         {loading ? (
-          <Skeleton className="h-8 w-44 rounded-full" />
+          <Skeleton className="h-7 sm:h-8 w-36 sm:w-44 rounded-full" />
         ) : overdueCount > 0 ? (
           <button
             type="button"
             onClick={() => onSelectSection?.('terlambat')}
-            className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-rose-50/90 px-3.5 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-100 transition shadow-sm cursor-pointer"
+            className="inline-flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto rounded-full border border-rose-200 bg-rose-50/90 px-3 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-rose-700 hover:bg-rose-100 transition shadow-sm cursor-pointer"
           >
-            <FiAlertTriangle className="size-3.5 text-rose-600" aria-hidden="true" />
+            <FiAlertTriangle className="size-3 sm:size-3.5 text-rose-600" aria-hidden="true" />
             <span>{overdueCount} Perlu Eskalasi Segera</span>
             <FiArrowRight className="size-3 ml-0.5 text-rose-500" aria-hidden="true" />
           </button>
         ) : (
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50/70 px-3.5 py-1 text-xs font-semibold text-emerald-700 select-none">
-            <FiCheck className="size-3.5 text-emerald-600 stroke-[3]" aria-hidden="true" />
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 self-start sm:self-auto rounded-full border border-emerald-200 bg-emerald-50/70 px-3 sm:px-3.5 py-1 text-[11px] sm:text-xs font-semibold text-emerald-700 select-none">
+            <FiCheck className="size-3 sm:size-3.5 text-emerald-600 stroke-[3]" aria-hidden="true" />
             <span>Seluruh Aduan Tepat Waktu</span>
           </div>
         )}
       </div>
 
-      {/* Konten Utama: Recharts Donut Chart (Kiri) & Status Grid List (Kanan) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-        {/* Kolom Kiri: Diagram Ring Recharts Donut */}
-        <div className="lg:col-span-5 flex flex-col items-center justify-center">
+      {/* Konten Utama: Donut Chart & Status 2-Kolom (Compact & Mobile-Friendly) */}
+      <div className="flex flex-col lg:flex-row items-center gap-4 sm:gap-6 lg:gap-8">
+        {/* Donut Chart: Skala Proporsional di Mobile (140px) hingga Desktop (190px) */}
+        <div className="shrink-0 flex flex-col items-center justify-center">
           {loading ? (
-            <div className="relative size-48 flex items-center justify-center">
+            <div className="relative size-36 sm:size-44 flex items-center justify-center">
               <Skeleton className="size-full rounded-full" />
             </div>
           ) : (
-            <div className="relative size-[200px] select-none">
+            <div className="relative size-[140px] sm:size-[170px] lg:size-[190px] select-none">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -172,8 +172,8 @@ export function AdminStatusRingCard({
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={62}
-                    outerRadius={86}
+                    innerRadius="65%"
+                    outerRadius="88%"
                     paddingAngle={chartData.length > 1 ? 3 : 0}
                     cornerRadius={4}
                     stroke="none"
@@ -196,21 +196,21 @@ export function AdminStatusRingCard({
                 </PieChart>
               </ResponsiveContainer>
 
-              {/* Teks di Titik Tengah Donut Ring dengan Animasi Muncul Halus */}
+              {/* Teks di Titik Tengah Donut Ring (Proporsional & Bersih) */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
-                className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-3"
+                className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-2"
               >
-                <span className="text-3xl sm:text-4xl font-extrabold text-[#08315c] tracking-tight leading-none">
+                <span className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#08315c] tracking-tight leading-none">
                   {total}
                 </span>
-                <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">
+                <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 sm:mt-1">
                   Total Aduan
                 </span>
                 {total > 0 && (
-                  <span className="mt-1.5 inline-block text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                  <span className="mt-1 inline-block text-[9px] sm:text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 sm:px-2 py-0.5 rounded-full border border-emerald-200/80">
                     {percentDone}% Selesai
                   </span>
                 )}
@@ -219,15 +219,15 @@ export function AdminStatusRingCard({
           )}
 
           {/* Quick info caption bawah diagram */}
-          <p className="text-[11px] text-slate-400 text-center mt-3 max-w-[220px]">
+          <p className="text-[10px] sm:text-[11px] text-slate-400 text-center mt-2 sm:mt-2.5 max-w-[200px]">
             {total === 0
               ? 'Belum ada aduan terdaftar.'
-              : 'Proporsi tindak lanjut laporan fasilitas kampus.'}
+              : 'Proporsi tindak lanjut aduan kampus.'}
           </p>
         </div>
 
-        {/* Kolom Kanan: Rincian Angka & Progress Bar Status (Informasi Ringkasan Murni) */}
-        <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* 4 Kotak Status: 2 Kolom di Mobile & Desktop (Sangat Efisien & Rapi) */}
+        <div className="w-full flex-1 grid grid-cols-2 gap-2 sm:gap-3">
           {statusItems.map((item) => {
             const percentage = total > 0 ? Math.round((item.count / total) * 100) : 0
             const isHovered = hoveredKey === item.key
@@ -237,42 +237,42 @@ export function AdminStatusRingCard({
                 key={item.key}
                 onMouseEnter={() => setHoveredKey(item.key)}
                 onMouseLeave={() => setHoveredKey(null)}
-                className={`flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl border text-left transition select-none ${
+                className={`flex flex-col justify-between p-2.5 sm:p-3.5 lg:p-4 rounded-xl sm:rounded-2xl border text-left transition select-none ${
                   isHovered
                     ? 'border-[#08315c]/40 bg-slate-50/90 shadow-sm'
                     : 'border-slate-100 bg-slate-50/40 hover:bg-slate-50 hover:border-slate-200'
                 }`}
               >
-                <div className="flex items-center justify-between w-full">
-                  <span className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700">
+                <div className="flex items-center justify-between gap-1 w-full">
+                  <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-semibold text-slate-700 truncate">
                     <span
-                      className={`size-2.5 rounded-full ${item.bgClass}`}
+                      className={`size-2 sm:size-2.5 rounded-full shrink-0 ${item.bgClass}`}
                       aria-hidden="true"
                     />
-                    <span>{item.label}</span>
+                    <span className="truncate">{item.label}</span>
                   </span>
 
                   {/* Badge Persentase */}
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${item.pillClass}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full border shrink-0 ${item.pillClass}`}>
                     {percentage}%
                   </span>
                 </div>
 
-                <div className="mt-3 flex items-baseline justify-between w-full">
+                <div className="mt-2 sm:mt-3 flex items-baseline justify-between gap-1 w-full">
                   {loading ? (
-                    <Skeleton className="h-7 w-12" />
+                    <Skeleton className="h-6 sm:h-7 w-10 sm:w-12" />
                   ) : (
-                    <span className="text-2xl font-extrabold text-[#08315c]">
+                    <span className="text-xl sm:text-2xl font-extrabold text-[#08315c]">
                       {item.count}
                     </span>
                   )}
-                  <span className="text-[11px] font-medium text-slate-400">
-                    dari {total} aduan
+                  <span className="text-[10px] sm:text-[11px] font-medium text-slate-400 shrink-0">
+                    dari {total}
                   </span>
                 </div>
 
                 {/* Mini Progress Track */}
-                <div className="mt-2.5 w-full h-1.5 rounded-full bg-slate-200/80 overflow-hidden">
+                <div className="mt-2 w-full h-1 sm:h-1.5 rounded-full bg-slate-200/80 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-500 ${item.bgClass}`}
                     style={{ width: `${percentage}%` }}
