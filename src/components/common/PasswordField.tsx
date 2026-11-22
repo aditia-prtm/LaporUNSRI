@@ -1,14 +1,25 @@
 import { FiEye, FiEyeOff } from 'react-icons/fi'
+import type { UseFormRegisterReturn } from 'react-hook-form'
 
 type PasswordFieldProps = {
-  value: string
-  onChange: (value: string) => void
   mode: 'login' | 'register'
   visible: boolean
   onToggleVisibility: () => void
+  error?: string
+  registration?: UseFormRegisterReturn
+  value?: string
+  onChange?: (value: string) => void
 }
 
-export function PasswordField({ value, onChange, mode, visible, onToggleVisibility }: PasswordFieldProps) {
+export function PasswordField({
+  value,
+  onChange,
+  mode,
+  visible,
+  onToggleVisibility,
+  error,
+  registration,
+}: PasswordFieldProps) {
   return (
     <label className="flex flex-col gap-1.5">
       <span className="text-[11px] font-semibold uppercase tracking-wider text-sky-200/80">
@@ -16,13 +27,18 @@ export function PasswordField({ value, onChange, mode, visible, onToggleVisibili
       </span>
       <div className="relative w-full">
         <input
+          {...(registration ?? {
+            value,
+            onChange: (event) => onChange?.(event.target.value),
+          })}
           required
-          className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 pr-11 text-sm font-normal text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:border-[#ffbb00] focus:outline-none focus:ring-2 focus:ring-[#ffbb00]/25 transition"
+          className={`h-12 w-full rounded-xl border bg-white/10 px-4 pr-11 text-sm font-normal text-white placeholder:text-sky-200/50 focus:bg-white/15 focus:outline-none transition ${
+            error
+              ? 'border-rose-400/80 focus:border-rose-400 focus:ring-2 focus:ring-rose-400/25'
+              : 'border-white/20 focus:border-[#ffbb00] focus:ring-2 focus:ring-[#ffbb00]/25'
+          }`}
           type={visible ? 'text' : 'password'}
-          minLength={6}
           autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
           placeholder={mode === 'login' ? 'Masukkan kata sandi' : 'Minimal 6 karakter'}
         />
         <button
@@ -35,6 +51,12 @@ export function PasswordField({ value, onChange, mode, visible, onToggleVisibili
           {visible ? <FiEyeOff className="size-4" aria-hidden="true" /> : <FiEye className="size-4" aria-hidden="true" />}
         </button>
       </div>
+
+      {error && (
+        <span className="text-[11px] font-medium text-rose-300 mt-0.5 flex items-center gap-1">
+          <span>•</span> {error}
+        </span>
+      )}
     </label>
   )
 }
