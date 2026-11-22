@@ -1,4 +1,4 @@
-import { FiArrowUp, FiMapPin, FiMail, FiClock, FiShield } from 'react-icons/fi'
+import { FiArrowUp } from 'react-icons/fi'
 import { Brand } from '../common/Brand'
 
 type LandingFooterProps = {
@@ -10,7 +10,6 @@ type LandingFooterProps = {
 }
 
 export function LandingFooter({
-  onNavigate,
   onScrollToTop,
   onScrollToAbout,
   onScrollToSteps,
@@ -18,160 +17,54 @@ export function LandingFooter({
 }: LandingFooterProps) {
   return (
     <footer
-      className="relative border-t border-white/15 bg-[#031830] px-4 min-[380px]:px-6 sm:px-10 lg:px-16 pt-14 pb-10 text-white select-none"
+      className="relative border-t border-white/10 bg-[#041d38] px-6 py-8 sm:px-10 lg:px-16 text-white select-none"
       aria-label="Footer LaporUNSRI"
     >
-      <div className="mx-auto max-w-[1280px]">
-        {/* Top Grid: Brand & Institutional Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 pb-12 border-b border-white/15">
-          {/* Column 1: Brand & Purpose (5 cols on lg) */}
-          <div className="lg:col-span-5 flex flex-col justify-between">
-            <div>
-              <Brand
-                onClick={onScrollToTop}
-                subtitle="Layanan Aspirasi Sarana & Prasarana"
-              />
-
-              <p className="mt-3.5 text-xs sm:text-[13px] leading-relaxed text-sky-100/80 max-w-[420px]">
-                Platform resmi keterbukaan dan pelaporan fasilitas kampus Universitas Sriwijaya. Menghubungkan aspirasi mahasiswa langsung ke tim teknisi sarana dan prasarana.
-              </p>
-            </div>
-
-            {/* Live System Operational Status */}
-            <div className="mt-6 inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3.5 py-2 text-xs text-sky-100 w-fit">
-              <span className="relative flex size-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full size-2 bg-emerald-500" />
-              </span>
-              <span>Sistem Operasional Aktif • Layanan 24 Jam Terbuka</span>
-            </div>
-          </div>
-
-          {/* Column 2: Kampus UNSRI (Indralaya & Palembang) (3 cols on lg) */}
-          <div className="lg:col-span-3">
-            <h4 className="font-['Poppins',sans-serif] text-xs font-bold uppercase tracking-wider text-[#ffbb00]">
-              Lokasi Kampus UNSRI
-            </h4>
-            <div className="mt-4 space-y-3.5 text-xs text-sky-100/90">
-              <div className="flex items-start gap-2">
-                <FiMapPin className="size-4 text-sky-300 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-white m-0">Kampus Utama Indralaya</p>
-                  <p className="text-[11px] leading-relaxed text-sky-200/75 m-0 mt-0.5">
-                    Jl. Raya Palembang - Prabumulih Km. 32, Indralaya, Kab. Ogan Ilir, Sumsel 30662
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-start gap-2 pt-1">
-                <FiMapPin className="size-4 text-[#ffbb00] shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold text-white m-0">Kampus Palembang</p>
-                  <p className="text-[11px] leading-relaxed text-sky-200/75 m-0 mt-0.5">
-                    Jl. Srijaya Negara, Bukit Besar, Kota Palembang 30139
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Column 3: Navigasi & Tautan Cepat (2 cols on lg) */}
-          <div className="lg:col-span-2">
-            <h4 className="font-['Poppins',sans-serif] text-xs font-bold uppercase tracking-wider text-[#ffbb00]">
-              Navigasi
-            </h4>
-            <ul className="mt-4 space-y-2.5 text-xs text-sky-100/80 list-none p-0 m-0">
-              <li>
-                <button
-                  type="button"
-                  onClick={onScrollToTop}
-                  className="transition duration-150 hover:text-white cursor-pointer"
-                >
-                  Beranda
-                </button>
-              </li>
-              {onScrollToAbout && (
-                <li>
-                  <button
-                    type="button"
-                    onClick={onScrollToAbout}
-                    className="transition duration-150 hover:text-white cursor-pointer"
-                  >
-                    Tentang Kami
-                  </button>
-                </li>
-              )}
-              <li>
-                <button
-                  type="button"
-                  onClick={onScrollToSteps}
-                  className="transition duration-150 hover:text-white cursor-pointer"
-                >
-                  Alur Pelaporan
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={onScrollToFaq}
-                  className="transition duration-150 hover:text-white cursor-pointer"
-                >
-                  FAQ & Bantuan
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 4: Portal & Kontak (2 cols on lg) */}
-          <div className="lg:col-span-2">
-            <h4 className="font-['Poppins',sans-serif] text-xs font-bold uppercase tracking-wider text-[#ffbb00]">
-              Akses Portal
-            </h4>
-            <div className="mt-4 flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={() => onNavigate('/auth')}
-                className="w-full text-left rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-xs font-medium text-white transition hover:bg-white/20 cursor-pointer"
-              >
-                Masuk Akun Mahasiswa
-              </button>
-              <button
-                type="button"
-                onClick={() => onNavigate('/petugas')}
-                className="w-full text-left rounded-xl bg-[#0c4278] hover:bg-[#08315c] border border-white/25 px-3 py-2 text-xs font-medium text-white transition cursor-pointer shadow-sm"
-              >
-                Portal Petugas Sarpras
-              </button>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-white/10 text-[11px] text-sky-200/80 space-y-1.5">
-              <div className="flex items-center gap-1.5">
-                <FiMail className="size-3 text-sky-300" />
-                <span className="truncate">sarpras@unsri.ac.id</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <FiClock className="size-3 text-emerald-400" />
-                <span>Senin - Jumat, 08.00 - 16.00</span>
-              </div>
-            </div>
-          </div>
+      <div className="mx-auto max-w-[1280px] flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* Brand & Institutional Copyright */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-center sm:text-left">
+          <Brand
+            onClick={onScrollToTop}
+            subtitle="Layanan Aspirasi Sarana & Prasarana"
+          />
+          <div className="hidden sm:block h-5 w-px bg-white/15" aria-hidden="true" />
+          <p className="m-0 text-xs text-sky-200/60">
+            © {new Date().getFullYear()} LaporUNSRI • Universitas Sriwijaya
+          </p>
         </div>
 
-        {/* Bottom Credits & Back to Top */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-sky-200/75">
-          <div className="flex items-center gap-2 text-center sm:text-left">
-            <FiShield className="size-3.5 text-emerald-400 shrink-0" />
-            <p className="m-0 text-[11px] sm:text-xs">
-              © {new Date().getFullYear()} LaporUNSRI • Universitas Sriwijaya. Inisiatif Mahasiswa & Tim Sarana Prasarana Kampus.
-            </p>
-          </div>
-
+        {/* Essential Navigation & Back to Top */}
+        <div className="flex flex-wrap items-center justify-center gap-5 sm:gap-7 text-xs sm:text-[13px] text-sky-100/75">
+          {onScrollToAbout && (
+            <button
+              type="button"
+              onClick={onScrollToAbout}
+              className="hover:text-white transition-colors duration-150 cursor-pointer"
+            >
+              Tentang
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onScrollToSteps}
+            className="hover:text-white transition-colors duration-150 cursor-pointer"
+          >
+            Alur Pelaporan
+          </button>
+          <button
+            type="button"
+            onClick={onScrollToFaq}
+            className="hover:text-white transition-colors duration-150 cursor-pointer"
+          >
+            FAQ
+          </button>
           <button
             type="button"
             onClick={onScrollToTop}
-            className="flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white transition duration-150 hover:bg-white/20 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 px-3.5 py-1.5 text-xs text-sky-100 hover:text-white transition-colors duration-150 cursor-pointer"
           >
             <span>Kembali ke atas</span>
-            <FiArrowUp className="size-3.5" aria-hidden="true" />
+            <FiArrowUp className="size-3" aria-hidden="true" />
           </button>
         </div>
       </div>

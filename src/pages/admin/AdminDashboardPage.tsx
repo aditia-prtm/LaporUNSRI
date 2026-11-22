@@ -384,7 +384,6 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
               doneCount={doneCount}
               overdueCount={overdueReports.length}
               loading={loading}
-              onSelectStatus={(st) => setStatus(st)}
               onSelectSection={(sec) => onNavigate(`/admin/${sec}`)}
             />
           </div>
@@ -545,7 +544,7 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
               {/* Report List */}
               {loading ? (
                 <ReportCardSkeleton count={3} />
-              ) : visibleReports.length === 0 ? (
+              ) : (activeSection === 'dashboard' ? reports.length === 0 : visibleReports.length === 0) ? (
                 <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-14 text-center shadow-sm">
                   <FiCheckCircle className="size-10 text-emerald-500 mb-3" aria-hidden="true" />
                   <h3 className="text-sm font-bold text-slate-800">
@@ -556,12 +555,12 @@ export function AdminDashboardPage({ profile, onSignOut, onNavigate, section }: 
                   <p className="mt-1 text-xs text-slate-500 max-w-sm">
                     {activeSection === 'terlambat'
                       ? 'Seluruh laporan tertangani tepat waktu sesuai batas hari yang ditetapkan.'
-                      : 'Laporan yang sesuai filter pencarian akan muncul di sini.'}
+                      : 'Laporan terbaru mahasiswa akan muncul di sini.'}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {(activeSection === 'dashboard' ? visibleReports.slice(0, 5) : visibleReports).map(
+                  {(activeSection === 'dashboard' ? reports.slice(0, 5) : visibleReports).map(
                     (report) => {
                       const draft = drafts[report.id] ?? { status: report.status, message: '', file: null }
                       const ageInDays = getReportAgeInDays(report)
