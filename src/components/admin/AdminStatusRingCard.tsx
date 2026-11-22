@@ -1,5 +1,14 @@
 import { useState } from 'react'
-import { FiAlertTriangle, FiArrowRight, FiCheck, FiCheckCircle, FiClock, FiHelpCircle } from 'react-icons/fi'
+import {
+  FiAlertTriangle,
+  FiArrowRight,
+  FiCheck,
+  FiCheckCircle,
+  FiClock,
+  FiHelpCircle,
+} from 'react-icons/fi'
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import { motion } from 'framer-motion'
 import type { ReportStatus } from '../../types/report'
 import { Skeleton } from '../common/Skeleton'
 
@@ -11,8 +20,16 @@ type AdminStatusRingCardProps = {
   doneCount: number
   overdueCount: number
   loading?: boolean
-  onSelectStatus?: (status: ReportStatus | '') => void
   onSelectSection?: (section: string) => void
+}
+
+type ChartDataItem = {
+  name: string
+  value: number
+  status: ReportStatus
+  color: string
+  percentage: number
+  key: string
 }
 
 export function AdminStatusRingCard({
@@ -23,17 +40,9 @@ export function AdminStatusRingCard({
   doneCount,
   overdueCount,
   loading = false,
-  onSelectStatus,
   onSelectSection,
 }: AdminStatusRingCardProps) {
   const [hoveredKey, setHoveredKey] = useState<string | null>(null)
-
-  // Geometri SVG Donut
-  const size = 184
-  const strokeWidth = 16
-  const radius = (size - strokeWidth) / 2
-  const center = size / 2
-  const circumference = 2 * Math.PI * radius
 
   // Definisi segment status
   const statusItems = [
@@ -87,27 +96,29 @@ export function AdminStatusRingCard({
     },
   ]
 
-  // Hitung segmen yang memiliki count > 0 untuk digambar di SVG
-  const activeSegments = statusItems.filter((item) => item.count > 0)
   const percentDone = total > 0 ? Math.round((doneCount / total) * 100) : 0
 
-  // Perhitungan offset keliling busur lingkaran
-  let accumulatedOffset = 0
-  const renderedArcs = activeSegments.map((item) => {
-    const fraction = item.count / total
-    const arcLength = fraction * circumference
-    const gap = activeSegments.length > 1 ? 3.5 : 0
-    const visibleLength = Math.max(1, arcLength - gap)
-    const currentOffset = accumulatedOffset
-    accumulatedOffset += arcLength
+  // Dataset untuk Recharts Donut Pie
+  const chartData: ChartDataItem[] = statusItems
+    .filter((item) => item.count > 0)
+    .map((item) => ({
+      name: item.label,
+      value: item.count,
+      status: item.status,
+      color: item.color,
+      percentage: total > 0 ? Math.round((item.count / total) * 100) : 0,
+      key: item.key,
+    }))
 
-    return {
-      ...item,
-      dashArray: `${visibleLength} ${circumference - visibleLength}`,
-      dashOffset: -(currentOffset + gap / 2),
-      percentage: Math.round(fraction * 100),
-    }
-  })
+  const emptyData = [
+    {
+      name: 'Belum Ada Aduan',
+      value: 1,
+      color: '#eef2f6',
+      percentage: 0,
+      key: 'empty',
+    },
+  ]
 
   return (
     <div className="rounded-3xl bg-white p-5 sm:p-7 lg:p-8 shadow-xl shadow-slate-900/5 border border-slate-100 flex flex-col gap-6">
@@ -143,58 +154,55 @@ export function AdminStatusRingCard({
         )}
       </div>
 
-      {/* Konten Utama: Donut Chart (Kiri) & Status Grid List (Kanan) */}
+      {/* Konten Utama: Recharts Donut Chart (Kiri) & Status Grid List (Kanan) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
-        {/* Kolom Kiri: Diagram Ring Donut Chart */}
+        {/* Kolom Kiri: Diagram Ring Recharts Donut */}
         <div className="lg:col-span-5 flex flex-col items-center justify-center">
           {loading ? (
-            <div className="relative size-44 sm:size-48 flex items-center justify-center">
+            <div className="relative size-48 flex items-center justify-center">
               <Skeleton className="size-full rounded-full" />
             </div>
           ) : (
-            <div className="relative size-[184px] select-none">
-              <svg
-                width={size}
-                height={size}
-                viewBox={`0 0 ${size} ${size}`}
-                className="size-full transform -rotate-90"
+            <div className="relative size-[200px] select-none">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={total > 0 ? chartData : emptyData}
+                    dataKey="value"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={62}
+                    outerRadius={86}
+                    paddingAngle={chartData.length > 1 ? 3 : 0}
+                    cornerRadius={4}
+                    stroke="none"
+                    isAnimationActive={true}
+                    animationBegin={150}
+                    animationDuration={850}
+                    animationEasing="ease-out"
+                  >
+                    {(total > 0 ? chartData : emptyData).map((entry) => (
+                      <Cell
+                        key={entry.key}
+                        fill={entry.color}
+                        className="transition-opacity duration-150"
+                        opacity={hoveredKey && hoveredKey !== entry.key ? 0.45 : 1}
+                        onMouseEnter={() => setHoveredKey(entry.key)}
+                        onMouseLeave={() => setHoveredKey(null)}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+
+              {/* Teks di Titik Tengah Donut Ring dengan Animasi Muncul Halus */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.45, delay: 0.25, ease: 'easeOut' }}
+                className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-3"
               >
-                {/* Background Ring Track */}
-                <circle
-                  cx={center}
-                  cy={center}
-                  r={radius}
-                  fill="none"
-                  stroke="#eef2f6"
-                  strokeWidth={strokeWidth}
-                />
-
-                {/* Segmen Warna Status */}
-                {renderedArcs.map((arc) => {
-                  const isHovered = hoveredKey === arc.key
-                  return (
-                    <circle
-                      key={arc.key}
-                      cx={center}
-                      cy={center}
-                      r={radius}
-                      fill="none"
-                      stroke={arc.color}
-                      strokeWidth={isHovered ? strokeWidth + 3 : strokeWidth}
-                      strokeDasharray={arc.dashArray}
-                      strokeDashoffset={arc.dashOffset}
-                      strokeLinecap="round"
-                      className="transition-all duration-200 cursor-pointer"
-                      onMouseEnter={() => setHoveredKey(arc.key)}
-                      onMouseLeave={() => setHoveredKey(null)}
-                      onClick={() => onSelectStatus?.(arc.status)}
-                    />
-                  )
-                })}
-              </svg>
-
-              {/* Teks di Titik Tengah Donut Ring */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-3">
                 <span className="text-3xl sm:text-4xl font-extrabold text-[#08315c] tracking-tight leading-none">
                   {total}
                 </span>
@@ -206,7 +214,7 @@ export function AdminStatusRingCard({
                     {percentDone}% Selesai
                   </span>
                 )}
-              </div>
+              </motion.div>
             </div>
           )}
 
@@ -214,26 +222,24 @@ export function AdminStatusRingCard({
           <p className="text-[11px] text-slate-400 text-center mt-3 max-w-[220px]">
             {total === 0
               ? 'Belum ada aduan terdaftar.'
-              : 'Klik segmen atau kartu status untuk memfilter daftar.'}
+              : 'Proporsi tindak lanjut laporan fasilitas kampus.'}
           </p>
         </div>
 
-        {/* Kolom Kanan: Rincian Angka & Progress Bar Status */}
+        {/* Kolom Kanan: Rincian Angka & Progress Bar Status (Informasi Ringkasan Murni) */}
         <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
           {statusItems.map((item) => {
             const percentage = total > 0 ? Math.round((item.count / total) * 100) : 0
             const isHovered = hoveredKey === item.key
 
             return (
-              <button
+              <div
                 key={item.key}
-                type="button"
-                onClick={() => onSelectStatus?.(item.status)}
                 onMouseEnter={() => setHoveredKey(item.key)}
                 onMouseLeave={() => setHoveredKey(null)}
-                className={`flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl border text-left transition cursor-pointer ${
+                className={`flex flex-col justify-between p-3.5 sm:p-4 rounded-2xl border text-left transition select-none ${
                   isHovered
-                    ? 'border-[#08315c] bg-slate-50/80 shadow-md ring-2 ring-[#08315c]/10'
+                    ? 'border-[#08315c]/40 bg-slate-50/90 shadow-sm'
                     : 'border-slate-100 bg-slate-50/40 hover:bg-slate-50 hover:border-slate-200'
                 }`}
               >
@@ -272,7 +278,7 @@ export function AdminStatusRingCard({
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-              </button>
+              </div>
             )
           })}
         </div>
